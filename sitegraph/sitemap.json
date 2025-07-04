@@ -1,0 +1,89 @@
+{
+  "konnectapis/guides/changelog/": {
+    "external": false,
+    "exists": true,
+    "title": "Versiones",
+    "tags": [],
+    "links": [
+      "konnectapis//"
+    ],
+    "backlinks": [],
+    "nodeStyle": {}
+  },
+  "konnectapis/guides/example/": {
+    "external": false,
+    "exists": true,
+    "title": "Empezamos",
+    "tags": [],
+    "links": [
+      "konnectapis/guides/changelog//",
+      "konnectapis/auth//"
+    ],
+    "backlinks": [],
+    "nodeStyle": {}
+  },
+  "konnectapis/": {
+    "external": false,
+    "exists": true,
+    "title": "Bienvenido a Konnect Apis",
+    "tags": [],
+    "links": [
+      "konnectapis/guides/example//"
+    ],
+    "backlinks": [],
+    "nodeStyle": {}
+  },
+  "konnectapis/reference/example/": {
+    "external": false,
+    "exists": true,
+    "title": "Example Reference",
+    "tags": [],
+    "links": [],
+    "backlinks": [],
+    "nodeStyle": {}
+  },
+  "konnectapis//": {
+    "external": false,
+    "exists": false,
+    "title": "konnectapis",
+    "tags": [],
+    "links": [],
+    "backlinks": [
+      "konnectapis/guides/changelog/"
+    ],
+    "nodeStyle": {}
+  },
+  "konnectapis/guides/changelog//": {
+    "external": false,
+    "exists": false,
+    "title": "changelog",
+    "tags": [],
+    "links": [],
+    "backlinks": [
+      "konnectapis/guides/example/"
+    ],
+    "nodeStyle": {}
+  },
+  "konnectapis/auth//": {
+    "external": false,
+    "exists": false,
+    "title": "auth",
+    "tags": [],
+    "links": [],
+    "backlinks": [
+      "konnectapis/guides/example/"
+    ],
+    "nodeStyle": {}
+  },
+  "konnectapis/guides/example//": {
+    "external": false,
+    "exists": false,
+    "title": "example",
+    "tags": [],
+    "links": [],
+    "backlinks": [
+      "konnectapis/"
+    ],
+    "nodeStyle": {}
+  }
+}
