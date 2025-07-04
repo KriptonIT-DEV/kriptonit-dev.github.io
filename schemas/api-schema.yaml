@@ -1,0 +1,267 @@
+openapi: 3.0.3
+info:
+  title: nexus/oauth
+  version: 1.0.0
+  contact: {}
+servers:
+  - url: '{{api_url}}'
+  - url: https://kapi.konnect-360.pe
+  - url: https://dev.kapi.konnect-360.pe
+paths:
+  /oauth/token:
+    post:
+      summary: /oauth/token
+      description: /oauth/token
+      operationId: oauthToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                  example: qt07e32w
+                client_secret:
+                  type: string
+                  example: 1cb70b7ac61116984af7a05a97c0f1fcd27c42b6
+                grant_type:
+                  type: string
+                  example: client_credentials
+            examples:
+              /oauth/token:
+                value:
+                  client_id: qt07e32w
+                  client_secret: 1cb70b7ac61116984af7a05a97c0f1fcd27c42b6
+                  grant_type: client_credentials
+      responses:
+        '200':
+          description: ''
+  /oauth/token-verify:
+    get:
+      summary: /oauth/token-verify
+      description: /oauth/token-verify
+      operationId: oauthTokenVerify
+      requestBody:
+        content:
+          application/json:
+            examples:
+              /oauth/token-verify:
+                value: |-
+                  {
+                    "url_tracking": "",
+                    "celular": "",
+                    "wspData": {
+                      "template": "entregado",
+                    }
+                  }
+      responses:
+        '200':
+          description: ''
+      security:
+        - bearerAuth: []
+  /api/whatsapp/templates:
+    get:
+      summary: /api/v1/whatsapp/templates
+      description: /api/v1/whatsapp/templates
+      operationId: apiV1WhatsappTemplates
+      responses:
+        '200':
+          description: ''
+      security:
+        - bearerAuth: []
+  /api/v1/whatsapp/template:
+    get:
+      summary: /api/v1/whatsapp/template?name=
+      description: /api/v1/whatsapp/template?name=
+      operationId: apiV1WhatsappTemplateName
+      parameters:
+        - name: name
+          in: query
+          schema:
+            type: string
+            example: admitido_origen_producto
+      responses:
+        '200':
+          description: ''
+      security:
+        - bearerAuth: []
+  /api/v1/whatsapp/template-params:
+    get:
+      summary: /api/v1/whatsapp/template-params?name=
+      description: /api/v1/whatsapp/template-params?name=
+      operationId: apiV1WhatsappTemplateParamsName
+      parameters:
+        - name: name
+          in: query
+          schema:
+            type: string
+            example: salida_ruta_producto
+      responses:
+        '200':
+          description: ''
+      security:
+        - bearerAuth: []
+  /api/v1/whatsapp/send-message:
+    post:
+      summary: /api/v1/whatsapp/send-message
+      description: /api/v1/whatsapp/send-message
+      operationId: apiV1WhatsappSendMessage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                template_body:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      parameters:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            text:
+                              type: string
+                              example: ''
+                            type:
+                              type: string
+                              example: text
+                        example:
+                          - text: ''
+                            type: text
+                          - text: ''
+                            type: text
+                          - text: ''
+                            type: text
+                          - text: ''
+                            type: text
+                      type:
+                        type: string
+                        example: body
+                  example:
+                    - parameters:
+                        - text: ''
+                          type: text
+                        - text: ''
+                          type: text
+                        - text: ''
+                          type: text
+                        - text: ''
+                          type: text
+                      type: body
+                template_name:
+                  type: string
+                  example: cod_entregado
+                to_phone_number:
+                  type: string
+                  example: '906589760'
+                to_url_tracking:
+                  type: string
+                  example: ''
+                tracking_number:
+                  type: string
+                  example: '12333322'
+            examples:
+              /api/v1/whatsapp/send-message:
+                value:
+                  template_body:
+                    - parameters:
+                        - text: ''
+                          type: text
+                        - text: ''
+                          type: text
+                        - text: ''
+                          type: text
+                        - text: ''
+                          type: text
+                      type: body
+                  template_name: cod_entregado
+                  to_phone_number: '906589760'
+                  to_url_tracking: ''
+                  tracking_number: '12333322'
+      responses:
+        '200':
+          description: ''
+      security:
+        - bearerAuth: []
+  /api/v1/whatsapp/get-and-set-template:
+    get:
+      summary: /api/v1/whatsapp/get-and-set-template
+      description: /api/v1/whatsapp/get-and-set-template
+      operationId: apiV1WhatsappGetAndSetTemplate
+      parameters:
+        - name: name
+          in: query
+          schema:
+            type: string
+            example: salida_ruta_cod
+      responses:
+        '200':
+          description: ''
+      security:
+        - bearerAuth: []
+  /api/whatsapp/webhook:
+    get:
+      summary: whatssapp/webhook
+      description: whatssapp/webhook
+      operationId: whatssappWebhook
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Informacion sobre mi pedido
+                sender:
+                  type: string
+                  example: juan.cabanillas@kriptonit.pe
+            examples:
+              whatssapp/webhook:
+                value:
+                  message: Informacion sobre mi pedido
+                  sender: juan.cabanillas@kriptonit.pe
+      responses:
+        '200':
+          description: ''
+  /api/messenger/webhook:
+    get:
+      summary: messegenr/webhhook
+      description: messegenr/webhhook
+      operationId: messegenrWebhhook
+      parameters:
+        - name: canal
+          in: query
+          schema:
+            type: string
+            example: page
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Informacion sobre mi pedido
+                sender:
+                  type: string
+                  example: juan.cabanillas@kriptonit.pe
+            examples:
+              messegenr/webhhook:
+                value:
+                  message: Informacion sobre mi pedido
+                  sender: juan.cabanillas@kriptonit.pe
+      responses:
+        '200':
+          description: ''
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+tags: []

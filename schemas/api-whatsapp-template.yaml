@@ -1,0 +1,852 @@
+openapi: 3.0.3
+info:
+  title: WhatsApp plantillas
+  description: >-
+    En esta sección abordaremos en envio de plantillas por api, es importante
+    configurar tu canal de **WHATSAPP** para relizar estas peticiones.
+  version: 1.0.0
+  contact: {}
+servers:
+  - url: 'https://devkapi.konnect-360.pe'
+paths:
+  /api/v1/whatsapp/templates:
+    get:
+      summary: Todas las plantillas
+      description: Este endpoint es para obtener todas las plantillas disponibles.
+      operationId: todasLasPlantillas
+      responses:
+        '200':
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Content-Length:
+              schema:
+                type: string
+                example: '2947'
+            Date:
+              schema:
+                type: string
+                example: Fri, 20 Jun 2025 03:45:48 GMT
+            ETag:
+              schema:
+                type: string
+                example: W/"b83-300vv6iugoJCV4nVcaw5uqjgHSo"
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        category:
+                          type: string
+                          example: UTILITY
+                        id:
+                          type: string
+                          example: '438429459276413'
+                        language:
+                          type: string
+                          example: es
+                        name:
+                          type: string
+                          example: template_name
+                        status:
+                          type: string
+                          example: APPROVED
+                    example:
+                      - category: UTILITY
+                        id: '438429459276413'
+                        language: es
+                        name: template_name
+                        status: APPROVED
+                      - category: UTILITY
+                        id: '903530904852520'
+                        language: es
+                        name: template_name
+                        status: APPROVED
+                  errors:
+                    type: object
+                    properties: {}
+                  messages:
+                    type: string
+                    example: OK
+                  status:
+                    type: number
+                    example: 200
+                  success:
+                    type: boolean
+                    example: true
+              examples:
+                Success:
+                  value:
+                    data:
+                      - category: UTILITY
+                        id: '438429459276413'
+                        language: es
+                        name: template_name
+                        status: APPROVED
+                      - category: UTILITY
+                        id: '903530904852520'
+                        language: es
+                        name: template_name
+                        status: APPROVED
+                    errors: {}
+                    messages: OK
+                    status: 200
+                    success: true
+      security:
+        - bearerAuth: []
+  /api/v1/whatsapp/template:
+    get:
+      summary: Plantilla por nombre
+      description: Este end-point es para obtner una plantilla según el _**nombre**_
+      operationId: plantillaPorNombre
+      parameters:
+        - name: name
+          in: query
+          schema:
+            type: string
+            example: salida_ruta_producto
+          description: string
+      responses:
+        '200':
+          description: Success / Void
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Content-Length:
+              schema:
+                type: string
+                example: '133'
+            Date:
+              schema:
+                type: string
+                example: Fri, 20 Jun 2025 03:51:29 GMT
+            ETag:
+              schema:
+                type: string
+                example: W/"85-5mzYGnHkyyNQpEEr4uFv5p1OI+I"
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      category:
+                        type: string
+                        example: UTILITY
+                      components:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            buttons:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  text:
+                                    type: string
+                                    example: App Konnect 360°
+                                  type:
+                                    type: string
+                                    example: URL
+                                  url:
+                                    type: string
+                                    example: >-
+                                      https://play.google.com/store/apps/details?id=com.konnect-360.urbano&amp;hl=es/
+                              example:
+                                - text: App Konnect 360°
+                                  type: URL
+                                  url: >-
+                                    https://play.google.com/store/apps/details?id=com.konnect-360.urbano&amp;hl=es/
+                            example:
+                              type: object
+                              properties:
+                                body_text:
+                                  type: array
+                                  items:
+                                    type: array
+                                    items:
+                                      type: string
+                                      example: Testing
+                                    example:
+                                      - Testing
+                                      - 'pedido WYB44444 de StoreTesting '
+                                      - >-
+                                        www.konnect-com.pe/tracking?guides=WYB44444
+                                  example:
+                                    - - Testing
+                                      - 'pedido WYB44444 de StoreTesting '
+                                      - >-
+                                        www.konnect-com.pe/tracking?guides=WYB44444
+                            text:
+                              type: string
+                              example: >-
+                                ¡Hola, *{{1}}*!
+
+
+                                Queremos informarte que tu {{2}} iniciará su
+                                ruta de entrega el día de mañana. 🙌
+
+
+                                Es importante que al momento de la entrega
+                                cuentes con tu DNI/CE a la mano. En caso de que
+                                otra persona reciba tu pedido, debe estar
+                                correctamente identificado.
+
+
+                                Estaremos informándote con un próximo WhatsApp,
+                                mantén tu celular cerca de ti.
+
+
+                                _Somos Konnect, nos movemos por ti. Simple,
+                                Efectivo y Rápido_ 🚚✨
+
+
+                                💡Sigue tu pedido ingresando aquí  {{3}} o
+                                descarga nuestra App°
+                            type:
+                              type: string
+                              example: BODY
+                        example:
+                          - example:
+                              body_text:
+                                - - Testing
+                                  - 'pedido WYB44444 de StoreTesting '
+                                  - www.konnect-com.pe/tracking?guides=WYB44444
+                            text: >-
+                              ¡Hola, *{{1}}*!
+
+
+                              Queremos informarte que tu {{2}} iniciará su ruta
+                              de entrega el día de mañana. 🙌
+
+
+                              Es importante que al momento de la entrega cuentes
+                              con tu DNI/CE a la mano. En caso de que otra
+                              persona reciba tu pedido, debe estar correctamente
+                              identificado.
+
+
+                              Estaremos informándote con un próximo WhatsApp,
+                              mantén tu celular cerca de ti.
+
+
+                              _Somos Konnect, nos movemos por ti. Simple,
+                              Efectivo y Rápido_ 🚚✨
+
+
+                              💡Sigue tu pedido ingresando aquí  {{3}} o
+                              descarga nuestra App°
+                            type: BODY
+                          - text: >-
+                              Este es un mensaje informativo, no es posible
+                              responder.
+                            type: FOOTER
+                          - buttons:
+                              - text: App Konnect 360°
+                                type: URL
+                                url: >-
+                                  https://play.google.com/store/apps/details?id=com.konnect-360.urbano&amp;hl=es/
+                            type: BUTTONS
+                      data:
+                        type: array
+                        items: {}
+                        example: []
+                      id:
+                        type: string
+                        example: '488985164153355'
+                      language:
+                        type: string
+                        example: es
+                      name:
+                        type: string
+                        example: template_name
+                      paging:
+                        type: object
+                        properties:
+                          cursors:
+                            type: object
+                            properties:
+                              after:
+                                type: string
+                                example: MjQZD
+                              before:
+                                type: string
+                                example: MAZDZD
+                      parameter_format:
+                        type: string
+                        example: POSITIONAL
+                      status:
+                        type: string
+                        example: APPROVED
+                  errors:
+                    type: object
+                    properties: {}
+                  messages:
+                    type: string
+                    example: OK
+                  status:
+                    type: number
+                    example: 200
+                  success:
+                    type: boolean
+                    example: true
+              examples:
+                Success:
+                  value:
+                    data:
+                      category: UTILITY
+                      components:
+                        - example:
+                            body_text:
+                              - - Testing
+                                - 'pedido WYB44444 de StoreTesting '
+                                - www.konnect-com.pe/tracking?guides=WYB44444
+                          text: >-
+                            ¡Hola, *{{1}}*!
+
+
+                            Queremos informarte que tu {{2}} iniciará su ruta de
+                            entrega el día de mañana. 🙌
+
+
+                            Es importante que al momento de la entrega cuentes
+                            con tu DNI/CE a la mano. En caso de que otra persona
+                            reciba tu pedido, debe estar correctamente
+                            identificado.
+
+
+                            Estaremos informándote con un próximo WhatsApp,
+                            mantén tu celular cerca de ti.
+
+
+                            _Somos Konnect, nos movemos por ti. Simple, Efectivo
+                            y Rápido_ 🚚✨
+
+
+                            💡Sigue tu pedido ingresando aquí  {{3}} o descarga
+                            nuestra App°
+                          type: BODY
+                        - text: >-
+                            Este es un mensaje informativo, no es posible
+                            responder.
+                          type: FOOTER
+                        - buttons:
+                            - text: App Konnect 360°
+                              type: URL
+                              url: >-
+                                https://play.google.com/store/apps/details?id=com.konnect-360.urbano&amp;hl=es/
+                          type: BUTTONS
+                      id: '488985164153355'
+                      language: es
+                      name: template_name
+                      parameter_format: POSITIONAL
+                      status: APPROVED
+                    errors: {}
+                    messages: OK
+                    status: 200
+                    success: true
+                Void:
+                  value:
+                    data:
+                      data: []
+                      paging:
+                        cursors:
+                          after: MjQZD
+                          before: MAZDZD
+                    errors: {}
+                    messages: OK
+                    status: 200
+                    success: true
+      security:
+        - bearerAuth: []
+  /api/v1/whatsapp/template-params:
+    get:
+      summary: Parametros de una plantilla
+      description: >-
+        Este end-point es para obtener los parametros de una plantilla por su
+        _**nombre**_
+      operationId: parametrosDeUnaPlantilla
+      parameters:
+        - name: name
+          in: query
+          schema:
+            type: string
+            example: salida_ruta_producto
+          description: string
+      responses:
+        '200':
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Content-Length:
+              schema:
+                type: string
+                example: '258'
+            Date:
+              schema:
+                type: string
+                example: Fri, 20 Jun 2025 03:52:43 GMT
+            ETag:
+              schema:
+                type: string
+                example: W/"102-romVwDaNyZpXrIFXmrD/sZ6cRrg"
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      template_body:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            parameters:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  text:
+                                    type: string
+                                    example: ''
+                                  type:
+                                    type: string
+                                    example: text
+                              example:
+                                - text: ''
+                                  type: text
+                                - text: ''
+                                  type: text
+                                - text: ''
+                                  type: text
+                                - text: ''
+                                  type: text
+                            type:
+                              type: string
+                              example: body
+                        example:
+                          - parameters:
+                              - text: ''
+                                type: text
+                              - text: ''
+                                type: text
+                              - text: ''
+                                type: text
+                              - text: ''
+                                type: text
+                            type: body
+                      template_name:
+                        type: string
+                        example: salida_ruta_producto
+                  errors:
+                    type: object
+                    properties: {}
+                  messages:
+                    type: string
+                    example: OK
+                  status:
+                    type: number
+                    example: 200
+                  success:
+                    type: boolean
+                    example: true
+              examples:
+                Success:
+                  value:
+                    data:
+                      template_body:
+                        - parameters:
+                            - text: ''
+                              type: text
+                            - text: ''
+                              type: text
+                            - text: ''
+                              type: text
+                            - text: ''
+                              type: text
+                          type: body
+                      template_name: salida_ruta_producto
+                    errors: {}
+                    messages: OK
+                    status: 200
+                    success: true
+        '400':
+          description: Error
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Content-Length:
+              schema:
+                type: string
+                example: '95'
+            Date:
+              schema:
+                type: string
+                example: Fri, 20 Jun 2025 03:53:49 GMT
+            ETag:
+              schema:
+                type: string
+                example: W/"5f-Lzfx7/4qN6fr20Ky0tUbbhpRN9s"
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 200
+                  data:
+                    nullable: true
+                    example: null
+                  errors:
+                    type: object
+                    properties: {}
+                  messages:
+                    type: string
+                    example: Opps plantilla no encontrada
+                  status:
+                    type: number
+                    example: 400
+                  success:
+                    type: boolean
+                    example: true
+              examples:
+                Error:
+                  value:
+                    code: 200
+                    data: null
+                    errors: {}
+                    messages: Opps plantilla no encontrada
+                    status: 400
+                    success: true
+      security:
+        - bearerAuth: []
+  /api/v1/whatsapp/send-template:
+    post:
+      summary: Enviar plantilla
+      description: >-
+        Este end-point es para enviar una _**plantilla con parametros**_ vacios
+        y sus respectivos valores ordenados
+      operationId: enviarPlantilla
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                template_body:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      parameters:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            text:
+                              type: string
+                              example: '1'
+                            type:
+                              type: string
+                              example: text
+                        example:
+                          - text: '1'
+                            type: text
+                          - text: '2'
+                            type: text
+                          - text: '3'
+                            type: text
+                          - text: '4'
+                            type: text
+                      type:
+                        type: string
+                        example: body
+                  example:
+                    - parameters:
+                        - text: '1'
+                          type: text
+                        - text: '2'
+                          type: text
+                        - text: '3'
+                          type: text
+                        - text: '4'
+                          type: text
+                      type: body
+                template_name:
+                  type: string
+                  example: cod_entregado
+                to_phone_number:
+                  type: string
+                  example: 'phone_number'
+                to_url_tracking:
+                  type: string
+                  example: ''
+                tracking_number:
+                  type: string
+                  example: '12333322'
+            examples:
+              Enviar plantilla:
+                value:
+                  template_body:
+                    - parameters:
+                        - text: '1'
+                          type: text
+                        - text: '2'
+                          type: text
+                        - text: '3'
+                          type: text
+                        - text: '4'
+                          type: text
+                      type: body
+                  template_name: cod_entregado
+                  to_phone_number: 'phone_number'
+                  to_url_tracking: ''
+                  tracking_number: '12333322'
+      responses:
+        '200':
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Content-Length:
+              schema:
+                type: string
+                example: '196'
+            Date:
+              schema:
+                type: string
+                example: Fri, 20 Jun 2025 03:58:58 GMT
+            ETag:
+              schema:
+                type: string
+                example: W/"c4-BUd/Sa8jdVSPvKYhK9FgLlCge+c"
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      channel:
+                        type: string
+                        example: whatsapp
+                      messages:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              example: >-
+                                wamid.HBgLNTE5MDY1ODk3NjAVAgARGBJFRTBBMTc5N0ExRTIzOTE4NDgA
+                            message_status:
+                              type: string
+                              example: accepted
+                        example:
+                          - id: >-
+                              wamid.HBgLNTE5MDY1ODk3NjAVAgARGBJFRTBBMTc5N0ExRTIzOTE4NDgA
+                            message_status: accepted
+                  errors:
+                    type: object
+                    properties: {}
+                  messages:
+                    type: string
+                    example: OK
+                  status:
+                    type: number
+                    example: 200
+                  success:
+                    type: boolean
+                    example: true
+              examples:
+                Success:
+                  value:
+                    data:
+                      channel: whatsapp
+                      messages:
+                        - id: >-
+                            wamid.HBgLNTE5MDY1ODk3NjAVAgARGBJFRTBBMTc5N0ExRTIzOTE4NDgA
+                          message_status: accepted
+                    errors: {}
+                    messages: OK
+                    status: 200
+                    success: true
+        '400':
+          description: Error
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Content-Length:
+              schema:
+                type: string
+                example: '351'
+            Date:
+              schema:
+                type: string
+                example: Fri, 20 Jun 2025 03:58:04 GMT
+            ETag:
+              schema:
+                type: string
+                example: W/"15f-d/3WeWzQ7Amehqj+x1m2A7Jo+Pk"
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    nullable: true
+                    example: null
+                  errors:
+                    type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          details:
+                            type: string
+                            example: >-
+                              body: number of localizable_params (4) does not
+                              match the expected number of params (7)
+                          messaging_product:
+                            type: string
+                            example: whatsapp
+                      message:
+                        type: string
+                        example: >-
+                          (#132000) Number of parameters does not match the
+                          expected number of params
+                      type:
+                        type: string
+                        example: OAuthException
+                  messages:
+                    type: string
+                    example: Error en parametros de plantilla
+                  status:
+                    type: number
+                    example: 400
+                  success:
+                    type: boolean
+                    example: false
+              examples:
+                Error:
+                  value:
+                    data: null
+                    errors:
+                      data:
+                        details: >-
+                          body: number of localizable_params (4) does not match
+                          the expected number of params (7)
+                        messaging_product: whatsapp
+                      message: >-
+                        (#132000) Number of parameters does not match the
+                        expected number of params
+                      type: OAuthException
+                    messages: Error en parametros de plantilla
+                    status: 400
+                    success: false
+      security:
+        - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+tags: []

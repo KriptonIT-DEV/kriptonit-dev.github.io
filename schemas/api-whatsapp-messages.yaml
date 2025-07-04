@@ -1,0 +1,300 @@
+openapi: 3.0.3
+info:
+  title: WhatsApp mensajes
+  description: >-
+    En esta sección abordaremos en evio de mensajes para en canal de
+    **WHATSAPP** desde la api
+  version: 1.0.0
+  contact: {}
+servers:
+  - url: 'https://devkapi.konnect-360.pe'
+paths:
+  /api/v1/send/whatsapp/messages:
+    put:
+      summary: Enviar texto
+      description: Este end-point permite enviar mensaje solo de _**texto**_
+      operationId: enviarTexto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phone:
+                  type: string
+                  example: 'phone_number'
+                text:
+                  type: string
+                  example: Hola desde kpis dev
+            examples:
+              Enviar texto:
+                value:
+                  phone: 'phone_number'
+                  text: Hola desde kpis dev
+      responses:
+        '200':
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Content-Length:
+              schema:
+                type: string
+                example: '198'
+            Date:
+              schema:
+                type: string
+                example: Fri, 27 Jun 2025 05:00:59 GMT
+            ETag:
+              schema:
+                type: string
+                example: W/"c6-jGq16fT7nKv0WKQT5qBI1XxLI74"
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      message_id:
+                        type: string
+                        example: >-
+                          wamid.HBgLNTE5MDY1ODk3NjAVAgARGBI0MTQ1Qzg2N0VCNjg3MjQ3Q0QA
+                      phone:
+                        type: string
+                        example: '999888000'
+                  errors:
+                    type: object
+                    properties: {}
+                  messages:
+                    type: string
+                    example: Mensaje enviado correctamente
+                  status:
+                    type: number
+                    example: 200
+                  success:
+                    type: boolean
+                    example: true
+              examples:
+                Success:
+                  value:
+                    code: 200
+                    data:
+                      message_id: >-
+                        wamid.HBgLNTE5MDY1ODk3NjAVAgARGBI0MTQ1Qzg2N0VCNjg3MjQ3Q0QA
+                      phone: '999888000'
+                    errors: {}
+                    messages: Mensaje enviado correctamente
+                    status: 200
+                    success: true
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    nullable: true
+                    example: null
+                  errors:
+                    type: object
+                    properties:
+                      message_id:
+                        type: string
+                        example: as32asd32a3sd23ad4as3das24sd3d3asd34
+                  messages:
+                    type: string
+                    example: Error al enviar mensaje
+                  status:
+                    type: number
+                    example: 400
+                  success:
+                    type: boolean
+                    example: false
+              examples:
+                Error:
+                  value:
+                    data: null
+                    errors:
+                      message_id: as32asd32a3sd23ad4as3das24sd3d3asd34
+                    messages: Error al enviar mensaje
+                    status: 400
+                    success: false
+      security:
+        - bearerAuth: []
+  /api/v1/send/whatsapp/messages-files:
+    put:
+      summary: Enviar texto e imagen
+      description: >-
+        Este end-point permite enviar mensaje de _**texto**_ e _**imagen**_, se
+        provee como un _**multipart-formdata**_.
+      operationId: enviarTextoEImagen
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  description: File
+                  type: string
+                  example: ''
+                phone:
+                  description: String
+                  type: string
+                  example: 'phone_number'
+                text:
+                  description: String
+                  type: string
+                  example: Hola desde kapis
+      responses:
+        '200':
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Content-Length:
+              schema:
+                type: string
+                example: '338'
+            Date:
+              schema:
+                type: string
+                example: Fri, 27 Jun 2025 05:23:11 GMT
+            ETag:
+              schema:
+                type: string
+                example: W/"152-xaUNv3vLvco7f0Lu3YyXChsZSYk"
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      phone:
+                        type: string
+                        example: '999888000'
+                      status_files:
+                        type: array
+                        items:
+                          type: string
+                          example: >-
+                            wamid.HBgLNTE5MDY1ODk3NjAVAgARGBI0OUI4OTU3Q0EzRTgzMDZGRjQA
+                        example:
+                          - >-
+                            wamid.HBgLNTE5MDY1ODk3NjAVAgARGBI0OUI4OTU3Q0EzRTgzMDZGRjQA
+                          - >-
+                            wamid.HBgLNTE5MDY1ODk3NjAVAgARGBIwQUZDRDVFNDVEOTc1QkYxRTAA
+                      status_text:
+                        type: string
+                        example: >-
+                          wamid.HBgLNTE5MDY1ODk3NjAVAgARGBIxNzdDRjlDRUFGQTA2QTVEQTgA
+                  errors:
+                    type: object
+                    properties: {}
+                  messages:
+                    type: string
+                    example: Mensaje enviado correctamente
+                  status:
+                    type: number
+                    example: 200
+                  success:
+                    type: boolean
+                    example: true
+              examples:
+                Success:
+                  value:
+                    code: 200
+                    data:
+                      phone: '999888000'
+                      status_files:
+                        - >-
+                          wamid.HBgLNTE5MDY1ODk3NjAVAgARGBI0OUI4OTU3Q0EzRTgzMDZGRjQA
+                        - >-
+                          wamid.HBgLNTE5MDY1ODk3NjAVAgARGBIwQUZDRDVFNDVEOTc1QkYxRTAA
+                      status_text: >-
+                        wamid.HBgLNTE5MDY1ODk3NjAVAgARGBIxNzdDRjlDRUFGQTA2QTVEQTgA
+                    errors: {}
+                    messages: Mensaje enviado correctamente
+                    status: 200
+                    success: true
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    nullable: true
+                    example: null
+                  errors:
+                    type: object
+                    properties:
+                      message_id:
+                        type: string
+                        example: as32asd32a3sd23ad4as3das24sd3d3asd34
+                  messages:
+                    type: string
+                    example: Error al enviar mensaje
+                  status:
+                    type: number
+                    example: 400
+                  success:
+                    type: boolean
+                    example: false
+              examples:
+                Error:
+                  value:
+                    data: null
+                    errors:
+                      message_id: as32asd32a3sd23ad4as3das24sd3d3asd34
+                    messages: Error al enviar mensaje
+                    status: 400
+                    success: false
+      security:
+        - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+tags: []

@@ -1,0 +1,339 @@
+openapi: 3.0.3
+info:
+  title: Autenticación
+  description: >-
+    En esta sección se aborda la autenticación a la api en **Konnect-360,**
+    recuerda previamente obtener tus credenciales en la seccion **CANALES** de
+    tu cuenta **Konnect-360.**
+  version: 1.0.0
+  contact: {}
+servers:
+  - url: 'https://devkapi.konnect-360.pe'
+paths:
+  /api/oauth/token:
+    post:
+      summary: Autenticación
+      description: En este end-point es para obtener tu _**token de acceso**_
+      operationId: autenticaciN
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                  example: 'your_client_id'
+                client_secret:
+                  type: string
+                  example: 'your_client_secret' 
+                grant_type:
+                  type: string
+                  example: client_credentials
+            examples:
+              Autenticación:
+                value:
+                  client_id: 'your_client_id'
+                  client_secret: 'your_client_secret'
+                  grant_type: client_credentials
+      responses:
+        '200':
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Content-Length:
+              schema:
+                type: string
+                example: '415'
+            Date:
+              schema:
+                type: string
+                example: Thu, 03 Jul 2025 19:34:57 GMT
+            ETag:
+              schema:
+                type: string
+                example: W/"19f-FklAP5BNfO+n/P7lcKI3FCW5DcA"
+            Server:
+              schema:
+                type: string
+                example: nginx/1.24.0
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: your_token
+                  errors:
+                    nullable: true
+                    example: null
+                  messages:
+                    type: string
+                    example: Token válido.
+                  status:
+                    type: number
+                    example: 200
+                  success:
+                    type: boolean
+                    example: true
+              examples:
+                Success:
+                  value:
+                    code: 200
+                    data:
+                      token: your_token
+                    errors: null
+                    messages: Token válido.
+                    status: 200
+                    success: true
+        '401':
+          description: Error
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Content-Length:
+              schema:
+                type: string
+                example: '130'
+            Date:
+              schema:
+                type: string
+                example: Thu, 03 Jul 2025 19:36:06 GMT
+            ETag:
+              schema:
+                type: string
+                example: W/"82-5bFgGbrE0PKYMFyES4uITyToQoE"
+            Server:
+              schema:
+                type: string
+                example: nginx/1.24.0
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 401
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        nullable: true
+                        example: null
+                  errors:
+                    nullable: true
+                    example: null
+                  messages:
+                    type: string
+                    example: 'Error: Token y/o Client ID incorrectos.'
+                  status:
+                    type: number
+                    example: 401
+                  success:
+                    type: boolean
+                    example: false
+              examples:
+                Error:
+                  value:
+                    code: 401
+                    data:
+                      token: null
+                    errors: null
+                    messages: 'Error: Token y/o Client ID incorrectos.'
+                    status: 401
+                    success: false
+  /api/oauth/token-verify:
+    get:
+      summary: Autenticación verificado
+      description: Este end-point es para verificar si el _**token**_ obtenido es válido
+      operationId: autenticaciNVerificado
+      requestBody:
+        content:
+          application/json:
+            examples:
+              Autenticación verificado:
+                value: ''
+      responses:
+        '200':
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Content-Length:
+              schema:
+                type: string
+                example: '173'
+            Date:
+              schema:
+                type: string
+                example: Thu, 03 Jul 2025 20:20:21 GMT
+            ETag:
+              schema:
+                type: string
+                example: W/"ad-p3ep9VmS8s6qNmnDHgc2qKuvy7Q"
+            Server:
+              schema:
+                type: string
+                example: nginx/1.24.0
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      idNumPhone:
+                        type: string
+                        example: '155444634329464'
+                      idWspBussiness:
+                        type: string
+                        example: '203212169544028'
+                      phoneNumber:
+                        type: string
+                        example: '51914042323'
+                  errors:
+                    nullable: true
+                    example: null
+                  messages:
+                    type: string
+                    example: Ok
+                  status:
+                    type: number
+                    example: 200
+                  success:
+                    type: boolean
+                    example: true
+              examples:
+                Success:
+                  value:
+                    code: 200
+                    data:
+                      idNumPhone: '155444634329464'
+                      idWspBussiness: '203212169544028'
+                      phoneNumber: '51914042323'
+                    errors: null
+                    messages: Ok
+                    status: 200
+                    success: true
+        '401':
+          description: Error
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Content-Length:
+              schema:
+                type: string
+                example: '144'
+            Date:
+              schema:
+                type: string
+                example: Thu, 03 Jul 2025 19:38:46 GMT
+            ETag:
+              schema:
+                type: string
+                example: W/"90-ZxagYWbCWMgIsi21EiWywaFXGkU"
+            Server:
+              schema:
+                type: string
+                example: nginx/1.24.0
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 401
+                  data:
+                    nullable: true
+                    example: null
+                  errors:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: jwt malformed
+                      name:
+                        type: string
+                        example: JsonWebTokenError
+                  messages:
+                    type: string
+                    example: jwt malformed
+                  status:
+                    type: number
+                    example: 401
+                  success:
+                    type: boolean
+                    example: false
+              examples:
+                Error:
+                  value:
+                    code: 401
+                    data: null
+                    errors:
+                      message: jwt malformed
+                      name: JsonWebTokenError
+                    messages: jwt malformed
+                    status: 401
+                    success: false
+      security:
+        - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+tags: []
