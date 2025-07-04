@@ -1,7 +1,7 @@
 {
   "name": "konnectapis",
   "type": "module",
-  "homepage": "https://kriptonit-dev.github.io/konnectapis/",
+  "homepage": "https://kriptonit-dev.github.io/konnectapis",
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
