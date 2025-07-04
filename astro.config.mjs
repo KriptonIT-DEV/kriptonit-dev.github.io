@@ -7,7 +7,8 @@ import starlightThemeObsidian from 'starlight-theme-obsidian'
 
 // https://astro.build/config
 export default defineConfig({
-    base: '/konnectapis',
+    base: '/konnectapis/',
+    trailingSlash: "always",
     integrations: [
         starlight({
             favicon: '/favicon.jpg',
