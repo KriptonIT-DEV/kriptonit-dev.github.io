@@ -4,11 +4,9 @@ import starlight from '@astrojs/starlight';
 import starlightOpenAPI, { openAPISidebarGroups } from 'starlight-openapi';
 import starlightThemeObsidian from 'starlight-theme-obsidian'
 
-
 // https://astro.build/config
 export default defineConfig({
     site: 'https://kriptonit-dev.github.io',
-    trailingSlash: "always",
     integrations: [
         starlight({
             favicon: '/favicon.jpg',
