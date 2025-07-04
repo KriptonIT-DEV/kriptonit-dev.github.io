@@ -8,7 +8,6 @@ import starlightThemeObsidian from 'starlight-theme-obsidian'
 // https://astro.build/config
 export default defineConfig({
     site: 'https://kriptonit-dev.github.io',
-    base: '/konnectapis',
     integrations: [
         starlight({
             favicon: '/favicon.jpg',
