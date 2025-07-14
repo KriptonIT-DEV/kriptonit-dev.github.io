@@ -5,9 +5,7 @@
     "title": "Versiones",
     "tags": [],
     "links": [],
-    "backlinks": [
-      "guides/example/"
-    ],
+    "backlinks": [],
     "nodeStyle": {}
   },
   "guides/example/": {
@@ -16,11 +14,35 @@
     "title": "Empezamos",
     "tags": [],
     "links": [
-      "guides/changelog/",
+      "guides/widgetbot/",
       "auth/"
     ],
     "backlinks": [
       "/"
+    ],
+    "nodeStyle": {}
+  },
+  "guides/widgetbot/": {
+    "external": false,
+    "exists": true,
+    "title": "Widget Chat Bot",
+    "tags": [],
+    "links": [
+      "guides/widgetcustomer/"
+    ],
+    "backlinks": [
+      "guides/example/"
+    ],
+    "nodeStyle": {}
+  },
+  "guides/widgetcustomer/": {
+    "external": false,
+    "exists": true,
+    "title": "Widget Chat Cliente",
+    "tags": [],
+    "links": [],
+    "backlinks": [
+      "guides/widgetbot/"
     ],
     "nodeStyle": {}
   },
