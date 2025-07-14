@@ -7,6 +7,7 @@ import starlightThemeObsidian from 'starlight-theme-obsidian'
 // https://astro.build/config
 export default defineConfig({
     site: 'https://kriptonit-dev.github.io',
+    
     integrations: [
         starlight({
             favicon: '/favicon.jpg',
@@ -41,7 +42,7 @@ export default defineConfig({
                 replacesTitle: true,
                 light: '/public/imgs/logo-light.png',
                 dark: '/public/imgs/logo-dark.png',
-                
+
             },
             title: 'Konnect-360',
             social: [
