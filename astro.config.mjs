@@ -27,6 +27,11 @@ export default defineConfig({
                         base: 'whatsapp-template',
                         collapsed: false,
                         schema: './schemas/api-whatsapp-template.yaml',
+                    },
+                    {
+                        base: 'channel-chats',
+                        collapsed: false,
+                        schema: './schemas/api-channels-chat.yaml',
                     }
                 ]),
                 starlightThemeObsidian()
@@ -41,6 +46,7 @@ export default defineConfig({
             title: 'Konnect-360',
             social: [
                 { icon: 'external', label: 'Website', href: 'https://www.konnect-360.pe/', },
+                { icon: 'github', label: 'GitHub', href: 'https://github.com/KriptonIT-DEV/kriptonit-dev.github.io', },
             ],
             sidebar: [
 
@@ -49,6 +55,8 @@ export default defineConfig({
                     items: [
                         // Each item here is one entry in the navigation menu.
                         { label: 'Empezamos', slug: 'guides/example' },
+                        { label: 'Widget Chat Bot', slug: 'guides/widgetbot' },
+                        { label: 'Widget Chat Cliente', slug: 'guides/widgetcustomer' },
                         { label: 'Versiones', slug: 'guides/changelog' }
                     ],
                 },

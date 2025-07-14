@@ -40,7 +40,7 @@ Bien para agregar nuestro plugin debes copiar y pegar el siguiente codigo.
     );
 </script>
 ```
-Aqui puedes puedes ver más detalle [acerca del widget](/guides/changelog/).
+Aqui puedes puedes ver más detalle [acerca del widget](/guides/widgetbot/).
 
 
 ##### Apis & Webhooks

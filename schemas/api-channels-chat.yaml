@@ -1,0 +1,89 @@
+openapi: 3.0.3
+info:
+  title: Chats
+  description: >-
+    En este sección se abordará la extracción de chats en diferentes canales de
+    momento soporta **whatsapp.**
+  version: 1.0.0
+  contact: {}
+servers:
+  - url: 'https://dev.kapi.konnect-360.pe'
+paths:
+  /api/external/customer:
+    get:
+      summary: Obtener cliente
+      description: >-
+        Este endpoint retorna el cliente segun el **canal** e **identificador**
+        especificado
+      operationId: obtenerCliente
+      parameters:
+        - name: channel
+          in: query
+          schema:
+            type: string
+            example: whatsapp
+        - name: identifier
+          in: query
+          schema:
+            type: string
+            example: 'phone_number'
+      responses:
+        '200':
+          description: ''
+      security:
+        - bearerAuth: []
+  /api/external/tickets:
+    get:
+      summary: Obtener tickets del cliente
+      description: >-
+        Este endpoint retorna todos los tickets del cliente especificando su
+        **customer_id**
+      operationId: obtenerTicketsDelCliente
+      parameters:
+        - name: customer_id
+          in: query
+          schema:
+            type: string
+            example: '3212'
+      responses:
+        '200':
+          description: ''
+      security:
+        - bearerAuth: []
+  /api/external/ticket/messages:
+    put:
+      summary: Obtener mensajes de un ticket
+      description: Este endpoint es para obtener los mensajes de un ticket.
+      operationId: obtenerMensajesDeUnTicket
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                last_msn_id:
+                  type: number
+                  example: 0
+                opt:
+                  type: number
+                  example: 1
+                ticket_id:
+                  type: number
+                  example: 100
+            examples:
+              Obtener mensajes de un ticket:
+                value:
+                  last_msn_id: 0
+                  opt: 1
+                  ticket_id: 100
+      responses:
+        '200':
+          description: ''
+      security:
+        - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+tags: []
