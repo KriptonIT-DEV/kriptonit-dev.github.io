@@ -7,7 +7,7 @@ import starlightThemeObsidian from 'starlight-theme-obsidian'
 // https://astro.build/config
 export default defineConfig({
     site: 'https://kriptonit-dev.github.io/',
-    // trailingSlash: 'always',
+    // trailingSlash: 'always', 
     integrations: [
         starlight({
             favicon: '/favicon.jpg',
