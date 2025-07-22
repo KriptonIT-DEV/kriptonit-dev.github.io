@@ -1,0 +1,562 @@
+{
+	"info": {
+		"_postman_id": "143cee18-44cb-49e9-8e40-f5e524c2d805",
+		"name": "Chats",
+		"description": "En este sección se abordará la extracción de chats en diferentes canales de momento solo se soporta **whatsapp.**",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46049918"
+	},
+	"item": [
+		{
+			"name": "Obtener cliente",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{oauth_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/api/external/customer?channel=whatsapp&identifier={{phone}}",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"api",
+						"external",
+						"customer"
+					],
+					"query": [
+						{
+							"key": "channel",
+							"value": "whatsapp"
+						},
+						{
+							"key": "identifier",
+							"value": "{{phone}}"
+						}
+					]
+				},
+				"description": "Este endpoint retorna el cliente segun el **canal** e **identificador** especificado"
+			},
+			"response": [
+				{
+					"name": "Success",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://devkapi.konnect-360.pe/api/external/customer?channel=whatsapp&identifier=your_phone_number",
+							"protocol": "https",
+							"host": [
+								"devkapi",
+								"konnect-360",
+								"pe"
+							],
+							"path": [
+								"api",
+								"external",
+								"customer"
+							],
+							"query": [
+								{
+									"key": "channel",
+									"value": "whatsapp"
+								},
+								{
+									"key": "identifier",
+									"value": "your_phone_number"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "230"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"e6-x/LzKea7Y5Wtd9zKgLAEDRBbBjY\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 22 Jul 2025 20:45:34 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"data\": {\n        \"cus_id\": 1,\n        \"cus_nombre\": \"Juan CC\",\n        \"cus_apellido\": \"\",\n        \"tel_id\": 1,\n        \"mail_id\": 0,\n        \"mail\": \"\",\n        \"tel_numero\": \"999888777\",\n        \"rrss_id\": \"\",\n        \"cia_id\": 1,\n        \"last_ticket_id\": null,\n        \"canal_id\": 1\n    },\n    \"code\": 0,\n    \"status\": 200,\n    \"messages\": \"\"\n}"
+				},
+				{
+					"name": "Error",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/api/external/customer?channel=whatsapp&identifier={{phone}}",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"api",
+								"external",
+								"customer"
+							],
+							"query": [
+								{
+									"key": "channel",
+									"value": "whatsapp"
+								},
+								{
+									"key": "identifier",
+									"value": "{{phone}}"
+								}
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "130"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"82-7PW5idYOMN3S4MyLYH0P5bcLEQQ\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 22 Jul 2025 20:44:27 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": false,\n    \"data\": {\n        \"canal_id\": 1\n    },\n    \"code\": -1,\n    \"status\": 400,\n    \"messages\": \"Error: No hay datos.\",\n    \"errors\": {\n        \"code\": -1,\n        \"status\": 400\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Obtener tickets del cliente",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{oauth_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/api/external/tickets?customer_id=000",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"api",
+						"external",
+						"tickets"
+					],
+					"query": [
+						{
+							"key": "customer_id",
+							"value": "000"
+						}
+					]
+				},
+				"description": "Este endpoint retorna todos los tickets del cliente especificando su **customer_id**"
+			},
+			"response": [
+				{
+					"name": "Success",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://devkapi.konnect-360.pe/api/external/tickets?customer_id=1370",
+							"protocol": "https",
+							"host": [
+								"devkapi",
+								"konnect-360",
+								"pe"
+							],
+							"path": [
+								"api",
+								"external",
+								"tickets"
+							],
+							"query": [
+								{
+									"key": "customer_id",
+									"value": "1370"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "6172"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"181c-ttksGdEGi+XUECR5ILTsUGCmH3A\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 22 Jul 2025 20:47:32 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"data\": [\n        {\n            \"ticket_id\": 169284,\n            \"fec_open\": \"09/04/2025\",\n            \"hor_open\": \"13:07:12\",\n            \"tck_estado\": 9,\n            \"tck_tipo\": null,\n            \"tck_tipo_label\": null\n        },\n        {\n            \"ticket_id\": 169279,\n            \"fec_open\": \"09/04/2025\",\n            \"hor_open\": \"13:03:31\",\n            \"tck_estado\": 12,\n            \"tck_tipo\": 1,\n            \"tck_tipo_label\": \"Estandar\"\n        }\n    ],\n    \"code\": 0,\n    \"status\": 200,\n    \"messages\": \"\"\n}"
+				},
+				{
+					"name": "Error",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/api/external/tickets?customer_id=000",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"api",
+								"external",
+								"tickets"
+							],
+							"query": [
+								{
+									"key": "customer_id",
+									"value": "000"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "172"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"ac-h5Z7XcpSJukipcG7tPbwC2OHNyw\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 22 Jul 2025 20:48:26 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"data\": {\n        \"sql_err\": 0,\n        \"sql_msn\": \"No existe customer para consulta de tickets\"\n    },\n    \"code\": 0,\n    \"status\": 200,\n    \"messages\": \"No existe customer para consulta de tickets\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Obtener mensajes de un ticket",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{oauth_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ticket_id\": 169284,\r\n    \"last_msn_id\": 0,\r\n    \"opt\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api_url}}/api/external/ticket/messages",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"api",
+						"external",
+						"ticket",
+						"messages"
+					]
+				},
+				"description": "Este endpoint es para obtener los mensajes de un ticket."
+			},
+			"response": [
+				{
+					"name": "Success",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ticket_id\": 169284,\r\n    \"last_msn_id\": 0,\r\n    \"opt\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://devkapi.konnect-360.pe/api/external/ticket/messages",
+							"protocol": "https",
+							"host": [
+								"devkapi",
+								"konnect-360",
+								"pe"
+							],
+							"path": [
+								"api",
+								"external",
+								"ticket",
+								"messages"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1775"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"6ef-AkF8tGn70VYDLD9aisf9Q92vXcE\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 22 Jul 2025 20:48:58 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"date\": \"09/04/2025\",\n        \"messages\": [\n            {\n                \"hora\": \"13:07\",\n                \"tipo\": 1,\n                \"fecha\": \"2025-04-09\",\n                \"agente\": \"Bot\",\n                \"msn_id\": 2306361,\n                \"mime_id\": null,\n                \"loc_name\": null,\n                \"msn_type\": 1,\n                \"loc_point\": null,\n                \"mime_file\": null,\n                \"msn_texto\": \"hola\",\n                \"text_fecha\": \"09/04/2025\",\n                \"mime_sha256\": null,\n                \"hash_fec_delete\": null,\n                \"hash_msn_status\": null,\n                \"customer\": true,\n                \"msn_tipo_str\": \"text\"\n            }\n        ]\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "Obtener medios de un ticket",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/api/external/ticket/medias?channel_id=1&mime_id=546097577936591",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"api",
+						"external",
+						"ticket",
+						"medias"
+					],
+					"query": [
+						{
+							"key": "channel_id",
+							"value": "1"
+						},
+						{
+							"key": "mime_id",
+							"value": "546097577936591"
+						}
+					]
+				},
+				"description": "Este endpoint es para obtener los medios de un chat, el resultado se arrojara como binario."
+			},
+			"response": [
+				{
+					"name": "Success",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://devkapi.konnect-360.pe/api/external/ticket/medias?channel_id=1&mime_id=546097577936591",
+							"protocol": "https",
+							"host": [
+								"devkapi",
+								"konnect-360",
+								"pe"
+							],
+							"path": [
+								"api",
+								"external",
+								"ticket",
+								"medias"
+							],
+							"query": [
+								{
+									"key": "channel_id",
+									"value": "1"
+								},
+								{
+									"key": "mime_id",
+									"value": "546097577936591"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/octet-stream",
+							"name": "Content-Type",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "Access-Control-Expose-Headers",
+							"value": "X-File-Type",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "X-File-Type",
+							"value": "image/gif",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "your_binary"
+				}
+			]
+		}
+	]
+}

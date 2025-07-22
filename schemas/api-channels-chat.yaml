@@ -3,11 +3,11 @@ info:
   title: Chats
   description: >-
     En este sección se abordará la extracción de chats en diferentes canales de
-    momento soporta **whatsapp.**
+    momento solo se soporta **whatsapp.**
   version: 1.0.0
   contact: {}
 servers:
-  - url: 'https://dev.kapi.konnect-360.pe'
+  - url: 'https://devkapi.konnect-360.pe'
 paths:
   /api/external/customer:
     get:
@@ -29,7 +29,183 @@ paths:
             example: 'phone_number'
       responses:
         '200':
-          description: ''
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Content-Length:
+              schema:
+                type: string
+                example: '230'
+            Date:
+              schema:
+                type: string
+                example: Tue, 22 Jul 2025 20:45:34 GMT
+            ETag:
+              schema:
+                type: string
+                example: W/"e6-x/LzKea7Y5Wtd9zKgLAEDRBbBjY"
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 0
+                  data:
+                    type: object
+                    properties:
+                      canal_id:
+                        type: number
+                        example: 1
+                      cia_id:
+                        type: number
+                        example: 1
+                      cus_apellido:
+                        type: string
+                        example: ''
+                      cus_id:
+                        type: number
+                        example: 1
+                      cus_nombre:
+                        type: string
+                        example: Juan CC
+                      last_ticket_id:
+                        nullable: true
+                        example: null
+                      mail:
+                        type: string
+                        example: ''
+                      mail_id:
+                        type: number
+                        example: 0
+                      rrss_id:
+                        type: string
+                        example: ''
+                      tel_id:
+                        type: number
+                        example: 1
+                      tel_numero:
+                        type: string
+                        example: '999888777'
+                  messages:
+                    type: string
+                    example: ''
+                  status:
+                    type: number
+                    example: 200
+                  success:
+                    type: boolean
+                    example: true
+              examples:
+                Success:
+                  value:
+                    code: 0
+                    data:
+                      canal_id: 1
+                      cia_id: 1
+                      cus_apellido: ''
+                      cus_id: 1
+                      cus_nombre: Juan CC
+                      last_ticket_id: null
+                      mail: ''
+                      mail_id: 0
+                      rrss_id: ''
+                      tel_id: 1
+                      tel_numero: '999888777'
+                    messages: ''
+                    status: 200
+                    success: true
+        '400':
+          description: Error
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Content-Length:
+              schema:
+                type: string
+                example: '130'
+            Date:
+              schema:
+                type: string
+                example: Tue, 22 Jul 2025 20:44:27 GMT
+            ETag:
+              schema:
+                type: string
+                example: W/"82-7PW5idYOMN3S4MyLYH0P5bcLEQQ"
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: -1
+                  data:
+                    type: object
+                    properties:
+                      canal_id:
+                        type: number
+                        example: 1
+                  errors:
+                    type: object
+                    properties:
+                      code:
+                        type: number
+                        example: -1
+                      status:
+                        type: number
+                        example: 400
+                  messages:
+                    type: string
+                    example: 'Error: No hay datos.'
+                  status:
+                    type: number
+                    example: 400
+                  success:
+                    type: boolean
+                    example: false
+              examples:
+                Error:
+                  value:
+                    code: -1
+                    data:
+                      canal_id: 1
+                    errors:
+                      code: -1
+                      status: 400
+                    messages: 'Error: No hay datos.'
+                    status: 400
+                    success: false
       security:
         - bearerAuth: []
   /api/external/tickets:
@@ -44,10 +220,145 @@ paths:
           in: query
           schema:
             type: string
-            example: '3212'
+            example: '000'
       responses:
         '200':
-          description: ''
+          description: Success / Error
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Content-Length:
+              schema:
+                type: string
+                example: '172'
+            Date:
+              schema:
+                type: string
+                example: Tue, 22 Jul 2025 20:48:26 GMT
+            ETag:
+              schema:
+                type: string
+                example: W/"ac-h5Z7XcpSJukipcG7tPbwC2OHNyw"
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 0
+                  data:
+                    example:
+                      - fec_open: 09/04/2025
+                        hor_open: '13:07:12'
+                        tck_estado: 9
+                        tck_tipo: null
+                        tck_tipo_label: null
+                        ticket_id: 169284
+                      - fec_open: 09/04/2025
+                        hor_open: '13:03:31'
+                        tck_estado: 12
+                        tck_tipo: 1
+                        tck_tipo_label: Estandar
+                        ticket_id: 169279
+                    anyOf:
+                      - type: array
+                        items:
+                          type: object
+                          properties:
+                            fec_open:
+                              type: string
+                              example: 09/04/2025
+                            hor_open:
+                              type: string
+                              example: '13:07:12'
+                            tck_estado:
+                              type: number
+                              example: 9
+                            tck_tipo:
+                              type: number
+                              nullable: true
+                              example: null
+                            tck_tipo_label:
+                              type: string
+                              nullable: true
+                              example: null
+                            ticket_id:
+                              type: number
+                              example: 169284
+                        example:
+                          - fec_open: 09/04/2025
+                            hor_open: '13:07:12'
+                            tck_estado: 9
+                            tck_tipo: null
+                            tck_tipo_label: null
+                            ticket_id: 169284
+                          - fec_open: 09/04/2025
+                            hor_open: '13:03:31'
+                            tck_estado: 12
+                            tck_tipo: 1
+                            tck_tipo_label: Estandar
+                            ticket_id: 169279
+                      - type: object
+                        properties:
+                          sql_err:
+                            type: number
+                            example: 0
+                          sql_msn:
+                            type: string
+                            example: No existe customer para consulta de tickets
+                  messages:
+                    type: string
+                    example: ''
+                  status:
+                    type: number
+                    example: 200
+                  success:
+                    type: boolean
+                    example: true
+              examples:
+                Error:
+                  value:
+                    code: 0
+                    data:
+                      sql_err: 0
+                      sql_msn: No existe customer para consulta de tickets
+                    messages: No existe customer para consulta de tickets
+                    status: 200
+                    success: true
+                Success:
+                  value:
+                    code: 0
+                    data:
+                      - fec_open: 09/04/2025
+                        hor_open: '13:07:12'
+                        tck_estado: 9
+                        tck_tipo: null
+                        tck_tipo_label: null
+                        ticket_id: 169284
+                      - fec_open: 09/04/2025
+                        hor_open: '13:03:31'
+                        tck_estado: 12
+                        tck_tipo: 1
+                        tck_tipo_label: Estandar
+                        ticket_id: 169279
+                    messages: ''
+                    status: 200
+                    success: true
       security:
         - bearerAuth: []
   /api/external/ticket/messages:
@@ -69,18 +380,208 @@ paths:
                   example: 1
                 ticket_id:
                   type: number
-                  example: 100
+                  example: 169284
             examples:
               Obtener mensajes de un ticket:
                 value:
                   last_msn_id: 0
                   opt: 1
-                  ticket_id: 100
+                  ticket_id: 169284
       responses:
         '200':
-          description: ''
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Content-Length:
+              schema:
+                type: string
+                example: '1775'
+            Date:
+              schema:
+                type: string
+                example: Tue, 22 Jul 2025 20:48:58 GMT
+            ETag:
+              schema:
+                type: string
+                example: W/"6ef-AkF8tGn70VYDLD9aisf9Q92vXcE"
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                      example: 09/04/2025
+                    messages:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          agente:
+                            type: string
+                            example: Bot
+                          customer:
+                            type: boolean
+                            example: true
+                          fecha:
+                            type: string
+                            example: '2025-04-09'
+                          hash_fec_delete:
+                            nullable: true
+                            example: null
+                          hash_msn_status:
+                            nullable: true
+                            example: null
+                          hora:
+                            type: string
+                            example: '13:07'
+                          loc_name:
+                            nullable: true
+                            example: null
+                          loc_point:
+                            nullable: true
+                            example: null
+                          mime_file:
+                            nullable: true
+                            example: null
+                          mime_id:
+                            nullable: true
+                            example: null
+                          mime_sha256:
+                            nullable: true
+                            example: null
+                          msn_id:
+                            type: number
+                            example: 2306361
+                          msn_texto:
+                            type: string
+                            example: hola
+                          msn_tipo_str:
+                            type: string
+                            example: text
+                          msn_type:
+                            type: number
+                            example: 1
+                          text_fecha:
+                            type: string
+                            example: 09/04/2025
+                          tipo:
+                            type: number
+                            example: 1
+                      example:
+                        - agente: Bot
+                          customer: true
+                          fecha: '2025-04-09'
+                          hash_fec_delete: null
+                          hash_msn_status: null
+                          hora: '13:07'
+                          loc_name: null
+                          loc_point: null
+                          mime_file: null
+                          mime_id: null
+                          mime_sha256: null
+                          msn_id: 2306361
+                          msn_texto: hola
+                          msn_tipo_str: text
+                          msn_type: 1
+                          text_fecha: 09/04/2025
+                          tipo: 1
+                example:
+                  - date: 09/04/2025
+                    messages:
+                      - agente: Bot
+                        customer: true
+                        fecha: '2025-04-09'
+                        hash_fec_delete: null
+                        hash_msn_status: null
+                        hora: '13:07'
+                        loc_name: null
+                        loc_point: null
+                        mime_file: null
+                        mime_id: null
+                        mime_sha256: null
+                        msn_id: 2306361
+                        msn_texto: hola
+                        msn_tipo_str: text
+                        msn_type: 1
+                        text_fecha: 09/04/2025
+                        tipo: 1
+              examples:
+                Success:
+                  value:
+                    - date: 09/04/2025
+                      messages:
+                        - agente: Bot
+                          customer: true
+                          fecha: '2025-04-09'
+                          hash_fec_delete: null
+                          hash_msn_status: null
+                          hora: '13:07'
+                          loc_name: null
+                          loc_point: null
+                          mime_file: null
+                          mime_id: null
+                          mime_sha256: null
+                          msn_id: 2306361
+                          msn_texto: hola
+                          msn_tipo_str: text
+                          msn_type: 1
+                          text_fecha: 09/04/2025
+                          tipo: 1
       security:
         - bearerAuth: []
+  /api/external/ticket/medias:
+    get:
+      summary: Obtener medios de un ticket
+      description: >-
+        Este endpoint es para obtener los medios de un chat, el resultado se
+        arrojara como binario.
+      operationId: obtenerMediosDeUnTicket
+      parameters:
+        - name: channel_id
+          in: query
+          schema:
+            type: string
+            example: '1'
+        - name: mime_id
+          in: query
+          schema:
+            type: string
+            example: '546097577936591'
+      responses:
+        '200':
+          description: Success
+          headers:
+            Access-Control-Expose-Headers:
+              schema:
+                type: string
+                example: X-File-Type
+            X-File-Type:
+              schema:
+                type: string
+                example: image/gif
+          content:
+            text/plain:
+              examples:
+                Success:
+                  value: your_binary
 components:
   securitySchemes:
     bearerAuth:

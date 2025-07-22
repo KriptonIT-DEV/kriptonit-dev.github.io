@@ -23,7 +23,7 @@ Luego importa este script en la misma página, aquí se especifica más a detall
 
 ```html
 <script type="module">
-  import kriptonchat from "https://kapi.konnect-360.pe/widget/kriptonchat.es.min.js";
+  import { kriptonchat } from "https://kapi.konnect-360.pe/widget/kriptonchat.es.min.js";
 
   kriptonchat("your_widget_name", {
     pagePresentation: {

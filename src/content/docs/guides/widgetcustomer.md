@@ -15,14 +15,11 @@ Dado que es un complemento su configuración va por separado.
 
 ```html
 <script type="module">
-  import kriptonchat, {
-    kriptonchatcustomer,
-  } from "https://kapi.konnect-360.pe/widget/kriptonchat.es.min.js";
-
+  import  { kriptonchatdata } from "https://kapi.konnect-360.pe/widget/kriptonchat.es.min.js";
   // ...
 
   kriptonchatcustomer("your_widget_chat_name", {
-    publicey: 'zxxxxxxxxxxxxxxxxxxxxxx', // esta clave publica se genra en la plataforma principal 
+    publicKey: 'xxxx-yyyy-xxxx-yyyy-xxxx-yyyy', // esta clave publica se genera en la plataforma principal
     apiQuery: {
         channel: 'whatsapp' // 'whatsapp' | 'messenger' | 'instagram' | 'widget'
         identifier: '999888777' // email | id | nro telefono
