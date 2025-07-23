@@ -3,7 +3,9 @@ title: Widget Chat Bot
 description: Esta guía proporciona una descripción de nuestro widget que se implementa en su front-end.
 ---
 
+
 El widget se puede auto insertar en su aplicacion web al agregar solo el siguiente script.
+
 
 ```html
 <!-- WIDGET === AUTO EJECUTABLE -->
@@ -17,6 +19,19 @@ Otra forma es especificando un ***id*** en su página html como ya se mencionó 
 
 ```html
 <div id="your_widget_name"></div>
+```
+
+Adicionalmente al renderizar por un ***id*** es importante añadir el font para el widget en el head de tu página.
+
+```html
+  <style>
+    @font-face {
+      font-family: 'Comfortaa';  /* ¡Nombre de la fuente (Comfortaa) importante ! */
+      src: url('your_font') format('woff2');
+      font-weight: normal;
+      font-style: normal;
+    }
+  </style>
 ```
 
 Luego importa este script en la misma página, aquí se especifica más a detalle de las opciones disponibles, que solo se pueden configurar cuando el widget es renderizado por un ***id***.
