@@ -15,10 +15,10 @@ Dado que es un complemento su configuración va por separado.
 
 ```html
 <script type="module">
-  import  { kriptonchatdata } from "https://kapi.konnect-360.pe/widget/kriptonchat.es.min.js";
+  import  { konnectchatdata } from "https://dev.kapi.konnect-360.pe/widget/konnectchat.es.min.js";
   // ...
 
-  kriptonchatcustomer("your_widget_chat_name", {
+  konnectchatdata("your_widget_chat_name", {
     publicKey: 'xxxx-yyyy-xxxx-yyyy-xxxx-yyyy', // esta clave publica se genera en la plataforma principal
     apiQuery: {
         channel: 'whatsapp' // 'whatsapp' | 'messenger' | 'instagram' | 'widget'

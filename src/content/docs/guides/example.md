@@ -26,9 +26,9 @@ Bien para agregar nuestro plugin debes copiar y pegar el siguiente codigo.
 
 ```html
 <script type="module">
-    import { kriptonchat } from "https://kapi.konnect-360.pe/widget/kriptonchat.es.min.js";
+    import { konnectchat } from "https://dev.kapi.konnect-360.pe/widget/konnectchat.es.min.js";
 
-    kriptonchat('your_widget_name',
+    konnectchat('your_widget_name',
       {
         pagePresentation: {
           title: 'Atencion al cliente', // string - titulo de presentación

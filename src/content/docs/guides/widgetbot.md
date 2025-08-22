@@ -11,10 +11,9 @@ El widget se puede auto insertar en su aplicacion web al agregar solo el siguien
 <!-- WIDGET === AUTO EJECUTABLE -->
 <script
   type="module"
-  src="https://kapi.konnect-360.pe/widget/kriptonchat.es.min.js"
+  src="https://dev.kapi.konnect-360.pe/widget/konnectchat.es.min.js"
 ></script>
 ```
-
 Otra forma es especificando un ***id*** en su página html como ya se mencionó anteriormente.
 
 ```html
@@ -38,9 +37,9 @@ Luego importa este script en la misma página, aquí se especifica más a detall
 
 ```html
 <script type="module">
-  import { kriptonchat } from "https://kapi.konnect-360.pe/widget/kriptonchat.es.min.js";
+  import { konnectchat } from "https://dev.kapi.konnect-360.pe/widget/konnectchat.es.min.js";
 
-  kriptonchat("your_widget_name", {
+  konnectchat("your_widget_name", {
     pagePresentation: {
       title: "Atencion al cliente", // string - titulo de presentación
       withWhatsAppButton: true, // boolean - ocultar boton de whatsapp
