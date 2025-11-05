@@ -7,7 +7,7 @@ info:
   version: 1.0.0
   contact: {}
 servers:
-  - url: 'https://devkapi.konnect-360.pe'
+  - url: 'https://kservice.konnect-360.pe'
 paths:
   /api/v1/whatsapp/templates:
     get:
@@ -67,7 +67,7 @@ paths:
                           example: es
                         name:
                           type: string
-                          example: template_name
+                          example: salio_ruta
                         status:
                           type: string
                           example: APPROVED
@@ -75,7 +75,7 @@ paths:
                       - category: UTILITY
                         id: '438429459276413'
                         language: es
-                        name: template_name
+                        name: salio_ruta
                         status: APPROVED
                       - category: UTILITY
                         id: '903530904852520'
@@ -101,7 +101,7 @@ paths:
                       - category: UTILITY
                         id: '438429459276413'
                         language: es
-                        name: template_name
+                        name: salio_ruta
                         status: APPROVED
                       - category: UTILITY
                         id: '903530904852520'
@@ -124,7 +124,7 @@ paths:
           in: query
           schema:
             type: string
-            example: salida_ruta_producto
+            example: salio_ruta
           description: string
       responses:
         '200':
@@ -163,6 +163,9 @@ paths:
               schema:
                 type: object
                 properties:
+                  code:
+                    type: number
+                    example: 200
                   data:
                     type: object
                     properties:
@@ -179,110 +182,114 @@ paths:
                               items:
                                 type: object
                                 properties:
+                                  example:
+                                    type: array
+                                    items:
+                                      type: string
+                                      example: >-
+                                        https://www.urbano.com.pe/tracking?guides=WYB382992466
+                                    example:
+                                      - >-
+                                        https://www.urbano.com.pe/tracking?guides=WYB382992466
                                   text:
                                     type: string
-                                    example: App Konnect 360°
+                                    example: Rastrea en nuestra web
                                   type:
                                     type: string
                                     example: URL
                                   url:
                                     type: string
                                     example: >-
-                                      https://play.google.com/store/apps/details?id=com.konnect-360.urbano&amp;hl=es/
+                                      https://www.urbano.com.pe/tracking/?guides={{1}}
                               example:
-                                - text: App Konnect 360°
+                                - example:
+                                    - >-
+                                      https://www.urbano.com.pe/tracking?guides=WYB382992466
+                                  text: Rastrea en nuestra web
                                   type: URL
                                   url: >-
-                                    https://play.google.com/store/apps/details?id=com.konnect-360.urbano&amp;hl=es/
+                                    https://www.urbano.com.pe/tracking/?guides={{1}}
                             example:
                               type: object
                               properties:
-                                body_text:
+                                body_text_named_params:
                                   type: array
                                   items:
-                                    type: array
-                                    items:
-                                      type: string
-                                      example: Testing
-                                    example:
-                                      - Testing
-                                      - 'pedido WYB44444 de StoreTesting '
-                                      - >-
-                                        www.konnect-com.pe/tracking?guides=WYB44444
+                                    type: object
+                                    properties:
+                                      example:
+                                        type: string
+                                        example: Victor Zuñiga
+                                      param_name:
+                                        type: string
+                                        example: cliente_name
                                   example:
-                                    - - Testing
-                                      - 'pedido WYB44444 de StoreTesting '
-                                      - >-
-                                        www.konnect-com.pe/tracking?guides=WYB44444
+                                    - example: Victor Zuñiga
+                                      param_name: cliente_name
+                                    - example: Adidas
+                                      param_name: shipper_name
+                                    - example: APE9232323
+                                      param_name: tracking
+                                    - example: Av. Brasil 2050
+                                      param_name: dir_delivery
+                                    - example: Pueblo Libre
+                                      param_name: ciudad
                             text:
                               type: string
                               example: >-
-                                ¡Hola, *{{1}}*!
-
-
-                                Queremos informarte que tu {{2}} iniciará su
-                                ruta de entrega el día de mañana. 🙌
-
-
-                                Es importante que al momento de la entrega
-                                cuentes con tu DNI/CE a la mano. En caso de que
-                                otra persona reciba tu pedido, debe estar
-                                correctamente identificado.
-
-
-                                Estaremos informándote con un próximo WhatsApp,
-                                mantén tu celular cerca de ti.
-
-
-                                _Somos Konnect, nos movemos por ti. Simple,
-                                Efectivo y Rápido_ 🚚✨
-
-
-                                💡Sigue tu pedido ingresando aquí  {{3}} o
-                                descarga nuestra App°
+                                Hola {{cliente_name}}, somos urbano, encargado
+                                de entregar tu pedido de {{shipper_name}}, tu
+                                pedido con código de seguimiento {{tracking}} ya
+                                esta en camino a tu dirección para su entrega,
+                                por favor confirmarnos si tu dirección es la
+                                correcta y si es posible envíanos  alguna
+                                referencia y las coordenadas para que la entrega
+                                sea efectiva, la dirección que registramos para
+                                su entrega es {{dir_delivery}} distrito de
+                                {{ciudad}}, nuestro personal encargado de la
+                                entrega se estará acercando en el rango horario
+                                de 8am a 6pm, estar pendiente de cualquier otra
+                                comunicación.
                             type:
                               type: string
                               example: BODY
                         example:
                           - example:
-                              body_text:
-                                - - Testing
-                                  - 'pedido WYB44444 de StoreTesting '
-                                  - www.konnect-com.pe/tracking?guides=WYB44444
+                              body_text_named_params:
+                                - example: Victor Zuñiga
+                                  param_name: cliente_name
+                                - example: Adidas
+                                  param_name: shipper_name
+                                - example: APE9232323
+                                  param_name: tracking
+                                - example: Av. Brasil 2050
+                                  param_name: dir_delivery
+                                - example: Pueblo Libre
+                                  param_name: ciudad
                             text: >-
-                              ¡Hola, *{{1}}*!
-
-
-                              Queremos informarte que tu {{2}} iniciará su ruta
-                              de entrega el día de mañana. 🙌
-
-
-                              Es importante que al momento de la entrega cuentes
-                              con tu DNI/CE a la mano. En caso de que otra
-                              persona reciba tu pedido, debe estar correctamente
-                              identificado.
-
-
-                              Estaremos informándote con un próximo WhatsApp,
-                              mantén tu celular cerca de ti.
-
-
-                              _Somos Konnect, nos movemos por ti. Simple,
-                              Efectivo y Rápido_ 🚚✨
-
-
-                              💡Sigue tu pedido ingresando aquí  {{3}} o
-                              descarga nuestra App°
+                              Hola {{cliente_name}}, somos urbano, encargado de
+                              entregar tu pedido de {{shipper_name}}, tu pedido
+                              con código de seguimiento {{tracking}} ya esta en
+                              camino a tu dirección para su entrega, por favor
+                              confirmarnos si tu dirección es la correcta y si
+                              es posible envíanos  alguna referencia y las
+                              coordenadas para que la entrega sea efectiva, la
+                              dirección que registramos para su entrega es
+                              {{dir_delivery}} distrito de {{ciudad}}, nuestro
+                              personal encargado de la entrega se estará
+                              acercando en el rango horario de 8am a 6pm, estar
+                              pendiente de cualquier otra comunicación.
                             type: BODY
-                          - text: >-
-                              Este es un mensaje informativo, no es posible
-                              responder.
+                          - text: Nos movemos por ti
                             type: FOOTER
                           - buttons:
-                              - text: App Konnect 360°
+                              - example:
+                                  - >-
+                                    https://www.urbano.com.pe/tracking?guides=WYB382992466
+                                text: Rastrea en nuestra web
                                 type: URL
                                 url: >-
-                                  https://play.google.com/store/apps/details?id=com.konnect-360.urbano&amp;hl=es/
+                                  https://www.urbano.com.pe/tracking/?guides={{1}}
                             type: BUTTONS
                       data:
                         type: array
@@ -290,13 +297,13 @@ paths:
                         example: []
                       id:
                         type: string
-                        example: '488985164153355'
+                        example: '1331721198410285'
                       language:
                         type: string
-                        example: es
+                        example: es_PE
                       name:
                         type: string
-                        example: template_name
+                        example: salio_ruta
                       paging:
                         type: object
                         properties:
@@ -311,10 +318,13 @@ paths:
                                 example: MAZDZD
                       parameter_format:
                         type: string
-                        example: POSITIONAL
+                        example: NAMED
                       status:
                         type: string
                         example: APPROVED
+                      sub_category:
+                        type: string
+                        example: CUSTOM
                   errors:
                     type: object
                     properties: {}
@@ -330,54 +340,52 @@ paths:
               examples:
                 Success:
                   value:
+                    code: 200
                     data:
                       category: UTILITY
                       components:
                         - example:
-                            body_text:
-                              - - Testing
-                                - 'pedido WYB44444 de StoreTesting '
-                                - www.konnect-com.pe/tracking?guides=WYB44444
+                            body_text_named_params:
+                              - example: Victor Zuñiga
+                                param_name: cliente_name
+                              - example: Adidas
+                                param_name: shipper_name
+                              - example: APE9232323
+                                param_name: tracking
+                              - example: Av. Brasil 2050
+                                param_name: dir_delivery
+                              - example: Pueblo Libre
+                                param_name: ciudad
                           text: >-
-                            ¡Hola, *{{1}}*!
-
-
-                            Queremos informarte que tu {{2}} iniciará su ruta de
-                            entrega el día de mañana. 🙌
-
-
-                            Es importante que al momento de la entrega cuentes
-                            con tu DNI/CE a la mano. En caso de que otra persona
-                            reciba tu pedido, debe estar correctamente
-                            identificado.
-
-
-                            Estaremos informándote con un próximo WhatsApp,
-                            mantén tu celular cerca de ti.
-
-
-                            _Somos Konnect, nos movemos por ti. Simple, Efectivo
-                            y Rápido_ 🚚✨
-
-
-                            💡Sigue tu pedido ingresando aquí  {{3}} o descarga
-                            nuestra App°
+                            Hola {{cliente_name}}, somos urbano, encargado de
+                            entregar tu pedido de {{shipper_name}}, tu pedido
+                            con código de seguimiento {{tracking}} ya esta en
+                            camino a tu dirección para su entrega, por favor
+                            confirmarnos si tu dirección es la correcta y si es
+                            posible envíanos  alguna referencia y las
+                            coordenadas para que la entrega sea efectiva, la
+                            dirección que registramos para su entrega es
+                            {{dir_delivery}} distrito de {{ciudad}}, nuestro
+                            personal encargado de la entrega se estará acercando
+                            en el rango horario de 8am a 6pm, estar pendiente de
+                            cualquier otra comunicación.
                           type: BODY
-                        - text: >-
-                            Este es un mensaje informativo, no es posible
-                            responder.
+                        - text: Nos movemos por ti
                           type: FOOTER
                         - buttons:
-                            - text: App Konnect 360°
+                            - example:
+                                - >-
+                                  https://www.urbano.com.pe/tracking?guides=WYB382992466
+                              text: Rastrea en nuestra web
                               type: URL
-                              url: >-
-                                https://play.google.com/store/apps/details?id=com.konnect-360.urbano&amp;hl=es/
+                              url: https://www.urbano.com.pe/tracking/?guides={{1}}
                           type: BUTTONS
-                      id: '488985164153355'
-                      language: es
-                      name: template_name
-                      parameter_format: POSITIONAL
+                      id: '1331721198410285'
+                      language: es_PE
+                      name: salio_ruta
+                      parameter_format: NAMED
                       status: APPROVED
+                      sub_category: CUSTOM
                     errors: {}
                     messages: OK
                     status: 200
@@ -408,7 +416,7 @@ paths:
           in: query
           schema:
             type: string
-            example: salida_ruta_producto
+            example: salio_ruta
           description: string
       responses:
         '200':
@@ -447,6 +455,9 @@ paths:
               schema:
                 type: object
                 properties:
+                  code:
+                    type: number
+                    example: 200
                   data:
                     type: object
                     properties:
@@ -455,11 +466,17 @@ paths:
                         items:
                           type: object
                           properties:
+                            index:
+                              type: number
+                              example: 0
                             parameters:
                               type: array
                               items:
                                 type: object
                                 properties:
+                                  parameter_name:
+                                    type: string
+                                    example: cliente_name
                                   text:
                                     type: string
                                     example: ''
@@ -467,31 +484,54 @@ paths:
                                     type: string
                                     example: text
                               example:
-                                - text: ''
+                                - parameter_name: cliente_name
+                                  text: ''
                                   type: text
-                                - text: ''
+                                - parameter_name: shipper_name
+                                  text: ''
                                   type: text
-                                - text: ''
+                                - parameter_name: tracking
+                                  text: ''
                                   type: text
-                                - text: ''
+                                - parameter_name: dir_delivery
+                                  text: ''
                                   type: text
+                                - parameter_name: ciudad
+                                  text: ''
+                                  type: text
+                            sub_type:
+                              type: string
+                              example: url
                             type:
                               type: string
                               example: body
                         example:
                           - parameters:
-                              - text: ''
+                              - parameter_name: cliente_name
+                                text: ''
                                 type: text
-                              - text: ''
+                              - parameter_name: shipper_name
+                                text: ''
                                 type: text
-                              - text: ''
+                              - parameter_name: tracking
+                                text: ''
                                 type: text
-                              - text: ''
+                              - parameter_name: dir_delivery
+                                text: ''
+                                type: text
+                              - parameter_name: ciudad
+                                text: ''
                                 type: text
                             type: body
+                          - index: 0
+                            parameters:
+                              - text: ''
+                                type: text
+                            sub_type: url
+                            type: button
                       template_name:
                         type: string
-                        example: salida_ruta_producto
+                        example: salio_ruta
                   errors:
                     type: object
                     properties: {}
@@ -507,19 +547,33 @@ paths:
               examples:
                 Success:
                   value:
+                    code: 200
                     data:
                       template_body:
                         - parameters:
-                            - text: ''
+                            - parameter_name: cliente_name
+                              text: ''
                               type: text
-                            - text: ''
+                            - parameter_name: shipper_name
+                              text: ''
                               type: text
-                            - text: ''
+                            - parameter_name: tracking
+                              text: ''
                               type: text
-                            - text: ''
+                            - parameter_name: dir_delivery
+                              text: ''
+                              type: text
+                            - parameter_name: ciudad
+                              text: ''
                               type: text
                           type: body
-                      template_name: salida_ruta_producto
+                        - index: 0
+                          parameters:
+                            - text: ''
+                              type: text
+                          sub_type: url
+                          type: button
+                      template_name: salio_ruta
                     errors: {}
                     messages: OK
                     status: 200
@@ -607,46 +661,75 @@ paths:
                   items:
                     type: object
                     properties:
+                      index:
+                        type: number
+                        example: 0
                       parameters:
                         type: array
                         items:
                           type: object
                           properties:
+                            parameter_name:
+                              type: string
+                              example: cliente_name
                             text:
                               type: string
-                              example: '1'
+                              example: Rodrigo
                             type:
                               type: string
                               example: text
                         example:
-                          - text: '1'
+                          - parameter_name: cliente_name
+                            text: Rodrigo
                             type: text
-                          - text: '2'
+                          - parameter_name: shipper_name
+                            text: SKYPOSTAL SAC
                             type: text
-                          - text: '3'
+                          - parameter_name: tracking
+                            text: '3344555'
                             type: text
-                          - text: '4'
+                          - parameter_name: dir_delivery
+                            text: 'JR Example #22'
                             type: text
+                          - parameter_name: ciudad
+                            text: Lima
+                            type: text
+                      sub_type:
+                        type: string
+                        example: url
                       type:
                         type: string
                         example: body
                   example:
                     - parameters:
-                        - text: '1'
+                        - parameter_name: cliente_name
+                          text: Rodrigo
                           type: text
-                        - text: '2'
+                        - parameter_name: shipper_name
+                          text: SKYPOSTAL SAC
                           type: text
-                        - text: '3'
+                        - parameter_name: tracking
+                          text: '3344555'
                           type: text
-                        - text: '4'
+                        - parameter_name: dir_delivery
+                          text: 'JR Example #22'
+                          type: text
+                        - parameter_name: ciudad
+                          text: Lima
                           type: text
                       type: body
+                    - index: 0
+                      parameters:
+                        - text: Wyb123123
+                          type: text
+                      sub_type: url
+                      type: button
                 template_name:
                   type: string
-                  example: cod_entregado
+                  example: salio_ruta
                 to_phone_number:
                   type: string
-                  example: 'phone_number'
+                  example: '{{phone}}'
                 to_url_tracking:
                   type: string
                   example: ''
@@ -658,17 +741,30 @@ paths:
                 value:
                   template_body:
                     - parameters:
-                        - text: '1'
+                        - parameter_name: cliente_name
+                          text: Rodrigo
                           type: text
-                        - text: '2'
+                        - parameter_name: shipper_name
+                          text: SKYPOSTAL SAC
                           type: text
-                        - text: '3'
+                        - parameter_name: tracking
+                          text: '3344555'
                           type: text
-                        - text: '4'
+                        - parameter_name: dir_delivery
+                          text: 'JR Example #22'
+                          type: text
+                        - parameter_name: ciudad
+                          text: Lima
                           type: text
                       type: body
-                  template_name: cod_entregado
-                  to_phone_number: 'phone_number'
+                    - index: 0
+                      parameters:
+                        - text: Wyb123123
+                          type: text
+                      sub_type: url
+                      type: button
+                  template_name: salio_ruta
+                  to_phone_number: '{{phone}}'
                   to_url_tracking: ''
                   tracking_number: '12333322'
       responses:
@@ -850,3 +946,4 @@ components:
       type: http
       scheme: bearer
 tags: []
+
