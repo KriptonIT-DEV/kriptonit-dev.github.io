@@ -7,7 +7,7 @@ info:
   version: 1.0.0
   contact: {}
 servers:
-  - url: 'https://devkapi.konnect-360.pe'
+  - url: 'https://kservice.konnect-360.pe'
 paths:
   /api/v1/send/whatsapp/messages:
     put:

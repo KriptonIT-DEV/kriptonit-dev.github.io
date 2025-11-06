@@ -8,7 +8,7 @@ info:
   version: 1.0.0
   contact: {}
 servers:
-  - url: 'https://devkapi.konnect-360.pe'
+  - url: 'https://kservice.konnect-360.pe'
 paths:
   /api/oauth/token:
     post:
@@ -23,18 +23,18 @@ paths:
               properties:
                 client_id:
                   type: string
-                  example: 'your_client_id'
+                  example: '{{client_id}}'
                 client_secret:
                   type: string
-                  example: 'your_client_secret' 
+                  example: '{{client_secret}}'
                 grant_type:
                   type: string
                   example: client_credentials
             examples:
               Autenticación:
                 value:
-                  client_id: 'your_client_id'
-                  client_secret: 'your_client_secret'
+                  client_id: '{{client_id}}'
+                  client_secret: '{{client_secret}}'
                   grant_type: client_credentials
       responses:
         '200':
