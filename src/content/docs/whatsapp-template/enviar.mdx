@@ -1,0 +1,151 @@
+---
+title: Enviar Plantilla
+description: Envía un mensaje usando una plantilla pre-aprobada con parámetros personalizados.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+### Endpoint 
+
+```
+POST /api/v1/whatsapp/send-template
+```
+
+### Headers
+
+| Header | Valor |
+|--------|-------|
+| Content-Type | application/json |
+| Authorization | Bearer `{{token}}` |
+
+### Body
+
+| Campo | Tipo | Requerido | Descripción |
+|-------|------|-----------|-------------|
+| `template_name` | string | Sí | Nombre de la plantilla |
+| `to_phone_number` | string | Sí | Número destino |
+| `template_body` | array | Sí | Parámetros de la plantilla |
+| `tracking_number` | string | No | Número de seguimiento |
+| `to_url_tracking` | string | No | URL de seguimiento |
+
+```json
+{
+  "template_name": "salio_ruta",
+  "to_phone_number": "999888000",
+  "template_body": [
+    {
+      "parameters": [
+        { "parameter_name": "cliente_name", "text": "Rodrigo", "type": "text" },
+        { "parameter_name": "shipper_name", "text": "SKYPOSTAL SAC", "type": "text" },
+        { "parameter_name": "tracking", "text": "3344555", "type": "text" },
+        { "parameter_name": "dir_delivery", "text": "JR Example #22", "type": "text" },
+        { "parameter_name": "ciudad", "text": "Lima", "type": "text" }
+      ],
+      "type": "body"
+    },
+    {
+      "index": 0,
+      "parameters": [{ "text": "Wyb123123", "type": "text" }],
+      "sub_type": "url",
+      "type": "button"
+    }
+  ]
+}
+```
+
+### Ejemplos
+
+<Tabs>
+<TabItem label="cURL">
+
+```bash
+curl -X POST https://kservice.konnect-360.pe/api/v1/whatsapp/send-template \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer tu_token_aqui" \
+  -d '{
+    "template_name": "salio_ruta",
+    "to_phone_number": "999888000",
+    "template_body": [
+      {
+        "parameters": [
+          {"parameter_name": "cliente_name", "text": "Rodrigo", "type": "text"}
+        ],
+        "type": "body"
+      }
+    ]
+  }'
+```
+
+</TabItem>
+<TabItem label="JavaScript">
+
+```javascript
+const response = await fetch('https://kservice.konnect-360.pe/api/v1/whatsapp/send-template', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  },
+  body: JSON.stringify({
+    template_name: 'salio_ruta',
+    to_phone_number: '999888000',
+    template_body: [
+      {
+        parameters: [
+          { parameter_name: 'cliente_name', text: 'Rodrigo', type: 'text' }
+        ],
+        type: 'body'
+      }
+    ]
+  })
+});
+const data = await response.json();
+```
+
+</TabItem>
+</Tabs>
+
+### Respuesta Exitosa (200)
+
+```json
+{
+  "data": {
+    "channel": "whatsapp",
+    "messages": [
+      {
+        "id": "wamid.HBgLNTE5MDY1ODk3NjAVAgARGBJFRTBBMTc5N0ExRTIzOTE4NDgA",
+        "message_status": "accepted"
+      }
+    ]
+  },
+  "errors": {},
+  "messages": "OK",
+  "status": 200,
+  "success": true
+}
+```
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| `data.channel` | string | Canal de envío (`whatsapp`) |
+| `data.messages[].id` | string | ID del mensaje enviado |
+| `data.messages[].message_status` | string | Estado del envío (`accepted`) |
+
+### Respuesta de Error (400)
+
+```json
+{
+  "data": null,
+  "errors": {
+    "message": "(#132000) Number of parameters does not match...",
+    "type": "OAuthException"
+  },
+  "messages": "Error en parametros de plantilla",
+  "status": 400,
+  "success": false
+}
+```
+
+:::caution
+La cantidad y tipo de parámetros debe coincidir EXACTAMENTE con lo que devuelve `template-params`. Si no coinciden, Meta rechaza el envío.
+:::

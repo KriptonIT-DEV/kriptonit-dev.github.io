@@ -1,0 +1,93 @@
+---
+title: Obtener Tickets
+description: Consulta todos los tickets asociados a un cliente.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+### Endpoint 
+
+```
+GET /api/external/tickets?customer_id={{customer_id}}
+```
+
+### Parámetros de Query
+
+| Parámetro | Tipo | Requerido | Descripción | Ejemplo |
+|-----------|------|-----------|-------------|---------|
+| `customer_id` | string | Sí | ID del cliente | `1370` |
+
+### Headers
+
+| Header | Valor |
+|--------|-------|
+| Authorization | Bearer `{{token}}` |
+
+### Ejemplos
+
+<Tabs>
+<TabItem label="cURL">
+
+```bash
+curl -X GET "https://devkapi.konnect-360.pe/api/external/tickets?customer_id=1370" \
+  -H "Authorization: Bearer tu_token_aqui"
+```
+
+</TabItem>
+<TabItem label="JavaScript">
+
+```javascript
+const response = await fetch(
+  `https://devkapi.konnect-360.pe/api/external/tickets?customer_id=1370`,
+  { headers: { 'Authorization': `Bearer ${token}` } }
+);
+const data = await response.json();
+```
+
+</TabItem>
+</Tabs>
+
+### Respuesta Exitosa (200)
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "ticket_id": 169284,
+      "fec_open": "09/04/2025",
+      "hor_open": "13:07:12",
+      "tck_estado": 9,
+      "tck_tipo": null,
+      "tck_tipo_label": null
+    }
+  ],
+  "code": 0,
+  "status": 200,
+  "messages": ""
+}
+```
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| `ticket_id` | number | ID único del ticket |
+| `fec_open` | string | Fecha de apertura (DD/MM/YYYY) |
+| `hor_open` | string | Hora de apertura (HH:MM:SS) |
+| `tck_estado` | number | Estado del ticket |
+| `tck_tipo` | number \| null | Tipo del ticket |
+| `tck_tipo_label` | string \| null | Nombre del tipo de ticket |
+
+### Respuesta cuando no existe el cliente
+
+```json
+{
+  "success": true,
+  "data": {
+    "sql_err": 0,
+    "sql_msn": "No existe customer para consulta de tickets"
+  },
+  "code": 0,
+  "status": 200,
+  "messages": "No existe customer para consulta de tickets"
+}
+```

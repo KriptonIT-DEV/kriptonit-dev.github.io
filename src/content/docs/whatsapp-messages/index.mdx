@@ -1,0 +1,35 @@
+---
+title: Mensajes WhatsApp
+description: Guía para enviar mensajes de texto e imágenes por WhatsApp.
+---
+
+Envía mensajes directos a través del canal de **WhatsApp**. Soporta mensajes de solo texto y texto con archivos multimedia.
+
+**URL Base:** `https://kservice.konnect-360.pe`
+
+**Requisito:** Primero debes [obtener un token de acceso](/reference/authentication).
+
+## Formato de Número de Teléfono
+
+Incluye el código del país sin el signo `+`:
+
+| País | Código | Ejemplo |
+|------|--------|---------|
+| Perú | 51 | `51999888777` |
+| Colombia | 57 | `573001234567` |
+| México | 52 | `525512345678` |
+| Argentina | 54 | `5491112345678` |
+
+:::caution
+Los números deben incluir el código de país sin `+`. Ej: `51999888777`, no `+51999888777`.
+:::
+
+## Rate Limits
+
+La API puede tener límites de velocidad. Si recibes errores de rate limit, espera unos segundos antes de reintentar.
+
+## Tips
+
+- Valida que el número destino esté registrado en WhatsApp
+- Para imágenes usa JPG o PNG; el tamaño máximo depende de WhatsApp Business
+- Guarda el `message_id` para rastrear el estado del mensaje

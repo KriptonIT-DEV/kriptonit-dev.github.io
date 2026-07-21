@@ -1,0 +1,61 @@
+---
+title: Obtener Medios
+description: Descarga archivos multimedia asociados a un ticket.
+---
+
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+### Endpoint 
+
+```
+GET /api/external/ticket/medias?channel_id={{channel_id}}&mime_id={{mime_id}}
+```
+
+### Parámetros de Query
+
+| Parámetro | Tipo | Requerido | Descripción | Ejemplo |
+|-----------|------|-----------|-------------|---------|
+| `channel_id` | string | Sí | ID del canal | `1` |
+| `mime_id` | string | Sí | ID del archivo multimedia | `546097577936591` |
+
+### Headers
+
+| Header | Valor |
+|--------|-------|
+| Authorization | Bearer `{{token}}` |
+
+### Ejemplos
+
+<Tabs>
+<TabItem label="cURL">
+
+```bash
+curl -X GET "https://devkapi.konnect-360.pe/api/external/ticket/medias?channel_id=1&mime_id=546097577936591" \
+  -H "Authorization: Bearer tu_token_aqui" \
+  --output archivo.gif
+```
+
+</TabItem>
+<TabItem label="JavaScript">
+
+```javascript
+const response = await fetch(
+  `https://devkapi.konnect-360.pe/api/external/ticket/medias?channel_id=1&mime_id=546097577936591`,
+  { headers: { 'Authorization': `Bearer ${token}` } }
+);
+const blob = await response.blob();
+```
+
+</TabItem>
+</Tabs>
+
+### Headers de Respuesta
+
+| Header | Descripción |
+|--------|-------------|
+| Content-Type | `application/octet-stream` (binario) |
+| X-File-Type | Tipo MIME original (ej: `image/gif`) |
+
+<Aside type="caution">
+  La respuesta es el **binario del archivo**, no un JSON. Usá `response.blob()` en JS o `--output` en cURL.
+</Aside>

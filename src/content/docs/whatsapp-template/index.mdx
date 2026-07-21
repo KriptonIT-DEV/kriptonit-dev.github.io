@@ -1,0 +1,55 @@
+---
+title: Plantillas WhatsApp
+description: Guía para gestionar y enviar plantillas de WhatsApp usando la API de Konnect-360.
+---
+
+Las plantillas de WhatsApp son mensajes pre-aprobados por Meta. Esta sección documenta cómo listar, consultar, obtener parámetros y enviar plantillas.
+
+**URL Base:** `https://kservice.konnect-360.pe`
+
+**Requisito:** Primero debes [obtener un token de acceso](/reference/authentication).
+
+## Estructura de una Plantilla
+
+### Tipos de Componentes
+
+| Componente | Descripción |
+|------------|-------------|
+| `BODY` | Cuerpo principal del mensaje |
+| `HEADER` | Encabezado (texto, imagen, video) |
+| `BUTTONS` | Botones interactivos |
+| `FOOTER` | Pie de mensaje |
+
+### Tipos de Botones
+
+| Tipo | Descripción |
+|------|-------------|
+| `URL` | Botón con enlace web |
+| `QUICK_REPLY` | Respuesta rápida |
+| `PHONE_NUMBER` | Botón de llamada |
+
+### Placeholders
+
+Las plantillas usan `{{variable}}` para valores dinámicos:
+
+```
+Hola {{cliente_name}}, tu pedido {{tracking}} está en camino a {{dir_delivery}}.
+```
+
+## Estados de Plantilla
+
+| Estado | Descripción |
+|--------|-------------|
+| `APPROVED` | Aprobada y lista para usar |
+| `PENDING` | En revisión por Meta |
+| `REJECTED` | Rechazada, revisa el motivo |
+
+:::tip
+Usá `GET /template-params` para obtener la estructura exacta de parámetros antes de enviar — así evitás errores de cantidad o tipo.
+:::
+
+## Tips
+
+- Solo las plantillas `APPROVED` pueden enviarse
+- El orden y cantidad de parámetros debe coincidir exactamente con la plantilla
+- `UTILITY` para transacciones, `MARKETING` para promociones, `AUTHENTICATION` para verificación

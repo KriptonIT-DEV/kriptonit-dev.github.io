@@ -1,0 +1,69 @@
+---
+title: Listar Plantillas
+description: Obtén todas las plantillas disponibles en tu canal de WhatsApp.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+### Endpoint 
+
+```
+GET /api/v1/whatsapp/templates
+```
+
+### Headers
+
+| Header | Valor |
+|--------|-------|
+| Authorization | Bearer `{{token}}` |
+
+### Ejemplos
+
+<Tabs>
+<TabItem label="cURL">
+
+```bash
+curl -X GET https://kservice.konnect-360.pe/api/v1/whatsapp/templates \
+  -H "Authorization: Bearer tu_token_aqui"
+```
+
+</TabItem>
+<TabItem label="JavaScript">
+
+```javascript
+const response = await fetch('https://kservice.konnect-360.pe/api/v1/whatsapp/templates', {
+  headers: { 'Authorization': `Bearer ${token}` }
+});
+const data = await response.json();
+```
+
+</TabItem>
+</Tabs>
+
+### Respuesta Exitosa (200)
+
+```json
+{
+  "data": [
+    {
+      "category": "UTILITY",
+      "id": "438429459276413",
+      "language": "es",
+      "name": "salio_ruta",
+      "status": "APPROVED"
+    }
+  ],
+  "errors": {},
+  "messages": "OK",
+  "status": 200,
+  "success": true
+}
+```
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| `data[].id` | string | ID único de la plantilla en WhatsApp |
+| `data[].name` | string | Nombre de la plantilla |
+| `data[].category` | string | Categoría: `UTILITY`, `MARKETING`, `AUTHENTICATION` |
+| `data[].language` | string | Código de idioma (ej: `es`, `en`) |
+| `data[].status` | string | Estado: `APPROVED`, `PENDING`, `REJECTED` |

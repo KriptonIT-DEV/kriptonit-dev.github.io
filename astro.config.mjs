@@ -1,8 +1,8 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
-import starlightOpenAPI, { openAPISidebarGroups } from 'starlight-openapi';
 import starlightThemeObsidian from 'starlight-theme-obsidian'
+
 
 // https://astro.build/config
 export default defineConfig({
@@ -12,36 +12,13 @@ export default defineConfig({
         starlight({
             favicon: '/favicon.jpg',
             plugins: [
-                // Generate the OpenAPI documentation pages.
-                starlightOpenAPI([
-                    {
-                        base: 'auth',
-                        collapsed: false,
-                        schema: './schemas/api-autentication.yaml',
-                    },
-                    {
-                        base: 'whatsapp-messages',
-                        collapsed: false,
-                        schema: './schemas/api-whatsapp-messages.yaml',
-                    },
-                    {
-                        base: 'whatsapp-template',
-                        collapsed: false,
-                        schema: './schemas/api-whatsapp-template.yaml',
-                    },
-                    {
-                        base: 'channel-chats',
-                        collapsed: false,
-                        schema: './schemas/api-channels-chat.yaml',
-                    }
-                ]),
-                starlightThemeObsidian()
+                starlightThemeObsidian(),
             ],
             logo: {
                 alt: 'Konnect-360',
                 replacesTitle: true,
-                light: '/public/imgs/logo-light.png',
-                dark: '/public/imgs/logo-dark.png',
+                light: './src/assets/logo-light.png',
+                dark: './src/assets/logo-dark.png',
 
             },
             title: 'Konnect-360',
@@ -69,12 +46,22 @@ export default defineConfig({
                         { label: 'Webhook App', slug: 'webhooks/webhook-app' },
                     ],
                 },
-                // Add the generated sidebar group to the sidebar.
-                ...openAPISidebarGroups,
-                // {
-                //     label: 'Reference',
-                //     autogenerate: { directory: 'reference' },
-                // },
+                {
+                    label: 'Autenticación',
+                    autogenerate: { directory: 'authentication' },
+                },
+                {
+                    label: 'Mensajes WhatsApp',
+                    autogenerate: { directory: 'whatsapp-messages' },
+                },
+                {
+                    label: 'Plantillas WhatsApp',
+                    autogenerate: { directory: 'whatsapp-template' },
+                },
+                {
+                    label: 'Chats por Canal',
+                    autogenerate: { directory: 'channels-chat' },
+                },
             ],
         }),
     ],

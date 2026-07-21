@@ -1,0 +1,102 @@
+---
+title: Parámetros de una Plantilla
+description: Obtén la estructura de parámetros esperada por una plantilla antes de enviarla.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+### Endpoint 
+
+```
+GET /api/v1/whatsapp/template-params?name={{name}}
+```
+
+### Parámetros de Query
+
+| Parámetro | Tipo | Requerido | Descripción | Ejemplo |
+|-----------|------|-----------|-------------|---------|
+| `name` | string | Sí | Nombre de la plantilla | `salio_ruta` |
+
+### Headers
+
+| Header | Valor |
+|--------|-------|
+| Authorization | Bearer `{{token}}` |
+
+### Ejemplos
+
+<Tabs>
+<TabItem label="cURL">
+
+```bash
+curl -X GET "https://kservice.konnect-360.pe/api/v1/whatsapp/template-params?name=salio_ruta" \
+  -H "Authorization: Bearer tu_token_aqui"
+```
+
+</TabItem>
+<TabItem label="JavaScript">
+
+```javascript
+const response = await fetch(
+  `https://kservice.konnect-360.pe/api/v1/whatsapp/template-params?name=${templateName}`,
+  { headers: { 'Authorization': `Bearer ${token}` } }
+);
+const data = await response.json();
+```
+
+</TabItem>
+</Tabs>
+
+### Respuesta Exitosa (200)
+
+```json
+{
+  "code": 200,
+  "data": {
+    "template_name": "salio_ruta",
+    "template_body": [
+      {
+        "parameters": [
+          { "parameter_name": "cliente_name", "type": "text", "text": "" },
+          { "parameter_name": "shipper_name", "type": "text", "text": "" },
+          { "parameter_name": "tracking", "type": "text", "text": "" },
+          { "parameter_name": "dir_delivery", "type": "text", "text": "" },
+          { "parameter_name": "ciudad", "type": "text", "text": "" }
+        ],
+        "type": "body"
+      },
+      {
+        "index": 0,
+        "parameters": [{ "type": "text", "text": "" }],
+        "sub_type": "url",
+        "type": "button"
+      }
+    ]
+  },
+  "errors": {},
+  "messages": "OK",
+  "status": 200,
+  "success": true
+}
+```
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| `template_name` | string | Nombre de la plantilla |
+| `template_body[].type` | string | Tipo: `body` o `button` |
+| `template_body[].parameters` | array | Lista de parámetros esperados |
+| `template_body[].parameters[].parameter_name` | string | Nombre del parámetro |
+| `template_body[].sub_type` | string | Subtipo del botón (`url`) |
+
+### Respuesta de Error (400)
+
+```json
+{
+  "code": 200,
+  "data": null,
+  "errors": {},
+  "messages": "Opps plantilla no encontrada",
+  "status": 400,
+  "success": true
+}
+```

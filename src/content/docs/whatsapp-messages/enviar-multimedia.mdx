@@ -1,0 +1,111 @@
+---
+title: Enviar Texto e Imagen
+description: Envía un mensaje combinando texto y archivo multimedia por WhatsApp.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Combina texto con un archivo multimedia (imagen, video, documento). Usa `multipart/form-data`.
+
+### Endpoint 
+
+```
+PUT /api/v1/send/whatsapp/messages-files
+```
+
+### Headers
+
+| Header | Valor |
+|--------|-------|
+| Content-Type | multipart/form-data |
+| Authorization | Bearer `{{token}}` |
+
+### Body (multipart/form-data)
+
+| Campo | Tipo | Requerido | Descripción |
+|-------|------|-----------|-------------|
+| `file` | file | Sí | Archivo multimedia a enviar |
+| `phone` | string | Sí | Número de teléfono destino |
+| `text` | string | Sí | Mensaje de texto |
+
+### Ejemplos
+
+<Tabs>
+<TabItem label="cURL">
+
+```bash
+curl -X PUT https://kservice.konnect-360.pe/api/v1/send/whatsapp/messages-files \
+  -H "Authorization: Bearer tu_token_aqui" \
+  -F "file=@/ruta/a/tu/imagen.jpg" \
+  -F "phone=999888000" \
+  -F "text=Mira esta imagen"
+```
+
+</TabItem>
+<TabItem label="JavaScript">
+
+```javascript
+const formData = new FormData();
+formData.append('file', fileInput.files[0]);
+formData.append('phone', '999888000');
+formData.append('text', 'Mira esta imagen');
+
+const response = await fetch('https://kservice.konnect-360.pe/api/v1/send/whatsapp/messages-files', {
+  method: 'PUT',
+  headers: { 'Authorization': `Bearer ${token}` },
+  body: formData
+});
+const data = await response.json();
+```
+
+</TabItem>
+</Tabs>
+
+### Respuesta Exitosa (200)
+
+```json
+{
+  "code": 200,
+  "data": {
+    "phone": "999888000",
+    "status_files": [
+      "wamid.HBgLNTE5MDY1ODk3NjAVAgARGBI0OUI4OTU3Q0EzRTgzMDZGRjQA",
+      "wamid.HBgLNTE5MDY1ODk3NjAVAgARGBIwQUZDRDVFNDVEOTc1QkYxRTAA"
+    ],
+    "status_text": "wamid.HBgLNTE5MDY1ODk3NjAVAgARGBIxNzdDRjlDRUFGQTA2QTVEQTgA"
+  },
+  "errors": {},
+  "messages": "Mensaje enviado correctamente",
+  "status": 200,
+  "success": true
+}
+```
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| `data.phone` | string | Número de teléfono destino |
+| `data.status_files` | array | IDs de los archivos multimedia enviados |
+| `data.status_text` | string | ID del mensaje de texto enviado |
+
+### Respuesta de Error (400)
+
+```json
+{
+  "data": null,
+  "errors": { "message_id": "as32asd32a3sd23ad4as3das24sd3d3asd34" },
+  "messages": "Error al enviar mensaje",
+  "status": 400,
+  "success": false
+}
+```
+
+:::tip
+El `Content-Type` no se especifica manualmente — el browser o cURL lo setean automáticamente con el boundary correcto al usar `FormData` o `-F`.
+:::
+
+## Errores Comunes
+
+| Código | Mensaje | Posible Causa |
+|--------|---------|---------------|
+| 400 | Error al enviar mensaje | Número inválido o archivo no soportado |
+| 401 | No autorizado | Token expirado o inválido |

@@ -1,0 +1,88 @@
+---
+title: Obtener Plantilla por Nombre
+description: Consulta los detalles completos de una plantilla específica.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+### Endpoint 
+
+```
+GET /api/v1/whatsapp/template?name={{name}}
+```
+
+### Parámetros de Query
+
+| Parámetro | Tipo | Requerido | Descripción | Ejemplo |
+|-----------|------|-----------|-------------|---------|
+| `name` | string | Sí | Nombre de la plantilla | `salio_ruta` |
+
+### Headers
+
+| Header | Valor |
+|--------|-------|
+| Authorization | Bearer `{{token}}` |
+
+### Ejemplos
+
+<Tabs>
+<TabItem label="cURL">
+
+```bash
+curl -X GET "https://kservice.konnect-360.pe/api/v1/whatsapp/template?name=salio_ruta" \
+  -H "Authorization: Bearer tu_token_aqui"
+```
+
+</TabItem>
+<TabItem label="JavaScript">
+
+```javascript
+const response = await fetch(
+  `https://kservice.konnect-360.pe/api/v1/whatsapp/template?name=${templateName}`,
+  { headers: { 'Authorization': `Bearer ${token}` } }
+);
+const data = await response.json();
+```
+
+</TabItem>
+</Tabs>
+
+### Respuesta Exitosa (200)
+
+```json
+{
+  "code": 200,
+  "data": {
+    "category": "UTILITY",
+    "components": [
+      {
+        "buttons": [
+          {
+            "text": "Rastrea en nuestra web",
+            "type": "URL",
+            "url": "https://www.urbano.com.pe/tracking/?guides={{1}}"
+          }
+        ],
+        "text": "Hola {{cliente_name}}, somos urbano...",
+        "type": "BODY"
+      }
+    ],
+    "language": "es",
+    "name": "salio_ruta",
+    "status": "APPROVED"
+  },
+  "errors": {},
+  "messages": "OK",
+  "status": 200,
+  "success": true
+}
+```
+
+### Estructura de Componentes
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| `components[].type` | string | Tipo: `BODY`, `HEADER`, `BUTTONS` |
+| `components[].text` | string | Texto con placeholders `{{variable}}` |
+| `components[].buttons` | array | Botones asociados |
+| `components[].example` | object | Ejemplos de valores para los parámetros |

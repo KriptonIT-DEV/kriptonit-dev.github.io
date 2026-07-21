@@ -1,0 +1,102 @@
+---
+title: Enviar Mensaje de Texto
+description: Envía un mensaje de solo texto a un número de WhatsApp.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+### Endpoint 
+
+```
+PUT /api/v1/send/whatsapp/messages
+```
+
+### Headers
+
+| Header | Valor |
+|--------|-------|
+| Content-Type | application/json |
+| Authorization | Bearer `{{token}}` |
+
+### Body
+
+| Campo | Tipo | Requerido | Descripción | Ejemplo |
+|-------|------|-----------|-------------|---------|
+| `phone` | string | Sí | Número de teléfono destino | `999888000` |
+| `text` | string | Sí | Mensaje de texto a enviar | `Hola desde Konnect` |
+
+### Ejemplos
+
+<Tabs>
+<TabItem label="cURL">
+
+```bash
+curl -X PUT https://kservice.konnect-360.pe/api/v1/send/whatsapp/messages \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer tu_token_aqui" \
+  -d '{
+    "phone": "999888000",
+    "text": "Hola, este es un mensaje de prueba"
+  }'
+```
+
+</TabItem>
+<TabItem label="JavaScript">
+
+```javascript
+const response = await fetch('https://kservice.konnect-360.pe/api/v1/send/whatsapp/messages', {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  },
+  body: JSON.stringify({
+    phone: '999888000',
+    text: 'Hola desde mi aplicación'
+  })
+});
+const data = await response.json();
+```
+
+</TabItem>
+</Tabs>
+
+### Respuesta Exitosa (200)
+
+```json
+{
+  "code": 200,
+  "data": {
+    "message_id": "wamid.HBgLNTE5MDY1ODk3NjAVAgARGBI0MTQ1Qzg2N0VCNjg3MjQ3Q0QA",
+    "phone": "999888000"
+  },
+  "errors": {},
+  "messages": "Mensaje enviado correctamente",
+  "status": 200,
+  "success": true
+}
+```
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| `data.message_id` | string | ID único del mensaje en WhatsApp |
+| `data.phone` | string | Número de teléfono destino |
+
+### Respuesta de Error (400)
+
+```json
+{
+  "data": null,
+  "errors": { "message_id": "as32asd32a3sd23ad4as3das24sd3d3asd34" },
+  "messages": "Error al enviar mensaje",
+  "status": 400,
+  "success": false
+}
+```
+
+## Errores Comunes
+
+| Código | Mensaje | Posible Causa |
+|--------|---------|---------------|
+| 400 | Error al enviar mensaje | Número inválido o no registrado en WhatsApp |
+| 401 | No autorizado | Token expirado o inválido |
