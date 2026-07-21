@@ -1,0 +1,21 @@
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+---
+
+<Tabs>
+  <TabItem label="cURL" icon="seti:shell">
+    <slot name="curl" />
+  </TabItem>
+  <TabItem label="JavaScript" icon="javascript">
+    <slot name="javascript" />
+  </TabItem>
+  <TabItem label="Python" icon="seti:python">
+    <slot name="python" />
+  </TabItem>
+  <TabItem label="PHP" icon="seti:php">
+    <slot name="php" />
+  </TabItem>
+  <TabItem label="Java" icon="seti:java">
+    <slot name="java" />
+  </TabItem>
+</Tabs>

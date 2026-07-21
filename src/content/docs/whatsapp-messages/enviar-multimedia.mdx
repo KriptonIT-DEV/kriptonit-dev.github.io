@@ -3,7 +3,7 @@ title: Enviar Texto e Imagen
 description: Envía un mensaje combinando texto y archivo multimedia por WhatsApp.
 ---
 
-import { Tabs, TabItem } from '@astrojs/starlight/components';
+import ApiCodeTabs from '../../../components/ApiCodeTabs.astro';
 
 Combina texto con un archivo multimedia (imagen, video, documento). Usa `multipart/form-data`.
 
@@ -30,8 +30,8 @@ PUT /api/v1/send/whatsapp/messages-files
 
 ### Ejemplos
 
-<Tabs>
-<TabItem label="cURL">
+<ApiCodeTabs>
+<Fragment slot="curl">
 
 ```bash
 curl -X PUT https://kservice.konnect-360.pe/api/v1/send/whatsapp/messages-files \
@@ -41,8 +41,8 @@ curl -X PUT https://kservice.konnect-360.pe/api/v1/send/whatsapp/messages-files 
   -F "text=Mira esta imagen"
 ```
 
-</TabItem>
-<TabItem label="JavaScript">
+</Fragment>
+<Fragment slot="javascript">
 
 ```javascript
 const formData = new FormData();
@@ -58,8 +58,82 @@ const response = await fetch('https://kservice.konnect-360.pe/api/v1/send/whatsa
 const data = await response.json();
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+<Fragment slot="python">
+
+```python
+import requests
+
+url = "https://kservice.konnect-360.pe/api/v1/send/whatsapp/messages-files"
+files = {"file": open("/ruta/a/tu/imagen.jpg", "rb")}
+data = {"phone": "999888000", "text": "Mira esta imagen"}
+headers = {"Authorization": "Bearer tu_token_aqui"}
+
+response = requests.put(url, files=files, data=data, headers=headers)
+result = response.json()
+```
+
+</Fragment>
+<Fragment slot="php">
+
+```php
+<?php
+
+$url = "https://kservice.konnect-360.pe/api/v1/send/whatsapp/messages-files";
+$headers = ["Authorization: Bearer tu_token_aqui"];
+$post = [
+    "file" => new CURLFile("/ruta/a/tu/imagen.jpg"),
+    "phone" => "999888000",
+    "text" => "Mira esta imagen"
+];
+
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+curl_close($ch);
+$data = json_decode($response, true);
+```
+
+</Fragment>
+<Fragment slot="java">
+
+```java
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.file.Path;
+
+var client = HttpClient.newHttpClient();
+var boundary = "---boundary---";
+var body = "--" + boundary + "\r\n" +
+    "Content-Disposition: form-data; name=\"file\"; filename=\"imagen.jpg\"\r\n" +
+    "Content-Type: image/jpeg\r\n\r\n" +
+    "BINARY_DATA\r\n" +
+    "--" + boundary + "\r\n" +
+    "Content-Disposition: form-data; name=\"phone\"\r\n\r\n" +
+    "999888000\r\n" +
+    "--" + boundary + "\r\n" +
+    "Content-Disposition: form-data; name=\"text\"\r\n\r\n" +
+    "Mira esta imagen\r\n" +
+    "--" + boundary + "--";
+
+var request = HttpRequest.newBuilder()
+    .uri(URI.create("https://kservice.konnect-360.pe/api/v1/send/whatsapp/messages-files"))
+    .header("Authorization", "Bearer tu_token_aqui")
+    .header("Content-Type", "multipart/form-data; boundary=" + boundary)
+    .method("PUT", HttpRequest.BodyPublishers.ofString(body))
+    .build();
+
+var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+var data = response.body();
+```
+
+</Fragment>
+</ApiCodeTabs>
 
 ### Respuesta Exitosa (200)
 

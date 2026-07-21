@@ -3,7 +3,7 @@ title: Obtener Tickets
 description: Consulta todos los tickets asociados a un cliente.
 ---
 
-import { Tabs, TabItem } from '@astrojs/starlight/components';
+import ApiCodeTabs from '../../../components/ApiCodeTabs.astro';
 
 ### Endpoint 
 
@@ -25,16 +25,16 @@ GET /api/external/tickets?customer_id={{customer_id}}
 
 ### Ejemplos
 
-<Tabs>
-<TabItem label="cURL">
+<ApiCodeTabs>
+<Fragment slot="curl">
 
 ```bash
 curl -X GET "https://devkapi.konnect-360.pe/api/external/tickets?customer_id=1370" \
   -H "Authorization: Bearer tu_token_aqui"
 ```
 
-</TabItem>
-<TabItem label="JavaScript">
+</Fragment>
+<Fragment slot="javascript">
 
 ```javascript
 const response = await fetch(
@@ -44,8 +44,59 @@ const response = await fetch(
 const data = await response.json();
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+<Fragment slot="python">
+
+```python
+import requests
+
+url = "https://devkapi.konnect-360.pe/api/external/tickets"
+params = {"customer_id": "1370"}
+headers = {"Authorization": "Bearer tu_token_aqui"}
+
+response = requests.get(url, params=params, headers=headers)
+data = response.json()
+```
+
+</Fragment>
+<Fragment slot="php">
+
+```php
+<?php
+
+$url = "https://devkapi.konnect-360.pe/api/external/tickets?customer_id=1370";
+$headers = ["Authorization: Bearer tu_token_aqui"];
+
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+curl_close($ch);
+$data = json_decode($response, true);
+```
+
+</Fragment>
+<Fragment slot="java">
+
+```java
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
+var client = HttpClient.newHttpClient();
+var request = HttpRequest.newBuilder()
+    .uri(URI.create("https://devkapi.konnect-360.pe/api/external/tickets?customer_id=1370"))
+    .header("Authorization", "Bearer tu_token_aqui")
+    .GET()
+    .build();
+
+var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+var data = response.body();
+```
+
+</Fragment>
+</ApiCodeTabs>
 
 ### Respuesta Exitosa (200)
 

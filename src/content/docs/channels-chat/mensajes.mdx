@@ -3,7 +3,7 @@ title: Obtener Mensajes
 description: Consulta el historial de mensajes de un ticket específico.
 ---
 
-import { Tabs, TabItem } from '@astrojs/starlight/components';
+import ApiCodeTabs from '../../../components/ApiCodeTabs.astro';
 
 ### Endpoint 
 
@@ -28,8 +28,8 @@ PUT /api/external/ticket/messages
 
 ### Ejemplos
 
-<Tabs>
-<TabItem label="cURL">
+<ApiCodeTabs>
+<Fragment slot="curl">
 
 ```bash
 curl -X PUT https://devkapi.konnect-360.pe/api/external/ticket/messages \
@@ -38,8 +38,8 @@ curl -X PUT https://devkapi.konnect-360.pe/api/external/ticket/messages \
   -d '{"ticket_id": 169284, "last_msn_id": 0, "opt": 1}'
 ```
 
-</TabItem>
-<TabItem label="JavaScript">
+</Fragment>
+<Fragment slot="javascript">
 
 ```javascript
 const response = await fetch('https://devkapi.konnect-360.pe/api/external/ticket/messages', {
@@ -53,8 +53,65 @@ const response = await fetch('https://devkapi.konnect-360.pe/api/external/ticket
 const data = await response.json();
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+<Fragment slot="python">
+
+```python
+import requests
+
+url = "https://devkapi.konnect-360.pe/api/external/ticket/messages"
+payload = {"ticket_id": 169284, "last_msn_id": 0, "opt": 1}
+headers = {"Authorization": "Bearer tu_token_aqui"}
+
+response = requests.put(url, json=payload, headers=headers)
+data = response.json()
+```
+
+</Fragment>
+<Fragment slot="php">
+
+```php
+<?php
+
+$url = "https://devkapi.konnect-360.pe/api/external/ticket/messages";
+$payload = json_encode(["ticket_id" => 169284, "last_msn_id" => 0, "opt" => 1]);
+$headers = ["Content-Type: application/json", "Authorization: Bearer tu_token_aqui"];
+
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+curl_close($ch);
+$data = json_decode($response, true);
+```
+
+</Fragment>
+<Fragment slot="java">
+
+```java
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
+var client = HttpClient.newHttpClient();
+var request = HttpRequest.newBuilder()
+    .uri(URI.create("https://devkapi.konnect-360.pe/api/external/ticket/messages"))
+    .header("Content-Type", "application/json")
+    .header("Authorization", "Bearer tu_token_aqui")
+    .method("PUT", HttpRequest.BodyPublishers.ofString("""
+        {"ticket_id": 169284, "last_msn_id": 0, "opt": 1}
+    """))
+    .build();
+
+var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+var data = response.body();
+```
+
+</Fragment>
+</ApiCodeTabs>
 
 ### Respuesta Exitosa (200)
 

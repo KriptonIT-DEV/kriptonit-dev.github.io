@@ -2,13 +2,17 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import starlightThemeObsidian from 'starlight-theme-obsidian'
-
+import mermaid from 'astro-mermaid';
 
 // https://astro.build/config
 export default defineConfig({
     site: 'https://kriptonit-dev.github.io/',
-    // trailingSlash: 'always', 
-    integrations: [
+    // trailingSlash: 'always',
+  integrations: [
+    mermaid({
+          theme: 'forest',
+          autoTheme: true
+        }),
         starlight({
             favicon: '/favicon.jpg',
             plugins: [
@@ -39,14 +43,6 @@ export default defineConfig({
                     ],
                 },
                 {
-                    label: 'Api Webhook',
-                    items: [
-                        { label: 'Configuración', slug: 'webhooks/configuracion' },
-                        { label: 'Webhook Canal', slug: 'webhooks/webhook-canal' },
-                        { label: 'Webhook App', slug: 'webhooks/webhook-app' },
-                    ],
-                },
-                {
                     label: 'Autenticación',
                     autogenerate: { directory: 'authentication' },
                 },
@@ -61,7 +57,15 @@ export default defineConfig({
                 {
                     label: 'Chats por Canal',
                     autogenerate: { directory: 'channels-chat' },
-                },
+              },
+              {
+                  label: 'Api Webhook',
+                  items: [
+                      { label: 'Configuración', slug: 'webhooks/configuracion' },
+                      { label: 'Webhook Canal', slug: 'webhooks/webhook-canal' },
+                      { label: 'Webhook App', slug: 'webhooks/webhook-app' },
+                  ],
+              },
             ],
         }),
     ],

@@ -3,7 +3,8 @@ title: Obtener Medios
 description: Descarga archivos multimedia asociados a un ticket.
 ---
 
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import { Aside } from '@astrojs/starlight/components';
+import ApiCodeTabs from '../../../components/ApiCodeTabs.astro';
 
 ### Endpoint 
 
@@ -26,8 +27,8 @@ GET /api/external/ticket/medias?channel_id={{channel_id}}&mime_id={{mime_id}}
 
 ### Ejemplos
 
-<Tabs>
-<TabItem label="cURL">
+<ApiCodeTabs>
+<Fragment slot="curl">
 
 ```bash
 curl -X GET "https://devkapi.konnect-360.pe/api/external/ticket/medias?channel_id=1&mime_id=546097577936591" \
@@ -35,8 +36,8 @@ curl -X GET "https://devkapi.konnect-360.pe/api/external/ticket/medias?channel_i
   --output archivo.gif
 ```
 
-</TabItem>
-<TabItem label="JavaScript">
+</Fragment>
+<Fragment slot="javascript">
 
 ```javascript
 const response = await fetch(
@@ -46,8 +47,61 @@ const response = await fetch(
 const blob = await response.blob();
 ```
 
-</TabItem>
-</Tabs>
+</Fragment>
+<Fragment slot="python">
+
+```python
+import requests
+
+url = "https://devkapi.konnect-360.pe/api/external/ticket/medias"
+params = {"channel_id": "1", "mime_id": "546097577936591"}
+headers = {"Authorization": "Bearer tu_token_aqui"}
+
+response = requests.get(url, params=params, headers=headers)
+with open("archivo.gif", "wb") as f:
+    f.write(response.content)
+```
+
+</Fragment>
+<Fragment slot="php">
+
+```php
+<?php
+
+$url = "https://devkapi.konnect-360.pe/api/external/ticket/medias?channel_id=1&mime_id=546097577936591";
+$headers = ["Authorization: Bearer tu_token_aqui"];
+
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+curl_close($ch);
+file_put_contents("archivo.gif", $response);
+```
+
+</Fragment>
+<Fragment slot="java">
+
+```java
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.file.Path;
+
+var client = HttpClient.newHttpClient();
+var request = HttpRequest.newBuilder()
+    .uri(URI.create("https://devkapi.konnect-360.pe/api/external/ticket/medias?channel_id=1&mime_id=546097577936591"))
+    .header("Authorization", "Bearer tu_token_aqui")
+    .GET()
+    .build();
+
+var response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
+java.nio.file.Files.copy(response.body(), Path.of("archivo.gif"));
+```
+
+</Fragment>
+</ApiCodeTabs>
 
 ### Headers de Respuesta
 
