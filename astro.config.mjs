@@ -61,6 +61,14 @@ export default defineConfig({
                         { label: 'Versiones', slug: 'guides/changelog' }
                     ],
                 },
+                {
+                    label: 'Api Webhook',
+                    items: [
+                        { label: 'Configuración', slug: 'webhooks/configuracion' },
+                        { label: 'Webhook Canal', slug: 'webhooks/webhook-canal' },
+                        { label: 'Webhook App', slug: 'webhooks/webhook-app' },
+                    ],
+                },
                 // Add the generated sidebar group to the sidebar.
                 ...openAPISidebarGroups,
                 // {

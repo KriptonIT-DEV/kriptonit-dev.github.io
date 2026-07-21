@@ -50,6 +50,6 @@ Para nuestras apis y webhooks es necesario obtener unas credenciales en **CANALE
 
 Aqui puedes puedes ver más detalle [acerca de las Apis](/auth/).
 
-Aqui puedes puedes ver más detalle [acerca de los Webhook](/auth/).
+Aqui puedes puedes ver más detalle [acerca de los Webhook](/webhooks/configuracion/).
 
 
