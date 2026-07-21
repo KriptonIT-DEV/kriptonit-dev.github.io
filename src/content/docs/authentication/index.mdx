@@ -4,10 +4,11 @@ description: Guía completa para autenticarte en la API de Konnect-360 usando OA
 ---
 
 import ApiCodeTabs from '../../../components/ApiCodeTabs.astro';
+import { BASE_API_URL } from '../../../constants';
 
 La API de Konnect-360 utiliza autenticación **OAuth 2.0** con flujo `client_credentials`. Necesitarás tus credenciales (`client_id` y `client_secret`) que puedes obtener en la sección **CANALES** de tu cuenta Konnect-360.
 
-**URL Base:** `https://kservice.konnect-360.pe`
+**URL Base:** `{BASE_API_URL}`
 
 ## Obtener Token de Acceso
 
