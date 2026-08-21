@@ -6,10 +6,9 @@ Sitio de documentación de las APIs de **Konnect-360**, construido con [Astro](h
 
 | Capa | Herramienta |
 |------|-------------|
-| Framework | Astro `^5.6` |
-| Docs / UI | Starlight `^0.34` + tema `starlight-theme-obsidian` |
+| Framework | Astro `^7.2` |
+| Docs / UI | Starlight `^0.41` |
 | Gestor de paquetes | pnpm |
-| Imágenes | `sharp` |
 | Deploy | GitHub Pages (GitHub Actions) + `gh-pages` (manual) |
 
 ## Arquitectura

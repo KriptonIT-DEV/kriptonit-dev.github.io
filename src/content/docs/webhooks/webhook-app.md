@@ -13,7 +13,7 @@ Este webhook se dispara cuando ocurre un evento en el [widget de chat](/guides/w
 
 | Header | Valor | Descripción |
 |---|---|---|
-| `Authorization` | `Bearer {tu_token}` | El mismo token que usás para [autenticarte](/auth/) contra la API. |
+| `Authorization` | `Bearer {tu_token}` | El mismo token que usás para [autenticarte](/authentication/) contra la API. |
 | `Content-Type` | `application/json` | |
 
 ### Body

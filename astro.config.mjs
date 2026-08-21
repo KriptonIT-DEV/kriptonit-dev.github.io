@@ -1,7 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
-import starlightThemeObsidian from 'starlight-theme-obsidian'
 import mermaid from 'astro-mermaid';
 
 // https://astro.build/config
@@ -15,9 +14,6 @@ export default defineConfig({
         }),
         starlight({
             favicon: '/favicon.jpg',
-            plugins: [
-                starlightThemeObsidian(),
-            ],
             logo: {
                 alt: 'Konnect-360',
                 replacesTitle: true,
@@ -27,8 +23,9 @@ export default defineConfig({
             },
             title: 'Konnect-360',
             social: [
-                { icon: 'external', label: 'Website', href: 'https://www.konnect-360.pe/', },
-                { icon: 'github', label: 'GitHub', href: 'https://github.com/KriptonIT-DEV/kriptonit-dev.github.io', },
+              { icon: 'external', label: 'Website', href: 'https://www.konnect-360.pe/', },
+              { icon: 'github', label: 'GitHub', href: 'https://github.com/KriptonIT-DEV/kriptonit-dev.github.io', },
+              { icon: 'facebook', label: 'GitHub', href: 'https://github.com/KriptonIT-DEV/kriptonit-dev.github.io', },
             ],
             sidebar: [
 
@@ -44,27 +41,27 @@ export default defineConfig({
                 },
                 {
                     label: 'Autenticación',
-                    autogenerate: { directory: 'authentication' },
+                    items: [{ autogenerate: { directory: 'authentication' } }],
                 },
                 {
                     label: 'Mensajes WhatsApp',
-                    autogenerate: { directory: 'whatsapp-messages' },
+                    items: [{ autogenerate: { directory: 'whatsapp-messages' } }],
                 },
                 {
                     label: 'Plantillas WhatsApp',
-                    autogenerate: { directory: 'whatsapp-template' },
+                    items: [{ autogenerate: { directory: 'whatsapp-template' } }],
                 },
                 {
-                    label: 'Chats por Canal',
-                    autogenerate: { directory: 'channels-chat' },
-              },
-              {
-                  label: 'Api Webhook',
-                  items: [
-                      { label: 'Configuración', slug: 'webhooks/configuracion' },
-                      { label: 'Webhook Canal', slug: 'webhooks/webhook-canal' },
-                      { label: 'Webhook App', slug: 'webhooks/webhook-app' },
-                  ],
+                    label: 'PLantilla Email',
+                    items: [{ autogenerate: { directory: 'channels-chat' } }],
+                },
+                {
+                    label: 'Api Webhook',
+                    items: [
+                        { label: 'Configuración', slug: 'webhooks/configuracion' },
+                        { label: 'Webhook Canal', slug: 'webhooks/webhook-canal' },
+                        { label: 'Webhook App', slug: 'webhooks/webhook-app' },
+                    ],
               },
             ],
         }),

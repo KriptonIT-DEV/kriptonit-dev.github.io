@@ -3,7 +3,9 @@ title: Obtener Plantilla por Nombre
 description: Consulta los detalles completos de una plantilla específica.
 ---
 
+import { Code } from '@astrojs/starlight/components';
 import ApiCodeTabs from '../../../components/ApiCodeTabs.astro';
+import { BASE_API_URL } from '../../../constants';
 
 ### Endpoint 
 
@@ -28,72 +30,77 @@ GET /api/v1/whatsapp/template?name={{name}}
 <ApiCodeTabs>
 <Fragment slot="curl">
 
-```bash
-curl -X GET "https://kservice.konnect-360.pe/api/v1/whatsapp/template?name=salio_ruta" \
-  -H "Authorization: Bearer tu_token_aqui"
-```
+<Code
+  lang="bash"
+  code={`curl -X GET "${BASE_API_URL}/api/v1/whatsapp/template?name=salio_ruta" \\
+    -H "Authorization: Bearer tu_token_aqui"`}
+/>
 
 </Fragment>
 <Fragment slot="javascript">
 
-```javascript
-const response = await fetch(
-  `https://kservice.konnect-360.pe/api/v1/whatsapp/template?name=${templateName}`,
-  { headers: { 'Authorization': `Bearer ${token}` } }
-);
-const data = await response.json();
-```
+<Code
+  lang="javascript"
+  code={`const response = await fetch(
+    \`${BASE_API_URL}/api/v1/whatsapp/template?name=\${templateName}\`,
+    { headers: { 'Authorization': \`Bearer \${token}\` } }
+  );
+  const data = await response.json();`}
+/>
 
 </Fragment>
 <Fragment slot="python">
 
-```python
-import requests
+<Code
+  lang="python"
+  code={`import requests
 
-url = "https://kservice.konnect-360.pe/api/v1/whatsapp/template"
-params = {"name": "salio_ruta"}
-headers = {"Authorization": "Bearer tu_token_aqui"}
+  url = "${BASE_API_URL}/api/v1/whatsapp/template"
+  params = {"name": "salio_ruta"}
+  headers = {"Authorization": "Bearer tu_token_aqui"}
 
-response = requests.get(url, params=params, headers=headers)
-data = response.json()
-```
+  response = requests.get(url, params=params, headers=headers)
+  data = response.json()`}
+/>
 
 </Fragment>
 <Fragment slot="php">
 
-```php
-<?php
+<Code
+  lang="php"
+  code={`<?php
 
-$url = "https://kservice.konnect-360.pe/api/v1/whatsapp/template?name=salio_ruta";
-$headers = ["Authorization: Bearer tu_token_aqui"];
+  $url = "${BASE_API_URL}/api/v1/whatsapp/template?name=salio_ruta";
+  $headers = ["Authorization: Bearer tu_token_aqui"];
 
-$ch = curl_init($url);
-curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-$response = curl_exec($ch);
-curl_close($ch);
-$data = json_decode($response, true);
-```
+  $ch = curl_init($url);
+  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $response = curl_exec($ch);
+  curl_close($ch);
+  $data = json_decode($response, true);`}
+/>
 
 </Fragment>
 <Fragment slot="java">
 
-```java
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+<Code
+  lang="java"
+  code={`import java.net.URI;
+  import java.net.http.HttpClient;
+  import java.net.http.HttpRequest;
+  import java.net.http.HttpResponse;
 
-var client = HttpClient.newHttpClient();
-var request = HttpRequest.newBuilder()
-    .uri(URI.create("https://kservice.konnect-360.pe/api/v1/whatsapp/template?name=salio_ruta"))
-    .header("Authorization", "Bearer tu_token_aqui")
-    .GET()
-    .build();
+  var client = HttpClient.newHttpClient();
+  var request = HttpRequest.newBuilder()
+      .uri(URI.create("${BASE_API_URL}/api/v1/whatsapp/template?name=salio_ruta"))
+      .header("Authorization", "Bearer tu_token_aqui")
+      .GET()
+      .build();
 
-var response = client.send(request, HttpResponse.BodyHandlers.ofString());
-var data = response.body();
-```
+  var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+  var data = response.body();`}
+/>
 
 </Fragment>
 </ApiCodeTabs>

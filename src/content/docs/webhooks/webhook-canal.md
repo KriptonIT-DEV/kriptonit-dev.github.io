@@ -13,7 +13,7 @@ Este webhook se dispara cuando llega un mensaje nuevo por un canal externo conec
 
 | Header | Valor | Descripción |
 |---|---|---|
-| `Authorization` | `Bearer {tu_token}` | El mismo token que usás para [autenticarte](/auth/) contra la API. Validalo antes de procesar el evento. |
+| `Authorization` | `Bearer {tu_token}` | El mismo token que usás para [autenticarte](/authentication/) contra la API. Validalo antes de procesar el evento. |
 | `Content-Type` | `application/json` | |
 
 ### Body

@@ -3,28 +3,44 @@ title: Introducción
 description: Guía completa para autenticarte en la API de Konnect-360 usando OAuth 2.0.
 ---
 
+import { Code } from '@astrojs/starlight/components';
 import ApiCodeTabs from '../../../components/ApiCodeTabs.astro';
 import { BASE_API_URL } from '../../../constants';
 
 La API de Konnect-360 utiliza autenticación **OAuth 2.0** con flujo `client_credentials`. Necesitarás tus credenciales (`client_id` y `client_secret`) que puedes obtener en la sección **CANALES** de tu cuenta Konnect-360.
 
-**URL Base:** `{BASE_API_URL}`
+#### Flujo de Autenticación
 
-## Obtener Token de Acceso
+```mermaid
+sequenceDiagram
+    participant C as Cliente
+    participant K as Konnect-360 API
 
-### Endpoint
+    C->>K: POST /api/oauth/token (client_id, client_secret)
+    K-->>C: 200 OK (token)
+
+    loop Cada petición API
+        C->>K: GET/PUT/POST endpoint (Authorization: Bearer token)
+        K-->>C: 200 OK / 401 Unauthorized
+    end
+```
+
+
+#### Obtener Token de Acceso
+
+**Endpoint**
 
 ```
 POST /api/oauth/token
 ```
 
-### Headers
+###### Headers
 
 | Header | Valor |
 |--------|-------|
 | Content-Type | application/json |
 
-### Body
+**Body**
 
 | Campo | Tipo | Requerido | Descripción | Ejemplo |
 |-------|------|-----------|-------------|---------|
@@ -32,104 +48,109 @@ POST /api/oauth/token
 | `client_secret` | string | Sí | Secreto de tu cliente | `{{client_secret}}` |
 | `grant_type` | string | Sí | Tipo de concesión | `client_credentials` |
 
-### Ejemplos
+**Ejemplos**
 
 <ApiCodeTabs>
 <Fragment slot="curl">
 
-```bash
-curl -X POST https://kservice.konnect-360.pe/api/oauth/token \
-  -H "Content-Type: application/json" \
-  -d '{
-    "client_id": "tu_client_id",
-    "client_secret": "tu_client_secret",
-    "grant_type": "client_credentials"
-  }'
-```
+<Code
+  lang="bash"
+  code={`curl -X POST ${BASE_API_URL}/api/oauth/token \\
+    -H "Content-Type: application/json" \\
+    -d '{
+      "client_id": "tu_client_id",
+      "client_secret": "tu_client_secret",
+      "grant_type": "client_credentials"
+    }'`}
+/>
 
 </Fragment>
 <Fragment slot="javascript">
 
-```javascript
-const response = await fetch('https://kservice.konnect-360.pe/api/oauth/token', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    client_id: 'tu_client_id',
-    client_secret: 'tu_client_secret',
-    grant_type: 'client_credentials'
-  })
-});
-const data = await response.json();
-```
+<Code
+  lang="javascript"
+  code={`const response = await fetch('${BASE_API_URL}/api/oauth/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      client_id: 'tu_client_id',
+      client_secret: 'tu_client_secret',
+      grant_type: 'client_credentials'
+    })
+  });
+  const data = await response.json();`}
+/>
 
 </Fragment>
 <Fragment slot="python">
 
-```python
-import requests
+<Code
+  lang="python"
+  code={`import requests
 
-url = "https://kservice.konnect-360.pe/api/oauth/token"
-payload = {
-    "client_id": "tu_client_id",
-    "client_secret": "tu_client_secret",
-    "grant_type": "client_credentials"
-}
+  url = "${BASE_API_URL}/api/oauth/token"
+  payload = {
+      "client_id": "tu_client_id",
+      "client_secret": "tu_client_secret",
+      "grant_type": "client_credentials"
+  }
 
-response = requests.post(url, json=payload)
-data = response.json()
-```
+  response = requests.post(url, json=payload)
+  data = response.json()`}
+/>
 
 </Fragment>
 <Fragment slot="php">
 
-```php
-<?php
+<Code
+  lang="php"
+  code={`<?php
 
-$url = "https://kservice.konnect-360.pe/api/oauth/token";
-$payload = json_encode([
-    "client_id" => "tu_client_id",
-    "client_secret" => "tu_client_secret",
-    "grant_type" => "client_credentials"
-]);
-$headers = ["Content-Type: application/json"];
+  $url = "${BASE_API_URL}/api/oauth/token";
+  $payload = json_encode([
+      "client_id" => "tu_client_id",
+      "client_secret" => "tu_client_secret",
+      "grant_type" => "client_credentials"
+  ]);
+  $headers = ["Content-Type: application/json"];
 
-$ch = curl_init($url);
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-$response = curl_exec($ch);
-curl_close($ch);
-$data = json_decode($response, true);
-```
+  $ch = curl_init($url);
+  curl_setopt($ch, CURLOPT_POST, true);
+  curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $response = curl_exec($ch);
+  curl_close($ch);
+  $data = json_decode($response, true);`}
+/>
 
 </Fragment>
 <Fragment slot="java">
 
-```java
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+<Code
+  lang="java"
+  code={`import java.net.URI;
+  import java.net.http.HttpClient;
+  import java.net.http.HttpRequest;
+  import java.net.http.HttpResponse;
 
-var client = HttpClient.newHttpClient();
-var request = HttpRequest.newBuilder()
-    .uri(URI.create("https://kservice.konnect-360.pe/api/oauth/token"))
-    .header("Content-Type", "application/json")
-    .POST(HttpRequest.BodyPublishers.ofString("""
-        {"client_id": "tu_client_id", "client_secret": "tu_client_secret", "grant_type": "client_credentials"}
-    """))
-    .build();
+  var client = HttpClient.newHttpClient();
+  var request = HttpRequest.newBuilder()
+      .uri(URI.create("${BASE_API_URL}/api/oauth/token"))
+      .header("Content-Type", "application/json")
+      .POST(HttpRequest.BodyPublishers.ofString("""
+          {"client_id": "tu_client_id", "client_secret": "tu_client_secret", "grant_type": "client_credentials"}
+      """))
+      .build();
 
-var response = client.send(request, HttpResponse.BodyHandlers.ofString());
-var data = response.body();
-```
+  var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+  var data = response.body();`}
+/>
 
 </Fragment>
 </ApiCodeTabs>
 
-### Respuesta Exitosa (200)
+##### Respuesta Exitosa (200)
 
 ```json
 {
@@ -146,7 +167,7 @@ var data = response.body();
 |-------|------|-------------|
 | `data.token` | string | Token JWT de acceso |
 
-### Respuesta de Error (401)
+##### Respuesta de Error (401)
 
 ```json
 {
@@ -159,94 +180,99 @@ var data = response.body();
 }
 ```
 
-## Verificar Token 
+### Verificar Token 
 
-### Endpoint
+###### Endpoint
 
 ```
 GET /api/oauth/token-verify
 ```
 
-### Headers
+##### Headers
 
 | Header | Valor |
 |--------|-------|
 | Authorization | Bearer `{{token}}` |
 
-### Ejemplos
+##### Ejemplos
 
 <ApiCodeTabs>
 <Fragment slot="curl">
 
-```bash
-curl -X GET https://kservice.konnect-360.pe/api/oauth/token-verify \
-  -H "Authorization: Bearer tu_token_aqui"
-```
+<Code
+  lang="bash"
+  code={`curl -X GET ${BASE_API_URL}/api/oauth/token-verify \\
+    -H "Authorization: Bearer tu_token_aqui"`}
+/>
 
 </Fragment>
 <Fragment slot="javascript">
 
-```javascript
-const response = await fetch('https://kservice.konnect-360.pe/api/oauth/token-verify', {
-  headers: { 'Authorization': `Bearer ${token}` }
-});
-const data = await response.json();
-```
+<Code
+  lang="javascript"
+  code={`const response = await fetch('${BASE_API_URL}/api/oauth/token-verify', {
+    headers: { 'Authorization': \`Bearer \${token}\` }
+  });
+  const data = await response.json();`}
+/>
 
 </Fragment>
 <Fragment slot="python">
 
-```python
-import requests
+<Code
+  lang="python"
+  code={`import requests
 
-url = "https://kservice.konnect-360.pe/api/oauth/token-verify"
-headers = {"Authorization": "Bearer tu_token_aqui"}
+  url = "${BASE_API_URL}/api/oauth/token-verify"
+  headers = {"Authorization": "Bearer tu_token_aqui"}
 
-response = requests.get(url, headers=headers)
-data = response.json()
-```
+  response = requests.get(url, headers=headers)
+  data = response.json()`}
+/>
 
 </Fragment>
 <Fragment slot="php">
 
-```php
-<?php
+<Code
+  lang="php"
+  code={`<?php
 
-$url = "https://kservice.konnect-360.pe/api/oauth/token-verify";
-$headers = ["Authorization: Bearer tu_token_aqui"];
+  $url = "${BASE_API_URL}/api/oauth/token-verify";
+  $headers = ["Authorization: Bearer tu_token_aqui"];
 
-$ch = curl_init($url);
-curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-$response = curl_exec($ch);
-curl_close($ch);
-$data = json_decode($response, true);
-```
+  $ch = curl_init($url);
+  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $response = curl_exec($ch);
+  curl_close($ch);
+  $data = json_decode($response, true);`}
+/>
 
 </Fragment>
 <Fragment slot="java">
 
-```java
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+<Code
+  lang="java"
+  code={`import java.net.URI;
+  import java.net.http.HttpClient;
+  import java.net.http.HttpRequest;
+  import java.net.http.HttpResponse;
 
-var client = HttpClient.newHttpClient();
-var request = HttpRequest.newBuilder()
-    .uri(URI.create("https://kservice.konnect-360.pe/api/oauth/token-verify"))
-    .header("Authorization", "Bearer tu_token_aqui")
-    .GET()
-    .build();
+  var client = HttpClient.newHttpClient();
+  var request = HttpRequest.newBuilder()
+      .uri(URI.create("${BASE_API_URL}/api/oauth/token-verify"))
+      .header("Authorization", "Bearer tu_token_aqui")
+      .GET()
+      .build();
 
-var response = client.send(request, HttpResponse.BodyHandlers.ofString());
-var data = response.body();
-```
+  var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+  var data = response.body();`}
+/>
 
 </Fragment>
 </ApiCodeTabs>
 
-### Respuesta Exitosa (200)
+##### Respuesta Exitosa (200)
 
 ```json
 {
@@ -269,7 +295,7 @@ var data = response.body();
 | `idWspBussiness` | string | ID del WhatsApp Business asociado |
 | `phoneNumber` | string | Número de teléfono del canal |
 
-### Respuesta de Error (401)
+##### Respuesta de Error (401)
 
 ```json
 {
@@ -300,19 +326,3 @@ El token se obtiene una sola vez y se reutiliza en todas las peticiones. Si expi
 |--------|---------|-------------|
 | 401 | Token y/o Client ID incorrectos | Credenciales inválidas |
 | 401 | jwt malformed | Token expiró o tiene formato incorrecto |
-
-## Flujo de Autenticación
-
-```mermaid
-sequenceDiagram
-    participant C as Cliente
-    participant K as Konnect-360 API
-
-    C->>K: POST /api/oauth/token (client_id, client_secret)
-    K-->>C: 200 OK (token)
-
-    loop Cada petición API
-        C->>K: GET/PUT/POST endpoint (Authorization: Bearer token)
-        K-->>C: 200 OK / 401 Unauthorized
-    end
-```

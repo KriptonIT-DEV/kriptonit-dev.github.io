@@ -17,12 +17,10 @@
 | Capa | Herramienta | Versión |
 |------|-------------|---------|
 | Runtime | Node.js | ≥18 |
-| Framework | Astro | `^5.6.1` |
-| Theme/Docs | Starlight | `^0.34.4` |
-| Theme custom | starlight-theme-obsidian | `^0.3.2` |
-| Imágenes | sharp | `^0.32.5` |
+| Framework | Astro | `^7.2.4` |
+| Theme/Docs | Starlight | `^0.41.7` |
 | Deploy | gh-pages | `^6.3.0` |
-| Package Manager | pnpm | (recomendado) |
+| Package Manager | pnpm | (requerido) |
 
 > **Nota:** La documentación de APIs se genera manualmente en Markdown dentro de `src/content/docs/reference/`. Los esquemas OpenAPI en `schemas/` sirven como referencia pero no se procesan automáticamente.
 
@@ -125,14 +123,12 @@ schemas/*.yaml (referencia) → Escritura manual → src/content/docs/reference/
 ```javascript
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
-import starlightThemeObsidian from 'starlight-theme-obsidian'
 
 export default defineConfig({
     site: 'https://kriptonit-dev.github.io/',
     integrations: [
         starlight({
             favicon: '/favicon.jpg',
-            plugins: [starlightThemeObsidian()],
             logo: {
                 alt: 'Konnect-360',
                 replacesTitle: true,
@@ -163,10 +159,10 @@ export default defineConfig({
                     ],
                 },
                 // APIs - autogenerate desde directorios
-                { label: 'Autenticación', autogenerate: { directory: 'authentication' } },
-                { label: 'Mensajes WhatsApp', autogenerate: { directory: 'whatsapp-messages' } },
-                { label: 'Plantillas WhatsApp', autogenerate: { directory: 'whatsapp-template' } },
-                { label: 'Chats por Canal', autogenerate: { directory: 'channels-chat' } },
+                { label: 'Autenticación', items: [{ autogenerate: { directory: 'authentication' } }] },
+                { label: 'Mensajes WhatsApp', items: [{ autogenerate: { directory: 'whatsapp-messages' } }] },
+                { label: 'Plantillas WhatsApp', items: [{ autogenerate: { directory: 'whatsapp-template' } }] },
+                { label: 'Chats por Canal', items: [{ autogenerate: { directory: 'channels-chat' } }] },
             ],
         }),
     ],
@@ -175,9 +171,11 @@ export default defineConfig({
 
 ### Plugins
 
+_Ninguno actualmente (tema obsidian y grafo removidos en upgrade a Starlight 0.41)._
+
 | Plugin | Propósito |
 |--------|-----------|
-| `starlight-theme-obsidian` | Tema personalizado con estilos adicionales |
+| — | — |
 
 ### Sidebar - Tipos de Entradas
 
@@ -202,13 +200,9 @@ Definida en `src/content.config.ts`:
 import { defineCollection } from 'astro:content';
 import { docsLoader } from '@astrojs/starlight/loaders';
 import { docsSchema } from '@astrojs/starlight/schema';
-import { pageThemeObsidianSchema } from 'starlight-theme-obsidian/schema';
 
 export const collections = {
-  docs: defineCollection({
-    loader: docsLoader(),
-    schema: docsSchema({ extend: pageThemeObsidianSchema })
-  }),
+  docs: defineCollection({ loader: docsLoader(), schema: docsSchema() }),
 };
 ```
 
@@ -344,17 +338,17 @@ pnpm deploy  # Usa gh-pages para publicar dist/
 ### Agregar Sección API al Sidebar
 
 ```javascript
-// En astro.config.mjs → sidebar
+// En astro.config.mjs → sidebar (Starlight 0.39+)
 {
     label: 'Nombre de la API',
-    autogenerate: { directory: 'nombre-directorio' }
+    items: [{ autogenerate: { directory: 'nombre-directorio' } }]
 }
 ```
 
 ### Modificar Estilos
 
 - CSS personalizado: `<style>` en componentes `.astro`
-- Tema: Configurar `starlight-theme-obsidian` en plugins
+- Tema: Starlight nativo (obsidian removido)
 
 ---
 
@@ -405,10 +399,9 @@ Controla qué paquetes pueden ejecutar scripts de instalación:
 ```yaml
 allowBuilds:
   esbuild: false
-  sharp: false
 ```
 
-> **Importante:** `sharp` requiere scripts de instalación nativos. Si hay problemas, ejecutar `pnpm install` con `--config.allow-builds=true`.
+> `sharp` fue removido en el upgrade a Astro 7 / Starlight 0.41 (no necesario para este sitio).
 
 ---
 

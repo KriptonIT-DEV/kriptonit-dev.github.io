@@ -3,6 +3,9 @@ title: Empezamos
 description: Esta guía proporciona una descripción general de los plugins y las APIs de nuestra plataforma, ayudándote a comenzar a extender e integrarte con nuestros servicios.
 ---
 
+import { Code } from '@astrojs/starlight/components';
+import { BASE_API_WIDGET } from '../../../constants';
+
 Esta guia te ayudara a como empezar a usar nuestros plugins y APIs. Los plugins son herramientas pre-configuradas para facilitar la integración de nuestras funcionalidades en tu aplicacion. 
 
 ## Requisitos previos
@@ -24,22 +27,23 @@ Bien para agregar nuestro plugin debes copiar y pegar el siguiente codigo.
 
 - Luego importa este script en la misma página
 
-```html
-<script type="module">
-    import { konnectchat } from "https://dev.kapi.konnect-360.pe/widget/konnectchat.es.min.js";
+<Code
+  lang="html"
+  code={`<script type="module">
+      import { konnectchat } from "${BASE_API_WIDGET}/widget/konnectchat.es.min.js";
 
-    konnectchat('your_widget_name',
-      {
-        pagePresentation: {
-          title: 'Atencion al cliente', // string - titulo de presentación
-          withWhatsAppButton: true, // boolean - ocultar boton de whatsapp
-          withHeaderBot: true, // boolean - ver/ocultar header del bot
-        },
-        // ...
-      }
-    );
-</script>
-```
+      konnectchat('your_widget_name',
+        {
+          pagePresentation: {
+            title: 'Atencion al cliente', // string - titulo de presentación
+            withWhatsAppButton: true, // boolean - ocultar boton de whatsapp
+            withHeaderBot: true, // boolean - ver/ocultar header del bot
+          },
+          // ...
+        }
+      );
+  </script>`}
+/>
 Aqui puedes puedes ver más detalle [acerca del widget](/guides/widgetbot/).
 
 
@@ -48,7 +52,7 @@ Aqui puedes puedes ver más detalle [acerca del widget](/guides/widgetbot/).
 Para nuestras apis y webhooks es necesario obtener unas credenciales en **CANALES** de konnect-360, esto te permitira la ejecución de las operaciones solicitadas.
 
 
-Aqui puedes puedes ver más detalle [acerca de las Apis](/auth/).
+Aqui puedes puedes ver más detalle [acerca de las Apis](/authentication/).
 
 Aqui puedes puedes ver más detalle [acerca de los Webhook](/webhooks/configuracion/).
 
