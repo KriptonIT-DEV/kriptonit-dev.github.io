@@ -1,37 +1,42 @@
 ---
 title: Introducción
-description: Empeza a contruir con nuestra referenci api.
+description: Empezá a construir con nuestra API de referencia.
 template: splash
 hero:
-  tagline: Tu guía de referencia para implementar konnect.
-  image:
-    file: ../../assets/banner.svg
+  layout: split-left
+  announcement:
+      text: New docs theme
+      link: /guides/getting-started/
   actions:
-    - text: Empezar
-      link: /guides/example/
-      icon: right-arrow
-    - text: Ir a Konnect-360
-      link: https://www.konnect-360.pe/
-      target: _blank
-      icon: external
-      variant: minimal
+      - text: Start building
+        link: /guides/getting-started/
+        icon: right-arrow
+      - text: View components
+        link: /showcase/starlight-components/
+        variant: secondary
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
+<div style="text-align: center; margin-top: 2rem;">
+
 ## A continuación
+
+Explorá las guías y la referencia para integrar Konnect en minutos.
+
+</div>
 
 <CardGrid stagger>
 	<Card title="Integra tu widget" icon="pencil">
-		Agrega nuestro script de integracion [ver más](/guides/example/).
+		Agregá nuestro script en tu sitio y empezá a chatear. [Ver guía](/guides/widgetbot/).
 	</Card>
 	<Card title="Personaliza tu widget" icon="add-document">
-		Modifica tu configuración para agregar colores a tu widget.
+		Colores, mensajes y comportamiento a tu marca sin tocar backend.
 	</Card>
-	<Card title="Configura tu Api" icon="setting">
-		Realiza tu autenticación con nuestra api .
+	<Card title="Configurá tu API" icon="setting">
+		Autenticate con OAuth 2.0 y consumí todos los endpoints. [Autenticación](/authentication/).
 	</Card>
-	<Card title="Recibe tus eventos" icon="open-book">
-		Recibe los eventos de tus canales muy pronto.
+	<Card title="Recibí tus eventos" icon="open-book">
+		Webhooks en tiempo real para todos tus canales. [Webhooks](/webhooks/configuracion/).
 	</Card>
 </CardGrid>

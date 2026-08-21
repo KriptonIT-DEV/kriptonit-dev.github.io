@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import mermaid from 'astro-mermaid';
+import lucode from 'lucode-starlight';
 
 // https://astro.build/config
 export default defineConfig({
@@ -14,6 +15,18 @@ export default defineConfig({
         }),
         starlight({
             favicon: '/favicon.jpg',
+            customCss: ['./src/styles/global.css'],
+            plugins: [
+                lucode({
+                    navLinks: [
+                        { label: 'Docs', link: '/guides/example/' },
+                        { label: 'API', link: '/authentication/' },
+                        { label: 'Website', link: 'https://www.konnect-360.pe/' },
+                    ],
+                    footerText:
+                        '© Konnect-360 — Built with [Starlight](https://starlight.astro.build) + [Lucode](https://github.com/lucas-labs/lucode-starlight-theme).',
+                }),
+            ],
             logo: {
                 alt: 'Konnect-360',
                 replacesTitle: true,

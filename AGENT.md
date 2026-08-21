@@ -19,6 +19,8 @@
 | Runtime | Node.js | ≥18 |
 | Framework | Astro | `^7.2.4` |
 | Theme/Docs | Starlight | `^0.41.7` |
+| Tema | lucode-starlight | `^1.0.0` |
+| Imágenes | sharp | `^0.35.3` |
 | Deploy | gh-pages | `^6.3.0` |
 | Package Manager | pnpm | (requerido) |
 
@@ -123,22 +125,35 @@ schemas/*.yaml (referencia) → Escritura manual → src/content/docs/reference/
 ```javascript
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import mermaid from 'astro-mermaid';
+import lucode from 'lucode-starlight';
 
 export default defineConfig({
     site: 'https://kriptonit-dev.github.io/',
     integrations: [
+        mermaid({ theme: 'forest', autoTheme: true }),
         starlight({
             favicon: '/favicon.jpg',
             logo: {
                 alt: 'Konnect-360',
                 replacesTitle: true,
-                light: '/public/imgs/logo-light.png',
-                dark: '/public/imgs/logo-dark.png',
+                light: './src/assets/logo-light.png',
+                dark: './src/assets/logo-dark.png',
             },
             title: 'Konnect-360',
             social: [
                 { icon: 'external', label: 'Website', href: 'https://www.konnect-360.pe/' },
                 { icon: 'github', label: 'GitHub', href: 'https://github.com/KriptonIT-DEV/kriptonit-dev.github.io' },
+            ],
+            plugins: [
+                lucode({
+                    navLinks: [
+                        { label: 'Docs', link: '/guides/example/' },
+                        { label: 'API', link: '/authentication/' },
+                        { label: 'Website', link: 'https://www.konnect-360.pe/' },
+                    ],
+                    footerText: '© Konnect-360 — Built with Starlight + Lucode.',
+                }),
             ],
             sidebar: [
                 {
@@ -171,11 +186,10 @@ export default defineConfig({
 
 ### Plugins
 
-_Ninguno actualmente (tema obsidian y grafo removidos en upgrade a Starlight 0.41)._
-
 | Plugin | Propósito |
 |--------|-----------|
-| — | — |
+| `lucode-starlight` | Tema shadcn (header, hero layouts, footer, search, TOC) + `ExtendDocsSchema` |
+| `astro-mermaid` | Diagramas Mermaid con Sätteri |
 
 ### Sidebar - Tipos de Entradas
 
@@ -186,8 +200,8 @@ _Ninguno actualmente (tema obsidian y grafo removidos en upgrade a Starlight 0.4
 // Grupo con items
 { label: 'Guía', items: [/* ... */] }
 
-// Autogenerate desde directorio
-{ label: 'Autenticación', autogenerate: { directory: 'authentication' } }
+// Autogenerate desde directorio (Starlight 0.39+)
+{ label: 'Autenticación', items: [{ autogenerate: { directory: 'authentication' } }] }
 ```
 
 ---
@@ -200,9 +214,13 @@ Definida en `src/content.config.ts`:
 import { defineCollection } from 'astro:content';
 import { docsLoader } from '@astrojs/starlight/loaders';
 import { docsSchema } from '@astrojs/starlight/schema';
+import { ExtendDocsSchema } from 'lucode-starlight/schema';
 
 export const collections = {
-  docs: defineCollection({ loader: docsLoader(), schema: docsSchema() }),
+  docs: defineCollection({
+    loader: docsLoader(),
+    schema: docsSchema({ extend: ExtendDocsSchema }),
+  }),
 };
 ```
 
@@ -348,7 +366,10 @@ pnpm deploy  # Usa gh-pages para publicar dist/
 ### Modificar Estilos
 
 - CSS personalizado: `<style>` en componentes `.astro`
-- Tema: Starlight nativo (obsidian removido)
+- Tema: `lucode-starlight` — tokens en `src/styles/global.css` con `@layer lucode` (`--radius`, `--primary`, `--sidebar-width`, etc). Sin `global.css` usa defaults del tema
+  ```css
+  @layer lucode { :root { --radius: 0.5rem; --sidebar-width: 17rem; } }
+  ```
 
 ---
 
@@ -361,6 +382,10 @@ pnpm dev                           # Iniciar servidor de desarrollo
 # Build
 pnpm build                         # Build de producción
 pnpm preview                       # Previsualizar build
+
+# Limpieza (usa siempre pnpm, nunca npm)
+pnpm clean                         # rm -rf node_modules dist .astro
+pnpm install                       # reinstalar limpio tras clean o cambio de lock
 
 # Deploy
 pnpm deploy                        # Deploy manual a GitHub Pages
@@ -399,9 +424,10 @@ Controla qué paquetes pueden ejecutar scripts de instalación:
 ```yaml
 allowBuilds:
   esbuild: false
+  sharp: true
 ```
 
-> `sharp` fue removido en el upgrade a Astro 7 / Starlight 0.41 (no necesario para este sitio).
+> `sharp` requerido para optimizar `banner.svg` y logos (Astro Assets). Si lo quitás, el build falla con `MissingSharp`.
 
 ---
 

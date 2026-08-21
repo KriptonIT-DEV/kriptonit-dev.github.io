@@ -8,7 +8,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "predeploy": "npm run build",
+    "clean": "rm -rf node_modules dist .astro",
+    "predeploy": "pnpm build",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
@@ -16,6 +17,8 @@
     "astro": "^7.2.4",
     "astro-mermaid": "^2.1.0",
     "gh-pages": "^6.3.0",
-    "mermaid": "^11.16.0"
+    "lucode-starlight": "^1.0.0",
+    "mermaid": "^11.16.0",
+    "sharp": "^0.35.3"
   }
 }
