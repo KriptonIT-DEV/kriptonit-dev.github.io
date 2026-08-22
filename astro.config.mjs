@@ -15,9 +15,14 @@ export default defineConfig({
         }),
         starlight({
             favicon: '/favicon.jpg',
-            customCss: ['./src/styles/global.css'],
+          customCss: ['./src/styles/global.css'],
+          lastUpdated: true,
+
             plugins: [
-                lucode({
+              lucode({
+                docs: {
+                  includeAiUtilities: true,
+                },
                     navLinks: [
                         { label: 'Docs', link: '/guides/example/' },
                         { label: 'API', link: '/authentication/' },
