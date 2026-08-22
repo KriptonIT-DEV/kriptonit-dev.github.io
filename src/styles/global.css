@@ -1,0 +1,10 @@
+
+.hero-image {
+   	display: flex;
+   	justify-content: center;
+}
+
+.hero-image > img {
+	width: 20vw !important;
+	height: 20vh;
+}
