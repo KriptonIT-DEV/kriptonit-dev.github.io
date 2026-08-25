@@ -3,13 +3,13 @@ title: Obtener Cliente
 description: Consulta la información de un cliente según el canal e identificador.
 ---
 
+import { Code } from '@astrojs/starlight/components';
 import ApiCodeTabs from '../../../components/ApiCodeTabs.astro';
+import { BASE_API_URL } from '../../../constants';
 
-### Endpoint 
+### Endpoint
 
-```
-GET /api/external/customer?channel={{channel}}&identifier={{identifier}}
-```
+<Code lang="http" code={`GET ${BASE_API_URL}/api/external/customer?channel={{channel}}&identifier={{identifier}}`} />
 
 ### Parámetros de Query
 
@@ -29,43 +29,47 @@ GET /api/external/customer?channel={{channel}}&identifier={{identifier}}
 <ApiCodeTabs>
 <Fragment slot="curl">
 
-```bash
-curl -X GET "https://devkapi.konnect-360.pe/api/external/customer?channel=whatsapp&identifier=999888777" \
-  -H "Authorization: Bearer tu_token_aqui"
-```
+<Code
+  lang="bash"
+  code={`curl -X GET "${BASE_API_URL}/api/external/customer?channel=whatsapp&identifier=999888777" \\
+  -H "Authorization: Bearer tu_token_aqui"`}
+/>
 
 </Fragment>
 <Fragment slot="javascript">
 
-```javascript
-const response = await fetch(
-  `https://devkapi.konnect-360.pe/api/external/customer?channel=whatsapp&identifier=999888777`,
-  { headers: { 'Authorization': `Bearer ${token}` } }
+<Code
+  lang="javascript"
+  code={`const response = await fetch(
+  \`${BASE_API_URL}/api/external/customer?channel=whatsapp&identifier=999888777\`,
+  { headers: { 'Authorization': \`Bearer \${token}\` } }
 );
-const data = await response.json();
-```
+const data = await response.json();`}
+/>
 
 </Fragment>
 <Fragment slot="python">
 
-```python
-import requests
+<Code
+  lang="python"
+  code={`import requests
 
-url = "https://devkapi.konnect-360.pe/api/external/customer"
+url = "${BASE_API_URL}/api/external/customer"
 params = {"channel": "whatsapp", "identifier": "999888777"}
 headers = {"Authorization": "Bearer tu_token_aqui"}
 
 response = requests.get(url, params=params, headers=headers)
-data = response.json()
-```
+data = response.json()`}
+/>
 
 </Fragment>
 <Fragment slot="php">
 
-```php
-<?php
+<Code
+  lang="php"
+  code={`<?php
 
-$url = "https://devkapi.konnect-360.pe/api/external/customer?channel=whatsapp&identifier=999888777";
+$url = "${BASE_API_URL}/api/external/customer?channel=whatsapp&identifier=999888777";
 $headers = ["Authorization: Bearer tu_token_aqui"];
 
 $ch = curl_init($url);
@@ -73,28 +77,29 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 $response = curl_exec($ch);
 curl_close($ch);
-$data = json_decode($response, true);
-```
+$data = json_decode($response, true);`}
+/>
 
 </Fragment>
 <Fragment slot="java">
 
-```java
-import java.net.URI;
+<Code
+  lang="java"
+  code={`import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 var client = HttpClient.newHttpClient();
 var request = HttpRequest.newBuilder()
-    .uri(URI.create("https://devkapi.konnect-360.pe/api/external/customer?channel=whatsapp&identifier=999888777"))
+    .uri(URI.create("${BASE_API_URL}/api/external/customer?channel=whatsapp&identifier=999888777"))
     .header("Authorization", "Bearer tu_token_aqui")
     .GET()
     .build();
 
 var response = client.send(request, HttpResponse.BodyHandlers.ofString());
-var data = response.body();
-```
+var data = response.body();`}
+/>
 
 </Fragment>
 </ApiCodeTabs>
@@ -135,7 +140,7 @@ var data = response.body();
 | `last_ticket_id` | number \| null | ID del último ticket |
 | `canal_id` | number | ID del canal |
 
-### Respuesta de Error (400)
+### Errores
 
 ```json
 {
@@ -147,6 +152,11 @@ var data = response.body();
   "errors": { "code": -1, "status": 400 }
 }
 ```
+
+| Código | Mensaje | Posible Causa |
+|--------|---------|---------------|
+| 400 | Error: No hay datos. | Cliente o canal no encontrado |
+| 401 | No autorizado | Token expirado o inválido |
 
 :::tip
 Usá el `cus_id` de la respuesta como `customer_id` en el siguiente endpoint para obtener los tickets.

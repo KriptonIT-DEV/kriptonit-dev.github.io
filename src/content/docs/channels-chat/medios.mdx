@@ -3,14 +3,13 @@ title: Obtener Medios
 description: Descarga archivos multimedia asociados a un ticket.
 ---
 
-import { Aside } from '@astrojs/starlight/components';
+import { Code, Aside } from '@astrojs/starlight/components';
 import ApiCodeTabs from '../../../components/ApiCodeTabs.astro';
+import { BASE_API_URL } from '../../../constants';
 
-### Endpoint 
+### Endpoint
 
-```
-GET /api/external/ticket/medias?channel_id={{channel_id}}&mime_id={{mime_id}}
-```
+<Code lang="http" code={`GET ${BASE_API_URL}/api/external/ticket/medias?channel_id={{channel_id}}&mime_id={{mime_id}}`} />
 
 ### Parámetros de Query
 
@@ -30,45 +29,49 @@ GET /api/external/ticket/medias?channel_id={{channel_id}}&mime_id={{mime_id}}
 <ApiCodeTabs>
 <Fragment slot="curl">
 
-```bash
-curl -X GET "https://devkapi.konnect-360.pe/api/external/ticket/medias?channel_id=1&mime_id=546097577936591" \
-  -H "Authorization: Bearer tu_token_aqui" \
-  --output archivo.gif
-```
+<Code
+  lang="bash"
+  code={`curl -X GET "${BASE_API_URL}/api/external/ticket/medias?channel_id=1&mime_id=546097577936591" \\
+  -H "Authorization: Bearer tu_token_aqui" \\
+  --output archivo.gif`}
+/>
 
 </Fragment>
 <Fragment slot="javascript">
 
-```javascript
-const response = await fetch(
-  `https://devkapi.konnect-360.pe/api/external/ticket/medias?channel_id=1&mime_id=546097577936591`,
-  { headers: { 'Authorization': `Bearer ${token}` } }
+<Code
+  lang="javascript"
+  code={`const response = await fetch(
+  \`${BASE_API_URL}/api/external/ticket/medias?channel_id=1&mime_id=546097577936591\`,
+  { headers: { 'Authorization': \`Bearer \${token}\` } }
 );
-const blob = await response.blob();
-```
+const blob = await response.blob();`}
+/>
 
 </Fragment>
 <Fragment slot="python">
 
-```python
-import requests
+<Code
+  lang="python"
+  code={`import requests
 
-url = "https://devkapi.konnect-360.pe/api/external/ticket/medias"
+url = "${BASE_API_URL}/api/external/ticket/medias"
 params = {"channel_id": "1", "mime_id": "546097577936591"}
 headers = {"Authorization": "Bearer tu_token_aqui"}
 
 response = requests.get(url, params=params, headers=headers)
 with open("archivo.gif", "wb") as f:
-    f.write(response.content)
-```
+    f.write(response.content)`}
+/>
 
 </Fragment>
 <Fragment slot="php">
 
-```php
-<?php
+<Code
+  lang="php"
+  code={`<?php
 
-$url = "https://devkapi.konnect-360.pe/api/external/ticket/medias?channel_id=1&mime_id=546097577936591";
+$url = "${BASE_API_URL}/api/external/ticket/medias?channel_id=1&mime_id=546097577936591";
 $headers = ["Authorization: Bearer tu_token_aqui"];
 
 $ch = curl_init($url);
@@ -76,14 +79,15 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 $response = curl_exec($ch);
 curl_close($ch);
-file_put_contents("archivo.gif", $response);
-```
+file_put_contents("archivo.gif", $response);`}
+/>
 
 </Fragment>
 <Fragment slot="java">
 
-```java
-import java.net.URI;
+<Code
+  lang="java"
+  code={`import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -91,14 +95,14 @@ import java.nio.file.Path;
 
 var client = HttpClient.newHttpClient();
 var request = HttpRequest.newBuilder()
-    .uri(URI.create("https://devkapi.konnect-360.pe/api/external/ticket/medias?channel_id=1&mime_id=546097577936591"))
+    .uri(URI.create("${BASE_API_URL}/api/external/ticket/medias?channel_id=1&mime_id=546097577936591"))
     .header("Authorization", "Bearer tu_token_aqui")
     .GET()
     .build();
 
 var response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
-java.nio.file.Files.copy(response.body(), Path.of("archivo.gif"));
-```
+java.nio.file.Files.copy(response.body(), Path.of("archivo.gif"));`}
+/>
 
 </Fragment>
 </ApiCodeTabs>
@@ -113,3 +117,9 @@ java.nio.file.Files.copy(response.body(), Path.of("archivo.gif"));
 <Aside type="caution">
   La respuesta es el **binario del archivo**, no un JSON. Usá `response.blob()` en JS o `--output` en cURL.
 </Aside>
+
+### Errores
+
+| Código | Mensaje | Posible Causa |
+|--------|---------|---------------|
+| 401 | No autorizado | Token expirado o inválido |

@@ -1,49 +1,96 @@
 ---
-title: Integration Platform
-description: Build, document, and operate internal integrations from one place.
+title: APIs de Konnect-360
+description: Documentación de las APIs de Konnect-360 — autenticación, WhatsApp, canales de chat, flujos conversacionales y webhooks.
 template: splash
 hero:
   layout: centered
   announcement:
-      text: Version 2.0 is available
-      link: /guides/getting-started/
+      text: Flow Chat ya está disponible en fase experimental
+      link: /flow-chat/
   image:
       file: './../../assets/banner.svg'
-      alt: Houston banner
+      alt: Konnect-360
   actions:
-      - text: Start building
-        link: /guides/getting-started/
+      - text: Empezar
+        link: /guides/example/
         icon: right-arrow
-      - text: Customize theme
-        link: /guides/theming/
+      - text: Obtener un token
+        link: /authentication/
         variant: secondary
 ---
 
-
 import { Card, CardGrid } from '@astrojs/starlight/components';
+import { BASE_API_URL, BASE_API_IAFLOWS, BASE_API_WIDGET } from '../../constants';
 import { ContainerSection } from 'lucode-starlight/components';
 
 <ContainerSection>
 
-## What the Theme Changes
+## Qué vas a encontrar acá
+
+Konnect-360 expone varias APIs REST para integrar mensajería, atención al cliente y flujos con IA
+desde tu propio backend o front-end. Todas comparten el mismo esquema de autenticación
+(**OAuth 2.0 `client_credentials`**) y devuelven JSON.
+
+Tres URLs base, según qué estés integrando:
+
+| Base | Para qué |
+|------|----------|
+| <code>{BASE_API_URL}</code> | Autenticación, WhatsApp, canales de chat, webhooks |
+| <code>{BASE_API_IAFLOWS}</code> | Flow Chat (flujos conversacionales con IA) |
+| <code>{BASE_API_WIDGET}</code> | Widgets embebibles de chat |
+
+## Las APIs
 
 <CardGrid>
-    <Card title="Starlight-native" icon="starlight">
-        Lucode Starlight is a Starlight plugin. Keep the content collections, sidebar config,
-        search, i18n, and MDX workflow you already know.
+    <Card title="Autenticación" icon="approve-check">
+        Punto de partida obligatorio. Flujo `client_credentials` con tu `client_id` y
+        `client_secret` para obtener el token `Bearer` que va en todas las demás llamadas.
+
+        [Ir a Autenticación →](/authentication/)
     </Card>
-    <Card title="Opinionated UI" icon="setting">
-        Header, sidebar, footer, search, hero, page frame, pagination, and markdown rendering are
-        replaced with a tighter design system.
+    <Card title="Mensajes WhatsApp" icon="comment">
+        Envío de mensajes de texto y de texto con multimedia a un número de WhatsApp.
+
+        [Ir a Mensajes WhatsApp →](/whatsapp-messages/)
     </Card>
-    <Card title="Token-based theming" icon="setting">
-        Colors, spacing, radii, container width, and component surfaces are driven by CSS custom
-        properties that you can override per site.
+    <Card title="Plantillas WhatsApp" icon="document">
+        Listado de plantillas pre-aprobadas, consulta por nombre, estructura de parámetros y envío
+        con valores personalizados.
+
+        [Ir a Plantillas WhatsApp →](/whatsapp-template/)
     </Card>
-    <Card title="Splash pages" icon="rocket">
-        Use Starlight's splash template with Lucode hero layouts for landing pages, product pages,
-        and docs entry points.
+    <Card title="Canales de Chat" icon="email">
+        Consulta de clientes, tickets, historial de mensajes y descarga de archivos multimedia de
+        los canales conectados.
+
+        [Ir a Canales de Chat →](/channels-chat/)
+    </Card>
+    <Card title="Flow Chat" icon="random">
+        Chat conversacional contra el grafo completo de un workflow, con estado durable y stream
+        SSE del hilo. En fase **experimental**.
+
+        [Ir a Flow Chat →](/flow-chat/)
+    </Card>
+    <Card title="Webhooks" icon="puzzle">
+        Eventos que Konnect-360 envía a tu servidor cuando llega un mensaje por un canal o cuando
+        pasa algo en el widget embebido.
+
+        [Ir a Webhooks →](/webhooks/configuracion/)
     </Card>
 </CardGrid>
+
+## Widgets
+
+Además de las APIs, hay dos widgets listos para embeber en tu front-end:
+el [Widget Chat Bot](/guides/widgetbot/), que atiende con el flujo de IA, y el
+[Widget Chat Cliente](/guides/widgetcustomer/), que conecta con un agente humano.
+
+## Por dónde empezar
+
+1. Conseguí tus credenciales en la sección **CANALES** de tu cuenta Konnect-360.
+2. Pedí un token en [Autenticación](/authentication/) — todas las demás llamadas lo necesitan.
+3. Elegí la API que te toque y seguí su página de **Introducción**: cada una arranca con la URL
+   base, los headers y un ejemplo completo.
+4. Si vas a recibir eventos, registrá tu URL en [Configuración de Webhooks](/webhooks/configuracion/).
 
 </ContainerSection>

@@ -1,0 +1,44 @@
+---
+title: Adjuntos
+description: Sirve los bytes de un adjunto del hilo de conversación.
+badge:
+  text: Experimental
+  variant: caution
+---
+
+import { Code } from '@astrojs/starlight/components';
+import { BASE_API_IAFLOWS } from '../../../constants';
+
+### Endpoint
+
+<Code lang="http" code={`GET ${BASE_API_IAFLOWS}/api/workflows/:id/chat/:cid/attachments/:attachmentId`} />
+
+:::caution
+Es `/chat/`, **no** `/flow-chat/`. Mismo storage, otra ruta (`routes/attachments.ts`). El `:cid` es el mismo conversationId del flow-chat.
+:::
+
+El `attachmentId` sale de `messages[].attachments` del [stream](/flow-chat/stream/).
+
+### Ejemplo
+
+```http
+GET /api/workflows/:id/chat/00000000-0000-0000-0000-000000000000/attachments/00000000-0000-0000-0000-000000000000.png HTTP/1.1
+Authorization: Bearer tu_token_aqui
+```
+
+### Respuesta Exitosa (200)
+
+Devuelve los **bytes** del archivo con el `Content-Type` de la whitelist —nunca el que declaró el cliente— y el header `X-Content-Type-Options: nosniff`. Las dos cosas van juntas: es lo que deja inerte un archivo que mintió sobre su tipo.
+
+### Errores
+
+| Código | Cuerpo | Posible Causa |
+|--------|--------|---------------|
+| 404 | `not_found` | Adjunto inexistente o ya borrado |
+| 400 | `invalid_id` | ID con formato inválido |
+| 415 | `unsupported_type` | Tipo fuera de la whitelist |
+| 500 | `read_failed` | Falla al leer del storage |
+
+:::tip
+Los adjuntos se borran definitivamente al [cerrar la conversación](/flow-chat/cerrar-conversacion/).
+:::

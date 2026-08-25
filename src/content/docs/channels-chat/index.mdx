@@ -3,35 +3,72 @@ title: Introducción
 description: Guía para gestionar clientes, tickets y mensajes en los canales de chat de Konnect-360.
 ---
 
-import { BASE_API_WIDGET, AUTH_REQUEST_TOKEN } from '../../../constants';
+import { Card, CardGrid, Steps } from '@astrojs/starlight/components';
+import { BASE_API_URL, AUTH_REQUEST_TOKEN } from '../../../constants';
 
-API para extraer y gestionar chats en diferentes canales. Actualmente solo se soporta **WhatsApp**.
+API para extraer y gestionar chats de los canales conectados. Hoy solo se soporta **WhatsApp**.
 
-**URL Base:** <code>{BASE_API_WIDGET}</code>
+**URL Base:** <code>{BASE_API_URL}</code>
 
 <p set:html={AUTH_REQUEST_TOKEN} />
 
+## Endpoints
+
+<CardGrid>
+    <Card title="Obtener Cliente" icon="magnifier">
+        Información de un cliente según el canal y su identificador.
+
+        [Ver endpoint →](/channels-chat/cliente/)
+    </Card>
+    <Card title="Obtener Tickets" icon="list-format">
+        Todos los tickets asociados a un cliente.
+
+        [Ver endpoint →](/channels-chat/tickets/)
+    </Card>
+    <Card title="Obtener Mensajes" icon="comment">
+        Historial de mensajes de un ticket específico.
+
+        [Ver endpoint →](/channels-chat/mensajes/)
+    </Card>
+    <Card title="Obtener Medios" icon="seti:image">
+        Archivos multimedia asociados a un ticket.
+
+        [Ver endpoint →](/channels-chat/medios/)
+    </Card>
+</CardGrid>
+
 ## Flujo de Trabajo
 
-```mermaid
-flowchart TD
-    A[Obtener Token] --> B[Obtener Cliente]
-    B --> C[Obtener Tickets]
-    C --> D[Obtener Mensajes]
-    D --> E[Obtener Medios]
-```
+Los endpoints son encadenados: cada uno necesita un ID que devuelve el anterior.
+
+<Steps>
+
+1. [Obtener token](/authentication/)
+
+2. [Obtener Cliente](/channels-chat/cliente/) → te da el `cus_id`
+
+3. [Obtener Tickets](/channels-chat/tickets/) → con el `cus_id`
+
+4. [Obtener Mensajes](/channels-chat/mensajes/) → con el ticket
+
+5. [Obtener Medios](/channels-chat/medios/) → si el mensaje trae multimedia
+
+</Steps>
 
 ## Errores Comunes
 
 | Código | Mensaje | Posible Causa |
 |--------|---------|---------------|
 | 400 | Error: No hay datos | Cliente o canal no encontrado |
-| 200 | No existe customer para consulta de tickets | customer_id inválido |
+| 200 | No existe customer para consulta de tickets | `customer_id` inválido |
 | 401 | No autorizado | Token expirado o inválido |
+
+:::caution
+El segundo caso devuelve **200**, no un código de error: un `customer_id` inválido no rompe la llamada. Validá el cuerpo de la respuesta, no solo el status.
+:::
 
 ## Tips
 
-- Obtén primero el cliente para conseguir el `cus_id`
-- Usá `last_msn_id` para paginación de mensajes
-- El campo `msn_tipo_str` indica el tipo de contenido multimedia
-- El endpoint de medios retorna binario, manejá el Content-Type correctamente
+- Usá `last_msn_id` para paginar mensajes
+- `msn_tipo_str` indica el tipo de contenido multimedia
+- El endpoint de medios retorna binario: manejá el `Content-Type` correctamente

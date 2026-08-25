@@ -5,7 +5,7 @@ description: Referencia técnica del webhook que Konnect-360 envía a tu servido
 
 Este webhook se dispara cuando llega un mensaje nuevo por un canal externo conectado a tu cuenta (WhatsApp, Messenger, etc). Konnect-360 hace un `POST` a la URL que registraste en [Configuración](/webhooks/configuracion/).
 
-## Endpoint
+### Endpoint
 
 `POST {tu_webhook_url}`
 
@@ -32,7 +32,7 @@ Este webhook se dispara cuando llega un mensaje nuevo por un canal externo conec
 | `message` | string | Texto del mensaje recibido. |
 | `sender` | string | Identificador del remitente (número de teléfono o id de usuario del canal). |
 
-### Respuesta esperada
+### Respuesta Esperada
 
 Tu servidor debe responder `200 OK` para confirmar la recepción del evento.
 

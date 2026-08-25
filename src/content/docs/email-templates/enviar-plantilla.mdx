@@ -1,0 +1,277 @@
+---
+title: Enviar Plantilla
+description: Envía una plantilla de email con sus variables resueltas.
+---
+
+import { Code, Steps } from '@astrojs/starlight/components';
+import ApiCodeTabs from '../../../components/ApiCodeTabs.astro';
+import { BASE_API_URL } from '../../../constants';
+
+Envía una plantilla reemplazando sus variables por los valores que mandes. No admite adjuntos: para eso usá [Envío Directo](/email-templates/enviar-directo/).
+
+### Endpoint
+
+<Code lang="http" code={`POST ${BASE_API_URL}/api/v1/email/send-template`} />
+
+### Headers
+
+| Header | Valor |
+|--------|-------|
+| Content-Type | application/json |
+| Authorization | Bearer `{{token}}` |
+
+### Body
+
+| Campo | Tipo | Requerido | Descripción |
+|-------|------|-----------|-------------|
+| `template_id` | int \| string | Sí | `payload_id` de la plantilla, no puede ir vacío |
+| `to` | string | Sí | Email del destinatario |
+| `params` | array | Sí | Valores de las variables — puede ir vacío, pero **no puede faltar** |
+| `params[].name` | string | Sí | Nombre de la variable |
+| `params[].type` | string | Sí | Tipo del valor — `text` |
+| `params[].value` | string | Sí | Valor a reemplazar, no puede estar vacío |
+| `tracking_number` | string | No | Identificador de seguimiento propio |
+| `url_tracking` | string | No | URL de seguimiento asociada al envío |
+| `mail_id` | int | No | Identidad de remitente — ver [Remitente](/email-templates/#remitente-por-empresa) |
+| `from` | string | No | Buzón emisor |
+| `from_name` | string | No | Nombre visible, máximo 100 caracteres |
+
+:::caution
+`params` es obligatorio incluso cuando la plantilla no tiene variables. En ese caso mandá `"params": []`, no lo omitas.
+:::
+
+### Ejemplos
+
+<ApiCodeTabs>
+<Fragment slot="curl">
+
+<Code
+  lang="bash"
+  code={`curl -X POST ${BASE_API_URL}/api/v1/email/send-template \\
+    -H "Content-Type: application/json" \\
+    -H "Authorization: Bearer tu_token_aqui" \\
+    -d '{
+      "template_id": 72,
+      "to": "cliente@gmail.com",
+      "params": [
+        { "name": "name", "type": "text", "value": "JUAN ANTONIO" }
+      ]
+    }'`}
+/>
+
+</Fragment>
+<Fragment slot="javascript">
+
+<Code
+  lang="javascript"
+  code={`const response = await fetch('${BASE_API_URL}/api/v1/email/send-template', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': \`Bearer \${token}\`
+    },
+    body: JSON.stringify({
+      template_id: 72,
+      to: 'cliente@gmail.com',
+      params: [
+        { name: 'name', type: 'text', value: 'JUAN ANTONIO' }
+      ]
+    })
+  });
+  const data = await response.json();`}
+/>
+
+</Fragment>
+<Fragment slot="python">
+
+<Code
+  lang="python"
+  code={`import requests
+
+  url = "${BASE_API_URL}/api/v1/email/send-template"
+  headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer tu_token_aqui"
+  }
+  payload = {
+      "template_id": 72,
+      "to": "cliente@gmail.com",
+      "params": [
+          {"name": "name", "type": "text", "value": "JUAN ANTONIO"}
+      ]
+  }
+
+  response = requests.post(url, json=payload, headers=headers)
+  data = response.json()`}
+/>
+
+</Fragment>
+<Fragment slot="php">
+
+<Code
+  lang="php"
+  code={`<?php
+
+  $url = "${BASE_API_URL}/api/v1/email/send-template";
+  $headers = [
+      "Content-Type: application/json",
+      "Authorization: Bearer tu_token_aqui"
+  ];
+  $payload = [
+      "template_id" => 72,
+      "to" => "cliente@gmail.com",
+      "params" => [
+          ["name" => "name", "type" => "text", "value" => "JUAN ANTONIO"]
+      ]
+  ];
+
+  $ch = curl_init($url);
+  curl_setopt($ch, CURLOPT_POST, true);
+  curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $response = curl_exec($ch);
+  curl_close($ch);
+  $data = json_decode($response, true);`}
+/>
+
+</Fragment>
+<Fragment slot="java">
+
+<Code
+  lang="java"
+  code={`import java.net.URI;
+  import java.net.http.HttpClient;
+  import java.net.http.HttpRequest;
+  import java.net.http.HttpResponse;
+
+  var payload = """
+      {
+        "template_id": 72,
+        "to": "cliente@gmail.com",
+        "params": [
+          { "name": "name", "type": "text", "value": "JUAN ANTONIO" }
+        ]
+      }
+      """;
+
+  var client = HttpClient.newHttpClient();
+  var request = HttpRequest.newBuilder()
+      .uri(URI.create("${BASE_API_URL}/api/v1/email/send-template"))
+      .header("Content-Type", "application/json")
+      .header("Authorization", "Bearer tu_token_aqui")
+      .POST(HttpRequest.BodyPublishers.ofString(payload))
+      .build();
+
+  var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+  var data = response.body();`}
+/>
+
+</Fragment>
+</ApiCodeTabs>
+
+### Con Remitente y Seguimiento
+
+```json
+{
+  "template_id": 72,
+  "to": "cliente@gmail.com",
+  "mail_id": 5,
+  "from_name": "Konnect 360",
+  "tracking_number": "EMAIL001",
+  "url_tracking": "https://example.com/track/e001",
+  "params": [
+    { "name": "name", "type": "text", "value": "JUAN ANTONIO" }
+  ]
+}
+```
+
+### Cómo se Procesa el Envío
+
+<Steps>
+
+1. Se resuelve el **remitente**. Si falla, el request corta con `400` y no se envía nada.
+
+2. Se aplica el **control de duplicados**: misma combinación de `tracking_number`, `template_id`, `to` y `params` dentro de 5 segundos se rechaza.
+
+3. Se renderiza el cuerpo `html_email` reemplazando los `{{tokens}}` con tus `params`.
+
+4. Las imágenes con ruta **relativa** se reescriben al proxy público. Las URLs absolutas, `blob:` y `data:` quedan intactas.
+
+5. Se **registra** el envío en base de datos. Si el registro falla, el correo **no se envía**.
+
+6. Se despacha por SES. El asunto sale de `template_json.subject`.
+
+</Steps>
+
+:::note
+Un token mapeado con valor nulo se reemplaza por cadena vacía. Un token que no está en tus `params` se deja tal cual en el cuerpo: no rompe el envío, pero llega literal al destinatario.
+:::
+
+:::caution
+A diferencia del [envío directo](/email-templates/enviar-directo/), acá un fallo de registro en base de datos **sí bloquea el envío**.
+:::
+
+### Respuesta Exitosa (200)
+
+```json
+{
+  "success": true,
+  "data": {
+    "sent": true,
+    "id_msn": 12345,
+    "from": "ventas@midominio.com"
+  },
+  "code": 200,
+  "status": 200,
+  "messages": "Correo enviado correctamente",
+  "errors": null
+}
+```
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| `data.sent` | boolean | Si SES aceptó el correo |
+| `data.id_msn` | int | ID del mensaje registrado en la plataforma |
+| `data.from` | string | Buzón emisor usado — **se omite** si se usó el remitente global |
+
+### Errores
+
+**Fallo de envío**
+
+```json
+{
+  "success": false,
+  "data": {
+    "sent": false,
+    "from": "ventas@midominio.com"
+  },
+  "code": 502,
+  "status": 401,
+  "messages": "Plantilla no encontrada",
+  "errors": null
+}
+```
+
+En los fallos `id_msn` no viene: no aparece en el JSON.
+
+**Parámetro con valor vacío**
+
+```json
+{
+  "success": false,
+  "status": 401,
+  "messages": "Error de validación",
+  "errors": [
+    { "path": "params[0].value", "msg": "value no puede estar vacío" }
+  ]
+}
+```
+
+| Código | Mensaje | Posible Causa |
+|--------|---------|---------------|
+| 400 | Error de remitente | Ver [Remitente por empresa](/email-templates/#remitente-por-empresa) |
+| 401 | Error de validación | Falta `params`, o algún elemento tiene `name`, `type` o `value` vacío |
+| 401 (`code: 502`) | Posible petición repetida | Mismo envío repetido dentro de los 5 segundos |
+| 401 (`code: 502`) | Plantilla no encontrada | El `template_id` no existe o no es de canal email |
+| 401 (`code: 502`) | No se pudo enviar el correo | SES rechazó el envío |

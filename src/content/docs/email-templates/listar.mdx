@@ -1,0 +1,165 @@
+---
+title: Listar Plantillas
+description: Obtén todas las plantillas de email disponibles para tu empresa.
+---
+
+import { Code } from '@astrojs/starlight/components';
+import ApiCodeTabs from '../../../components/ApiCodeTabs.astro';
+import { BASE_API_URL } from '../../../constants';
+
+Devuelve las plantillas de tu empresa filtradas al canal de email. La empresa se resuelve desde el token: no hay parámetros.
+
+### Endpoint
+
+<Code lang="http" code={`GET ${BASE_API_URL}/api/v1/email/templates`} />
+
+### Headers
+
+| Header | Valor |
+|--------|-------|
+| Authorization | Bearer `{{token}}` |
+
+### Ejemplos
+
+<ApiCodeTabs>
+<Fragment slot="curl">
+
+<Code
+  lang="bash"
+  code={`curl -X GET ${BASE_API_URL}/api/v1/email/templates \\
+    -H "Authorization: Bearer tu_token_aqui"`}
+/>
+
+</Fragment>
+<Fragment slot="javascript">
+
+<Code
+  lang="javascript"
+  code={`const response = await fetch('${BASE_API_URL}/api/v1/email/templates', {
+    headers: { 'Authorization': \`Bearer \${token}\` }
+  });
+  const data = await response.json();`}
+/>
+
+</Fragment>
+<Fragment slot="python">
+
+<Code
+  lang="python"
+  code={`import requests
+
+  url = "${BASE_API_URL}/api/v1/email/templates"
+  headers = {"Authorization": "Bearer tu_token_aqui"}
+
+  response = requests.get(url, headers=headers)
+  data = response.json()`}
+/>
+
+</Fragment>
+<Fragment slot="php">
+
+<Code
+  lang="php"
+  code={`<?php
+
+  $url = "${BASE_API_URL}/api/v1/email/templates";
+  $headers = ["Authorization: Bearer tu_token_aqui"];
+
+  $ch = curl_init($url);
+  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $response = curl_exec($ch);
+  curl_close($ch);
+  $data = json_decode($response, true);`}
+/>
+
+</Fragment>
+<Fragment slot="java">
+
+<Code
+  lang="java"
+  code={`import java.net.URI;
+  import java.net.http.HttpClient;
+  import java.net.http.HttpRequest;
+  import java.net.http.HttpResponse;
+
+  var client = HttpClient.newHttpClient();
+  var request = HttpRequest.newBuilder()
+      .uri(URI.create("${BASE_API_URL}/api/v1/email/templates"))
+      .header("Authorization", "Bearer tu_token_aqui")
+      .GET()
+      .build();
+
+  var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+  var data = response.body();`}
+/>
+
+</Fragment>
+</ApiCodeTabs>
+
+### Respuesta Exitosa (200)
+
+```json
+{
+  "success": true,
+  "status": 200,
+  "code": 0,
+  "messages": "",
+  "data": [
+    {
+      "payload_id": 72,
+      "canal_id": 1,
+      "cnl_origen": 4,
+      "pyld_nombre": "Bienvenida",
+      "pyld_catego": "MARKETING",
+      "pyld_estado": 1,
+      "pyld_id_wsp": null,
+      "pyld_status": "APPROVED",
+      "template_json": {
+        "subject": "Bienvenido a Konnect-360",
+        "html": "<h1>Hola {{name}}</h1>",
+        "html_email": "<h1>Hola {{name}}</h1>"
+      },
+      "template_prepared": null,
+      "template_files_history": [],
+      "canal": { "canal_id": 1, "cnl_origen": 4 },
+      "created_at": "2026-01-10T12:00:00.000Z",
+      "updated_at": "2026-02-01T09:30:00.000Z",
+      "deleted_at": null
+    }
+  ]
+}
+```
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| `payload_id` | int | ID de la plantilla — el que se manda como `template_id` al enviar |
+| `pyld_nombre` | string | Nombre de la plantilla |
+| `pyld_catego` | string | Categoría: `MARKETING`, `UTILITY`, `AUTHENTICATION` |
+| `pyld_status` | string | Estado de aprobación de la plantilla |
+| `cnl_origen` | int | Origen del canal — siempre `4` (email) en esta respuesta |
+| `template_json.subject` | string | Asunto que se usa al enviar |
+| `template_json.html_email` | string | Cuerpo que se renderiza en el envío |
+| `template_files_history` | array | Historial de archivos asociados |
+
+:::note
+La lista viene filtrada a canales de email (`cnl_origen = 4`). Las plantillas de WhatsApp se consultan por [su propio endpoint](/whatsapp-template/listar/).
+:::
+
+### Errores
+
+```json
+{
+  "success": false,
+  "status": 400,
+  "code": -1,
+  "messages": "Detalle del error de la base de datos",
+  "data": null
+}
+```
+
+| Código | Mensaje | Posible Causa |
+|--------|---------|---------------|
+| 400 | Detalle SQL | Fallo al consultar las plantillas |
+| 401 | Token no encontrado | Falta el header `Authorization` |
+| 401 | Tennant no encontrado | El token no resuelve a una empresa |

@@ -1,0 +1,130 @@
+---
+title: Enviar Mensajes
+description: Envía mensajes de texto o con archivos a la conversación.
+badge:
+  text: Experimental
+  variant: caution
+---
+
+import { Code } from '@astrojs/starlight/components';
+import { BASE_API_IAFLOWS } from '../../../constants';
+
+## Mensaje de Texto
+
+### Endpoint
+
+<Code lang="http" code={`POST ${BASE_API_IAFLOWS}/api/workflows/:id/flow-chat/:cid/messages`} />
+
+:::caution
+**Solo texto.** El schema es `.strict()`: mandar una clave `attachments` acá devuelve `400`, no un `200` silencioso. Para archivos está el endpoint de abajo.
+:::
+
+### Body
+
+| Campo | Tipo | Requerido | Descripción |
+|-------|------|-----------|-------------|
+| `message` | string | Sí | Texto del mensaje (1 a 10.000 chars) |
+
+### Ejemplo
+
+```http
+POST /api/workflows/:id/flow-chat/00000000-0000-0000-0000-000000000000/messages HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer tu_token_aqui
+
+{
+  "message": "Quiero la lista completa"
+}
+```
+
+### Respuesta Exitosa (200)
+
+Una de las dos, y el campo `mode` dice cuál:
+
+```json
+{ "conversationId": "uuid", "mode": "answered", "nodeId": "nodo-3", "executionId": "uuid" }
+```
+
+```json
+{ "conversationId": "uuid", "mode": "restarted", "turn": 4, "executionId": "uuid" }
+```
+
+| Campo | Descripción |
+|-------|-------------|
+| `mode: "answered"` | Contestó un `userInput` abierto |
+| `mode: "restarted"` | No había nada esperando: vuelta nueva |
+
+Con `restarted` el mensaje queda **guardado en la base** y se entrega cuando la vuelta nueva llega a su primer `userInput`: por eso escribir con el flujo terminado se siente como seguir hablando, no como reiniciar.
+
+### Errores
+
+| Código | Cuerpo | Posible Causa |
+|--------|--------|---------------|
+| 404 | `conversation_not_found` | Conversación inexistente |
+| 409 | `conversation_closed` | Ya le hiciste DELETE; abrí una nueva |
+| 400 | `validation_error` | Body vacío, >10.000 chars, o una clave de más |
+| 400 | `published_version_missing` | El flujo no tiene versión publicada |
+| 403 | `verification_required` / `verification_failed` | Solo con Turnstile configurado |
+
+---
+
+## Mensaje con Archivos
+
+### Endpoint
+
+<Code lang="http" code={`POST ${BASE_API_IAFLOWS}/api/workflows/:id/flow-chat/:cid/messages-files`} />
+
+`multipart/form-data`. Campos: `message` (**opcional**) y `files` (repetido, 1 a 4).
+
+El texto es opcional acá y obligatorio en `/messages` a propósito: mandar una nota de voz sin escribir nada es EL caso de uso del audio. Sin texto, el `userInput` recibe los marcadores de lo que se mandó (`"[audio adjunto]"`).
+
+### Límites y Tipos
+
+- Máximo **4 archivos por turno**, **20 MB por archivo**
+- Imágenes: png, jpeg, webp, gif
+- Audio: mp3, wav, weba, ogg, m4a
+- Video: mp4, webm, mov
+- Documentos: pdf
+
+:::caution
+No rechaza por capacidad del modelo — ver [`modelReads`](/flow-chat/info/). El usuario tiene que poder mandar lo que tiene en la mano, y el hilo tiene que mostrarlo.
+:::
+
+### Ejemplo
+
+```http
+POST /api/workflows/:id/flow-chat/00000000-0000-0000-0000-000000000000/messages-files HTTP/1.1
+Content-Type: multipart/form-data; boundary=----FlowChatBoundary
+Authorization: Bearer tu_token_aqui
+
+------FlowChatBoundary
+Content-Disposition: form-data; name="message"
+
+Mirá esta factura
+------FlowChatBoundary
+Content-Disposition: form-data; name="files"; filename="factura.png"
+Content-Type: image/png
+
+<./factura.png>
+------FlowChatBoundary--
+```
+
+### Respuesta Exitosa (200)
+
+Idéntica a `/messages` (mismo [`mode`](#mensaje-de-texto)).
+
+### Errores
+
+Los primeros son todos `400` pero se arreglan distinto:
+
+| Código | Cuerpo | Posible Causa |
+|--------|--------|---------------|
+| 400 | `invalid_multipart` | El body no es multipart válido |
+| 400 | `files_missing` | Falta el campo `files` |
+| 400 | `too_many_attachments` | Más de 4 archivos |
+| 400 | `validation_error` | El resto |
+| 415 | `unsupported_type` | Tipo de archivo no soportado |
+| 413 | `file_too_large` | Archivo >20 MB |
+| 500 | `save_failed` | Falla del storage |
+
+Más los de `/messages`: 404, 409, 400 `published_version_missing`, 403.

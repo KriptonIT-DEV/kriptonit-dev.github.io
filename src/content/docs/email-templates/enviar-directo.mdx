@@ -1,0 +1,265 @@
+---
+title: Envío Directo
+description: Envía un correo HTML sin plantilla, con adjuntos opcionales.
+---
+
+import { Code } from '@astrojs/starlight/components';
+import ApiCodeTabs from '../../../components/ApiCodeTabs.astro';
+import { BASE_API_URL } from '../../../constants';
+
+Envía un correo HTML armado por vos, sin pasar por una plantilla. Acepta copias, copias ocultas y adjuntos.
+
+### Endpoint
+
+<Code lang="http" code={`POST ${BASE_API_URL}/api/v1/email/blank`} />
+
+### Headers
+
+| Header | Valor |
+|--------|-------|
+| Content-Type | application/json *o* multipart/form-data |
+| Authorization | Bearer `{{token}}` |
+
+Usá `application/json` cuando no hay adjuntos y `multipart/form-data` cuando sí los hay.
+
+### Body
+
+| Campo | Tipo | Requerido | Descripción |
+|-------|------|-----------|-------------|
+| `to` | string | Sí | Email del destinatario |
+| `subject` | string | No | Asunto del correo (por defecto vacío) |
+| `html` | string | No | Cuerpo HTML (por defecto vacío) |
+| `cc` | array | No | Emails en copia, cada elemento debe ser válido |
+| `bcc` | array | No | Emails en copia oculta, cada elemento debe ser válido |
+| `attachments` | file[] | No | Archivos adjuntos, **solo en multipart** |
+| `mail_id` | int | No | Identidad de remitente — ver [Remitente](/email-templates/#remitente-por-empresa) |
+| `from` | string | No | Buzón emisor |
+| `from_name` | string | No | Nombre visible, máximo 100 caracteres |
+
+### Ejemplos
+
+<ApiCodeTabs>
+<Fragment slot="curl">
+
+<Code
+  lang="bash"
+  code={`curl -X POST ${BASE_API_URL}/api/v1/email/blank \\
+    -H "Content-Type: application/json" \\
+    -H "Authorization: Bearer tu_token_aqui" \\
+    -d '{
+      "to": "cliente@gmail.com",
+      "subject": "Tu pedido está en camino",
+      "html": "<h1>Hola</h1><p>Tu pedido salió a ruta.</p>",
+      "cc": ["copia@gmail.com"],
+      "bcc": ["auditoria@gmail.com"]
+    }'`}
+/>
+
+</Fragment>
+<Fragment slot="javascript">
+
+<Code
+  lang="javascript"
+  code={`const response = await fetch('${BASE_API_URL}/api/v1/email/blank', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': \`Bearer \${token}\`
+    },
+    body: JSON.stringify({
+      to: 'cliente@gmail.com',
+      subject: 'Tu pedido está en camino',
+      html: '<h1>Hola</h1><p>Tu pedido salió a ruta.</p>',
+      cc: ['copia@gmail.com'],
+      bcc: ['auditoria@gmail.com']
+    })
+  });
+  const data = await response.json();`}
+/>
+
+</Fragment>
+<Fragment slot="python">
+
+<Code
+  lang="python"
+  code={`import requests
+
+  url = "${BASE_API_URL}/api/v1/email/blank"
+  headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer tu_token_aqui"
+  }
+  payload = {
+      "to": "cliente@gmail.com",
+      "subject": "Tu pedido está en camino",
+      "html": "<h1>Hola</h1><p>Tu pedido salió a ruta.</p>",
+      "cc": ["copia@gmail.com"],
+      "bcc": ["auditoria@gmail.com"]
+  }
+
+  response = requests.post(url, json=payload, headers=headers)
+  data = response.json()`}
+/>
+
+</Fragment>
+<Fragment slot="php">
+
+<Code
+  lang="php"
+  code={`<?php
+
+  $url = "${BASE_API_URL}/api/v1/email/blank";
+  $headers = [
+      "Content-Type: application/json",
+      "Authorization: Bearer tu_token_aqui"
+  ];
+  $payload = [
+      "to" => "cliente@gmail.com",
+      "subject" => "Tu pedido está en camino",
+      "html" => "<h1>Hola</h1><p>Tu pedido salió a ruta.</p>",
+      "cc" => ["copia@gmail.com"],
+      "bcc" => ["auditoria@gmail.com"]
+  ];
+
+  $ch = curl_init($url);
+  curl_setopt($ch, CURLOPT_POST, true);
+  curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $response = curl_exec($ch);
+  curl_close($ch);
+  $data = json_decode($response, true);`}
+/>
+
+</Fragment>
+<Fragment slot="java">
+
+<Code
+  lang="java"
+  code={`import java.net.URI;
+  import java.net.http.HttpClient;
+  import java.net.http.HttpRequest;
+  import java.net.http.HttpResponse;
+
+  var payload = """
+      {
+        "to": "cliente@gmail.com",
+        "subject": "Tu pedido está en camino",
+        "html": "<h1>Hola</h1>",
+        "cc": ["copia@gmail.com"]
+      }
+      """;
+
+  var client = HttpClient.newHttpClient();
+  var request = HttpRequest.newBuilder()
+      .uri(URI.create("${BASE_API_URL}/api/v1/email/blank"))
+      .header("Content-Type", "application/json")
+      .header("Authorization", "Bearer tu_token_aqui")
+      .POST(HttpRequest.BodyPublishers.ofString(payload))
+      .build();
+
+  var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+  var data = response.body();`}
+/>
+
+</Fragment>
+</ApiCodeTabs>
+
+### Con Remitente Propio
+
+Indicá la identidad verificada de tu empresa. La respuesta devuelve en `data.from` el buzón que se usó.
+
+```json
+{
+  "to": "cliente@gmail.com",
+  "subject": "Tu pedido está en camino",
+  "html": "<h1>Hola</h1>",
+  "mail_id": 2,
+  "from_name": "Konnect 360"
+}
+```
+
+### Con Adjuntos
+
+Los adjuntos exigen `multipart/form-data`. El campo de archivos se llama `attachments` y admite múltiples archivos.
+
+<Code
+  lang="bash"
+  code={`curl -X POST ${BASE_API_URL}/api/v1/email/blank \\
+    -H "Authorization: Bearer tu_token_aqui" \\
+    -F "to=cliente@gmail.com" \\
+    -F "subject=Tu factura" \\
+    -F "html=<h1>Adjuntamos tu factura</h1>" \\
+    -F "attachments=@/ruta/a/factura.pdf" \\
+    -F "attachments=@/ruta/a/guia.pdf"`}
+/>
+
+### Respuesta Exitosa (200)
+
+```json
+{
+  "success": true,
+  "data": {
+    "sent": true,
+    "attachments": 0,
+    "id_msn": 12345,
+    "registroError": null,
+    "from": "ventas@midominio.com"
+  },
+  "code": 200,
+  "status": 200,
+  "messages": "Correo enviado correctamente",
+  "errors": null
+}
+```
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| `data.sent` | boolean | Si SES aceptó el correo |
+| `data.attachments` | int | Cantidad de archivos adjuntados |
+| `data.id_msn` | int | ID del mensaje registrado en la plataforma |
+| `data.registroError` | string \| null | Detalle si falló el registro en base de datos |
+| `data.from` | string | Buzón emisor usado — **se omite** si se usó el remitente global |
+
+:::note
+`registroError` **no bloquea el envío**. Si el registro en base de datos falla, el correo sale igual y acá viene el motivo del fallo de registro.
+:::
+
+### Errores
+
+**Fallo de envío (SES)**
+
+```json
+{
+  "success": false,
+  "data": {
+    "sent": false,
+    "attachments": 0,
+    "id_msn": null,
+    "registroError": null
+  },
+  "code": 502,
+  "status": 401,
+  "messages": "No se pudo enviar el correo",
+  "errors": null
+}
+```
+
+**Destinatario inválido**
+
+```json
+{
+  "success": false,
+  "status": 401,
+  "messages": "Error de validación",
+  "errors": [
+    { "path": "to", "msg": "Email destinatario no válido" }
+  ]
+}
+```
+
+| Código | Mensaje | Posible Causa |
+|--------|---------|---------------|
+| 400 | Error de remitente | Ver [Remitente por empresa](/email-templates/#remitente-por-empresa) |
+| 401 | Error de validación | `to` inválido, o algún elemento de `cc` / `bcc` mal formado |
+| 401 (`code: 502`) | No se pudo enviar el correo | SES rechazó el envío |

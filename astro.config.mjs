@@ -70,9 +70,33 @@ export default defineConfig({
                     items: [{ autogenerate: { directory: 'whatsapp-template' } }],
                 },
                 {
-                    label: 'PLantilla Email',
+                    label: 'Email',
+                    items: [
+                        { label: 'Introducción', slug: 'email-templates' },
+                        { label: 'Envío Directo', slug: 'email-templates/enviar-directo' },
+                        { label: 'Listar Plantillas', slug: 'email-templates/listar' },
+                        { label: 'Parámetros', slug: 'email-templates/parametros' },
+                        { label: 'Enviar Plantilla', slug: 'email-templates/enviar-plantilla' },
+                        { label: 'Envíos por Lote', slug: 'email-templates/lotes' },
+                    ],
+                },
+                {
+                    label: 'Canales de Chat',
                     items: [{ autogenerate: { directory: 'channels-chat' } }],
                 },
+                {
+                    label: 'Flow Chat',
+                    badge: { text: 'Experimental', variant: 'caution' },
+                    items: [
+                        { label: 'Introducción', slug: 'flow-chat' },
+                        { label: 'Info del Flujo', slug: 'flow-chat/info' },
+                        { label: 'Abrir Conversación', slug: 'flow-chat/abrir-conversacion' },
+                        { label: 'Enviar Mensajes', slug: 'flow-chat/mensajes' },
+                        { label: 'Stream de la Conversación', slug: 'flow-chat/stream' },
+                        { label: 'Cerrar Conversación', slug: 'flow-chat/cerrar-conversacion' },
+                        { label: 'Adjuntos', slug: 'flow-chat/adjuntos' },
+                    ],
+              },
                 {
                     label: 'Api Webhook',
                     items: [

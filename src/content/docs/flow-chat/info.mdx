@@ -1,0 +1,80 @@
+---
+title: Info del Flujo
+description: Reconocimiento del flujo antes de abrir la conversación.
+badge:
+  text: Experimental
+  variant: caution
+---
+
+import { Code } from '@astrojs/starlight/components';
+import { BASE_API_IAFLOWS } from '../../../constants';
+
+### Endpoint
+
+<Code lang="http" code={`GET ${BASE_API_IAFLOWS}/api/workflows/:id/flow-chat/info`} />
+
+### Respuesta Exitosa (200)
+
+```json
+{
+  "workflowId": "uuid",
+  "published": true,
+  "conversational": true,
+  "input": ["text", "image", "audio", "video", "file"],
+  "modelReads": ["text", "image"],
+  "models": [
+    {
+      "nodeId": "nodo-1",
+      "nodeType": "aiAgent",
+      "label": "Clasificador",
+      "slug": "gpt-4o",
+      "id": "uuid",
+      "name": "GPT-4o",
+      "provider": "openai",
+      "owner": "system",
+      "capabilities": {},
+      "registered": true
+    }
+  ],
+  "waitingNodes": [
+    {
+      "nodeId": "nodo-3",
+      "label": "Pedir email",
+      "prompt": "¿Cuál es tu email?",
+      "variable": "email",
+      "validation": "email",
+      "inputTimeout": "5m",
+      "maxAttempts": 3,
+      "errorPolicy": "errorRoute"
+    }
+  ]
+}
+```
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| `published` | boolean | Si el flujo tiene versión publicada |
+| `conversational` | boolean | `true` si el flujo pregunta algo en algún momento |
+| `input` | string[] | Lo que se **puede mandar** al chat |
+| `modelReads` | string[] | Lo que el modelo **lee de verdad** |
+| `models` | array | Modelos de los nodos IA del grafo |
+| `models[].owner` | string \| null | `mine`, `system` o `null` |
+| `models[].capabilities` | object \| null | `null` = desconocido (slug fuera del registro), NO "solo texto" |
+| `waitingNodes` | array | Nodos `userInput` que pueden quedar esperando respuesta |
+| `waitingNodes[].validation` | string | `text`, `email`, `number` o `phone` |
+| `waitingNodes[].inputTimeout` | string | Cuánto espera antes de seguir sin respuesta (`5m`, `1h`, `24h`) |
+| `waitingNodes[].maxAttempts` | number | Intentos permitidos |
+| `waitingNodes[].errorPolicy` | string | `fail`, `errorRoute` o `continue` |
+
+:::caution
+Lo que está en `input` y **no** en `modelReads` se guarda y se muestra en el hilo, pero al modelo le entra como marcador (`"[audio adjunto]"`). Hoy casi ningún modelo registrado declara audio ni video: mostralo en la UI o el usuario va a creer que el bot ignoró su nota de voz.
+:::
+
+Sin publicar devuelve **todas las claves igual, en vacío** — nunca un shape distinto.
+
+### Errores
+
+| Código | Cuerpo | Posible Causa |
+|--------|--------|---------------|
+| 404 | `workflow_not_found` | ID de workflow inválido |
+| 400 | `invalid_snapshot` (con `details`) | Un nodo del snapshot lo rompe; `details` dice cuál |

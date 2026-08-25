@@ -1,0 +1,182 @@
+---
+title: Parámetros de una Plantilla
+description: Obtén las variables que espera una plantilla de email antes de enviarla.
+---
+
+import { Code } from '@astrojs/starlight/components';
+import ApiCodeTabs from '../../../components/ApiCodeTabs.astro';
+import { BASE_API_URL } from '../../../constants';
+
+Devuelve las variables `{{variable}}` que la plantilla espera, deduplicadas y en orden de aparición. Es el paso previo a [enviar la plantilla](/email-templates/enviar-plantilla/).
+
+### Endpoint
+
+<Code lang="http" code={`GET ${BASE_API_URL}/api/v1/email/template-params/{id}`} />
+
+### Parámetros de Ruta
+
+| Parámetro | Tipo | Requerido | Descripción | Ejemplo |
+|-----------|------|-----------|-------------|---------|
+| `id` | int | Sí | `payload_id` de la plantilla | `72` |
+
+### Headers
+
+| Header | Valor |
+|--------|-------|
+| Authorization | Bearer `{{token}}` |
+
+### Ejemplos
+
+<ApiCodeTabs>
+<Fragment slot="curl">
+
+<Code
+  lang="bash"
+  code={`curl -X GET ${BASE_API_URL}/api/v1/email/template-params/72 \\
+    -H "Authorization: Bearer tu_token_aqui"`}
+/>
+
+</Fragment>
+<Fragment slot="javascript">
+
+<Code
+  lang="javascript"
+  code={`const response = await fetch(
+    \`${BASE_API_URL}/api/v1/email/template-params/\${templateId}\`,
+    { headers: { 'Authorization': \`Bearer \${token}\` } }
+  );
+  const data = await response.json();`}
+/>
+
+</Fragment>
+<Fragment slot="python">
+
+<Code
+  lang="python"
+  code={`import requests
+
+  template_id = 72
+  url = f"${BASE_API_URL}/api/v1/email/template-params/{template_id}"
+  headers = {"Authorization": "Bearer tu_token_aqui"}
+
+  response = requests.get(url, headers=headers)
+  data = response.json()`}
+/>
+
+</Fragment>
+<Fragment slot="php">
+
+<Code
+  lang="php"
+  code={`<?php
+
+  $url = "${BASE_API_URL}/api/v1/email/template-params/72";
+  $headers = ["Authorization: Bearer tu_token_aqui"];
+
+  $ch = curl_init($url);
+  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $response = curl_exec($ch);
+  curl_close($ch);
+  $data = json_decode($response, true);`}
+/>
+
+</Fragment>
+<Fragment slot="java">
+
+<Code
+  lang="java"
+  code={`import java.net.URI;
+  import java.net.http.HttpClient;
+  import java.net.http.HttpRequest;
+  import java.net.http.HttpResponse;
+
+  var client = HttpClient.newHttpClient();
+  var request = HttpRequest.newBuilder()
+      .uri(URI.create("${BASE_API_URL}/api/v1/email/template-params/72"))
+      .header("Authorization", "Bearer tu_token_aqui")
+      .GET()
+      .build();
+
+  var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+  var data = response.body();`}
+/>
+
+</Fragment>
+</ApiCodeTabs>
+
+### Respuesta Exitosa (200)
+
+```json
+{
+  "success": true,
+  "status": 200,
+  "code": 0,
+  "messages": "",
+  "data": {
+    "payload_id": 72,
+    "canal_id": 1,
+    "pyld_nombre": "Bienvenida",
+    "pyld_catego": "MARKETING",
+    "pyld_estado": 1,
+    "pyld_id_wsp": null,
+    "pyld_status": "APPROVED",
+    "created_at": "2026-01-10T12:00:00.000Z",
+    "params": [
+      { "name": "name", "type": "text", "value": "" }
+    ]
+  }
+}
+```
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| `payload_id` | int | ID de la plantilla |
+| `pyld_nombre` | string | Nombre de la plantilla |
+| `params` | array | Variables detectadas, en orden de aparición y sin repetir |
+| `params[].name` | string | Nombre de la variable, sin las llaves |
+| `params[].type` | string | Tipo del valor — `text` |
+| `params[].value` | string | Siempre vacío: es el hueco que tenés que completar |
+
+La detección admite espacios dentro de las llaves: tanto `{{name}}` como `{{ name }}` se reconocen como la misma variable.
+
+:::note
+Esta respuesta **omite a propósito** `template_json`, `template_media`, `template_files_history` y `updated_at`. Si necesitás el cuerpo de la plantilla, usá [Listar Plantillas](/email-templates/listar/).
+:::
+
+:::caution
+Los parámetros se detectan sobre el campo `html` de la plantilla, mientras que el envío renderiza `html_email`. Si tu plantilla tiene ambos cuerpos distintos, la lista puede no coincidir con las variables que realmente se reemplazan. Verificá el envío antes de mandarlo a producción.
+:::
+
+### Errores
+
+**Plantilla no encontrada**
+
+```json
+{
+  "success": false,
+  "status": 400,
+  "code": -1,
+  "messages": "Detalle del error",
+  "data": { "params": [] }
+}
+```
+
+**ID no numérico**
+
+```json
+{
+  "success": false,
+  "status": 401,
+  "messages": "Error de validación",
+  "errors": [
+    { "path": "id", "msg": "id debe ser un entero" }
+  ]
+}
+```
+
+| Código | Mensaje | Posible Causa |
+|--------|---------|---------------|
+| 400 | Detalle SQL | La plantilla no existe o no es de canal email |
+| 401 | Error de validación | El `id` de la ruta no es un entero |
+| 401 | No autorizado | Token expirado o inválido |

@@ -3,13 +3,13 @@ title: Obtener Tickets
 description: Consulta todos los tickets asociados a un cliente.
 ---
 
+import { Code } from '@astrojs/starlight/components';
 import ApiCodeTabs from '../../../components/ApiCodeTabs.astro';
+import { BASE_API_URL } from '../../../constants';
 
-### Endpoint 
+### Endpoint
 
-```
-GET /api/external/tickets?customer_id={{customer_id}}
-```
+<Code lang="http" code={`GET ${BASE_API_URL}/api/external/tickets?customer_id={{customer_id}}`} />
 
 ### Parámetros de Query
 
@@ -28,43 +28,47 @@ GET /api/external/tickets?customer_id={{customer_id}}
 <ApiCodeTabs>
 <Fragment slot="curl">
 
-```bash
-curl -X GET "https://devkapi.konnect-360.pe/api/external/tickets?customer_id=1370" \
-  -H "Authorization: Bearer tu_token_aqui"
-```
+<Code
+  lang="bash"
+  code={`curl -X GET "${BASE_API_URL}/api/external/tickets?customer_id=1370" \\
+  -H "Authorization: Bearer tu_token_aqui"`}
+/>
 
 </Fragment>
 <Fragment slot="javascript">
 
-```javascript
-const response = await fetch(
-  `https://devkapi.konnect-360.pe/api/external/tickets?customer_id=1370`,
-  { headers: { 'Authorization': `Bearer ${token}` } }
+<Code
+  lang="javascript"
+  code={`const response = await fetch(
+  \`${BASE_API_URL}/api/external/tickets?customer_id=1370\`,
+  { headers: { 'Authorization': \`Bearer \${token}\` } }
 );
-const data = await response.json();
-```
+const data = await response.json();`}
+/>
 
 </Fragment>
 <Fragment slot="python">
 
-```python
-import requests
+<Code
+  lang="python"
+  code={`import requests
 
-url = "https://devkapi.konnect-360.pe/api/external/tickets"
+url = "${BASE_API_URL}/api/external/tickets"
 params = {"customer_id": "1370"}
 headers = {"Authorization": "Bearer tu_token_aqui"}
 
 response = requests.get(url, params=params, headers=headers)
-data = response.json()
-```
+data = response.json()`}
+/>
 
 </Fragment>
 <Fragment slot="php">
 
-```php
-<?php
+<Code
+  lang="php"
+  code={`<?php
 
-$url = "https://devkapi.konnect-360.pe/api/external/tickets?customer_id=1370";
+$url = "${BASE_API_URL}/api/external/tickets?customer_id=1370";
 $headers = ["Authorization: Bearer tu_token_aqui"];
 
 $ch = curl_init($url);
@@ -72,28 +76,29 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 $response = curl_exec($ch);
 curl_close($ch);
-$data = json_decode($response, true);
-```
+$data = json_decode($response, true);`}
+/>
 
 </Fragment>
 <Fragment slot="java">
 
-```java
-import java.net.URI;
+<Code
+  lang="java"
+  code={`import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 var client = HttpClient.newHttpClient();
 var request = HttpRequest.newBuilder()
-    .uri(URI.create("https://devkapi.konnect-360.pe/api/external/tickets?customer_id=1370"))
+    .uri(URI.create("${BASE_API_URL}/api/external/tickets?customer_id=1370"))
     .header("Authorization", "Bearer tu_token_aqui")
     .GET()
     .build();
 
 var response = client.send(request, HttpResponse.BodyHandlers.ofString());
-var data = response.body();
-```
+var data = response.body();`}
+/>
 
 </Fragment>
 </ApiCodeTabs>
@@ -142,3 +147,10 @@ var data = response.body();
   "messages": "No existe customer para consulta de tickets"
 }
 ```
+
+### Errores
+
+| Código | Mensaje | Posible Causa |
+|--------|---------|---------------|
+| 400 | Error: No hay datos | Cliente o canal no encontrado |
+| 401 | No autorizado | Token expirado o inválido |

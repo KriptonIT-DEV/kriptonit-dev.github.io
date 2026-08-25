@@ -1,0 +1,83 @@
+---
+title: Stream de la Conversación
+description: Escucha el hilo en tiempo real vía Server-Sent Events (SSE).
+badge:
+  text: Experimental
+  variant: caution
+---
+
+import { Code } from '@astrojs/starlight/components';
+import { BASE_API_IAFLOWS } from '../../../constants';
+
+### Endpoint
+
+<Code lang="http" code={`GET ${BASE_API_IAFLOWS}/api/workflows/:id/flow-chat/:cid/stream`} />
+
+Abrilo **apenas tenés el conversationId**, antes de mandar el primer mensaje: el saludo del flujo ya está corriendo.
+
+```http
+GET /api/workflows/:id/flow-chat/00000000-0000-0000-0000-000000000000/stream HTTP/1.1
+Accept: text/event-stream
+Authorization: Bearer tu_token_aqui
+```
+
+### Formato de cada Emisión
+
+Cada emisión es el hilo **entero** — estado completo, no incrementos: se reemplaza, no se deduplica.
+
+```json
+{
+  "type": "conversation",
+  "conversationId": "uuid",
+  "turn": 3,
+  "messages": [
+    { "kind": "bot", "id": "uuid", "text": "¡Hola! ¿En qué te ayudo?", "at": "..." },
+    { "kind": "user", "id": "uuid", "text": "Mirá esta factura", "at": "...", "attachments": ["uuid.png"] },
+    { "kind": "note", "id": "uuid", "text": "La vuelta falló", "at": "...", "tone": "error" },
+    { "kind": "reasoning", "id": "uuid", "text": "Pensando...", "at": "..." }
+  ],
+  "ask": {
+    "executionId": "uuid",
+    "nodeId": "nodo-3",
+    "prompt": "¿Cuál es tu email?",
+    "validation": "email",
+    "attempt": 1,
+    "attemptsLeft": 2
+  },
+  "working": "Pensando · Clasificador…",
+  "workingNodeId": "nodo-3",
+  "ended": null
+}
+```
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| `messages[].kind` | string | `bot`, `user`, `note` o `reasoning` (solo modelos de reasoning) |
+| `messages[].attachments` | string[] | IDs de adjuntos, **no URLs**. La URL la arma el cliente |
+| `ask` | object \| null | Pregunta abierta esperando respuesta |
+| `working` | string \| null | Etiqueta del nodo que está corriendo |
+| `ended` | string \| null | `completed`, `failed` o `cancelled` cuando la vuelta termina |
+
+### Cómo Renderizarlo
+
+| Estado | Qué hacer |
+|--------|-----------|
+| `ask ≠ null` | Mostrar el campo de respuesta con el tipo que dice `validation` |
+| `working ≠ null` | Indicador con **esa** etiqueta (no inventes un "escribiendo…": no hay tokens) |
+| `ended ≠ null` | La vuelta terminó. **No cierres el EventSource**: escribir de nuevo arranca otra vuelta por esta misma conexión |
+
+### Heartbeat
+
+Cada 15s llega `event: heartbeat` con data vacía. Tiene nombre de evento propio, así que **no cae en `onmessage`** — un `JSON.parse('')` ahí te rompería el chat. Para detectar una conexión colgada (EventSource no ve un socket half-open), escuchalo con `addEventListener` y reconectá si pasan más de 35s sin ningún evento.
+
+### Vueltas Trabadas
+
+Si un nodo se cuelga sin fallar (~4 min sin reportar nada), el backend corta la vuelta solo: llega una nota con tono error, `working: null` y `ended: "failed"`. El cliente no mide nada.
+
+Exentos: `delay` (su silencio es legítimo) y cualquier nodo mientras `ask` esté abierto (esperar a una persona no es colgarse).
+
+### Errores
+
+| Código | Cuerpo | Posible Causa |
+|--------|--------|---------------|
+| 404 | `conversation_not_found` | Conversación inexistente |

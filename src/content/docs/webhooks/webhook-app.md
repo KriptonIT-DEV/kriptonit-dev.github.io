@@ -5,7 +5,7 @@ description: Referencia técnica del webhook que Konnect-360 envía a tu servido
 
 Este webhook se dispara cuando ocurre un evento en el [widget de chat](/guides/widgetbot/) embebido en tu sitio (por ejemplo, el inicio de una conversación). Usa la misma autenticación y forma de respuesta que [Webhook Canal](/webhooks/webhook-canal/) — solo cambia el origen del evento y el body.
 
-## Endpoint
+### Endpoint
 
 `POST {tu_webhook_url}`
 
@@ -34,7 +34,7 @@ Este webhook se dispara cuando ocurre un evento en el [widget de chat](/guides/w
 | `message` | string | Texto del mensaje, si el evento incluye uno. |
 | `sender` | string | Identificador de la sesión/visitante del widget. |
 
-### Respuesta esperada
+### Respuesta Esperada
 
 Igual que en Webhook Canal: `200 OK` con un cuerpo mínimo de confirmación.
 

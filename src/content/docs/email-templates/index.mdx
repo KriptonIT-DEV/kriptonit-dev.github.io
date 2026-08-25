@@ -1,0 +1,162 @@
+---
+title: Introducción
+description: Envío de correos por AWS SES con plantillas por empresa, remitente verificado y lotes de hasta 100 mensajes.
+---
+
+import { Card, CardGrid, Steps } from '@astrojs/starlight/components';
+import { BASE_API_URL, AUTH_REQUEST_TOKEN } from '../../../constants';
+
+API de email de Konnect-360. Permite enviar correos HTML directos, gestionar plantillas por empresa y despachar lotes de hasta 100 mensajes. El transporte es **AWS SES v2**.
+
+**URL Base:** <code>{BASE_API_URL}</code>
+
+<p set:html={AUTH_REQUEST_TOKEN} />
+
+## Endpoints
+
+<CardGrid>
+    <Card title="Envío Directo" icon="email">
+        Correo HTML sin plantilla, con adjuntos opcionales.
+
+        [Ver endpoint →](/email-templates/enviar-directo/)
+    </Card>
+    <Card title="Listar Plantillas" icon="list-format">
+        Plantillas de email disponibles para tu empresa.
+
+        [Ver endpoint →](/email-templates/listar/)
+    </Card>
+    <Card title="Parámetros" icon="puzzle">
+        Variables que espera una plantilla antes de enviarla.
+
+        [Ver endpoint →](/email-templates/parametros/)
+    </Card>
+    <Card title="Enviar Plantilla" icon="rocket">
+        Envío con plantilla y variables resueltas.
+
+        [Ver endpoint →](/email-templates/enviar-plantilla/)
+    </Card>
+    <Card title="Envíos por Lote" icon="random">
+        Hasta 100 correos por request, directos o con plantilla.
+
+        [Ver endpoint →](/email-templates/lotes/)
+    </Card>
+    <Card title="Remitente" icon="approve-check">
+        Cómo se resuelve el buzón emisor de cada empresa.
+
+        [Ver detalle →](#remitente-por-empresa)
+    </Card>
+</CardGrid>
+
+## Orden Recomendado
+
+<Steps>
+
+1. `GET /email/templates` — buscá la plantilla y quedate con su `payload_id`
+
+2. `GET /email/template-params/:id` — pedí las variables que espera
+
+3. `POST /email/send-template` — enviá con los valores del paso 2
+
+</Steps>
+
+:::tip
+Para un correo puntual sin plantilla, saltá directo a [`POST /email/blank`](/email-templates/enviar-directo/).
+:::
+
+## Remitente por Empresa
+
+Los tres parámetros de remitente son **opcionales** y aplican a los cuatro endpoints de envío. Se resuelven a nivel de **request**; en los endpoints de lote se resuelven **una sola vez para todo el lote**, no por mensaje.
+
+| Parámetro | Tipo | Descripción |
+|-----------|------|-------------|
+| `mail_id` | int | ID de la identidad de remitente |
+| `from` | string | Buzón emisor |
+| `from_name` | string | Nombre visible, máximo 100 caracteres |
+
+`from_name` se sanitiza antes de usarse: se le quitan comillas dobles, `<`, `>` y saltos de línea.
+
+### Reglas de Resolución
+
+| Caso | Comportamiento |
+|------|----------------|
+| Con `mail_id` | La identidad debe existir, pertenecer a tu empresa, no estar borrada y tener `verified = true` |
+| Sin `mail_id` | Se usa la identidad predeterminada verificada de la empresa (prioriza `EMAIL` sobre `DOMAIN`, luego la más reciente) |
+| Sin ninguna identidad | Se envía con el remitente global de la plataforma |
+
+Según el tipo de identidad:
+
+- **`DOMAIN`** — `from` debe ser un buzón de **ese** dominio, con coincidencia exacta (no por sufijo). Si no mandás `from`, se usa `no-reply@<dominio>`.
+- **`EMAIL`** — si mandás `from`, debe coincidir exactamente con la identidad.
+
+### Errores de Remitente
+
+Cualquier fallo de resolución **corta el request antes de enviar** y responde `400`:
+
+```json
+{
+  "success": false,
+  "messages": "mail_id no válido: la identidad no existe o no pertenece a la empresa"
+}
+```
+
+| Mensaje | Causa |
+|---------|-------|
+| `mail_id no válido: la identidad no existe o no pertenece a la empresa` | ID inexistente, borrado o de otra empresa |
+| `La identidad de remitente no está verificada` | La identidad existe pero `verified = false` |
+| `El dominio de 'from' no coincide con la identidad verificada` | Identidad `DOMAIN` y `from` de otro dominio |
+| `'from' no coincide con la identidad indicada` | Identidad `EMAIL` y `from` distinto |
+| `Para usar 'from' se requiere una identidad verificada (mail_id o predeterminada)` | Mandaste `from` sin ninguna identidad verificada |
+| `No se pudo validar la identidad del remitente` | Fallo de base de datos teniendo `mail_id` |
+
+:::caution
+Las identidades se cachean **60 segundos** por combinación de empresa y `mail_id`. Un cambio de identidad puede tardar hasta un minuto en reflejarse.
+:::
+
+:::note
+Si **no** mandás `mail_id` y la base de datos falla, el request no se corta: el correo sale con el remitente global.
+:::
+
+## Contratos de Respuesta
+
+La API usa tres formatos distintos según el endpoint. Conviene tenerlo presente al parsear.
+
+### Envelope de envío
+
+Usado por [`/blank`](/email-templates/enviar-directo/) y [`/send-template`](/email-templates/enviar-plantilla/).
+
+```json
+{
+  "success": true,
+  "data": {},
+  "code": 200,
+  "status": 200,
+  "messages": "Correo enviado correctamente",
+  "errors": null
+}
+```
+
+:::caution
+En error, `status` es **siempre 401** aunque `code` sea `502`. No uses `status` para distinguir el tipo de fallo — usá `success` y `code`.
+:::
+
+### Envelope de consulta
+
+Usado por [`/templates`](/email-templates/listar/) y [`/template-params/:id`](/email-templates/parametros/).
+
+| Resultado | Cuerpo |
+|-----------|--------|
+| Éxito | `success: true`, `status: 200`, `code: 0`, `messages: ""`, `data` con el contenido |
+| Error | `success: false`, `status: 400`, `code` con el código SQL, `messages` con el detalle, `data: null` |
+
+### Respuesta cruda
+
+Los dos endpoints de [lote](/email-templates/lotes/) responden **sin envelope**: devuelven directamente el resumen del lote.
+
+## Errores Comunes
+
+| Código | Cuerpo | Causa |
+|--------|--------|-------|
+| 401 | `{ "message": "Token no encontrado" }` | Falta el header `Authorization` |
+| 401 | `{ "message": "Tennant no encontrado" }` | El token no resuelve a una empresa |
+| 401 | `{ "success": false, "status": 401, "messages": "Error de validación", "errors": [] }` | Body inválido |
+| 400 | `{ "success": false, "messages": "..." }` | Error de resolución del remitente |

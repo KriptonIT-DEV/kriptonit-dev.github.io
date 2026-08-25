@@ -1,0 +1,332 @@
+---
+title: Envíos por Lote
+description: Despacha hasta 100 correos en un solo request, directos o con plantilla.
+---
+
+import { Code } from '@astrojs/starlight/components';
+import ApiCodeTabs from '../../../components/ApiCodeTabs.astro';
+import { BASE_API_URL } from '../../../constants';
+
+Dos endpoints para enviar hasta **100 correos por request**. El procesamiento es secuencial y ninguno de los dos admite adjuntos.
+
+:::caution
+Estos dos endpoints **no usan el envelope estándar** de la API. Devuelven directamente el resumen del lote, sin `success`, `code` ni `data`. Ajustá tu parseo.
+:::
+
+:::note
+El remitente (`mail_id`, `from`, `from_name`) se resuelve **una sola vez para todo el lote**, no por mensaje. Va en la raíz del body, no dentro de `messages`.
+:::
+
+## Lote de Envíos Directos
+
+Correos HTML sin plantilla.
+
+### Endpoint
+
+<Code lang="http" code={`POST ${BASE_API_URL}/api/v1/email/send-blank-batch`} />
+
+### Headers
+
+| Header | Valor |
+|--------|-------|
+| Content-Type | application/json |
+| Authorization | Bearer `{{token}}` |
+
+### Body
+
+| Campo | Tipo | Requerido | Descripción |
+|-------|------|-----------|-------------|
+| `messages` | array | Sí | Entre 1 y 100 mensajes |
+| `messages[].to` | string | Sí | Email del destinatario |
+| `messages[].subject` | string | No | Asunto del correo |
+| `messages[].html` | string | No | Cuerpo HTML |
+| `messages[].cc` | array | No | Emails en copia |
+| `messages[].bcc` | array | No | Emails en copia oculta |
+| `mail_id` | int | No | Identidad de remitente para todo el lote |
+| `from` | string | No | Buzón emisor para todo el lote |
+| `from_name` | string | No | Nombre visible, máximo 100 caracteres |
+
+:::note
+En el lote, `cc` y `bcc` **no se validan elemento por elemento** como sí ocurre en el [envío directo individual](/email-templates/enviar-directo/). Un email mal formado ahí no se rechaza en validación: falla en el envío.
+:::
+
+### Ejemplos
+
+<ApiCodeTabs>
+<Fragment slot="curl">
+
+<Code
+  lang="bash"
+  code={`curl -X POST ${BASE_API_URL}/api/v1/email/send-blank-batch \\
+    -H "Content-Type: application/json" \\
+    -H "Authorization: Bearer tu_token_aqui" \\
+    -d '{
+      "mail_id": 5,
+      "messages": [
+        { "to": "uno@gmail.com", "subject": "Hola uno", "html": "<p>Mensaje 1</p>" },
+        { "to": "dos@gmail.com", "subject": "Hola dos", "html": "<p>Mensaje 2</p>" }
+      ]
+    }'`}
+/>
+
+</Fragment>
+<Fragment slot="javascript">
+
+<Code
+  lang="javascript"
+  code={`const response = await fetch('${BASE_API_URL}/api/v1/email/send-blank-batch', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': \`Bearer \${token}\`
+    },
+    body: JSON.stringify({
+      mail_id: 5,
+      messages: [
+        { to: 'uno@gmail.com', subject: 'Hola uno', html: '<p>Mensaje 1</p>' },
+        { to: 'dos@gmail.com', subject: 'Hola dos', html: '<p>Mensaje 2</p>' }
+      ]
+    })
+  });
+  const batch = await response.json();
+  console.log(batch.sent, batch.failed);`}
+/>
+
+</Fragment>
+<Fragment slot="python">
+
+<Code
+  lang="python"
+  code={`import requests
+
+  url = "${BASE_API_URL}/api/v1/email/send-blank-batch"
+  headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer tu_token_aqui"
+  }
+  payload = {
+      "mail_id": 5,
+      "messages": [
+          {"to": "uno@gmail.com", "subject": "Hola uno", "html": "<p>Mensaje 1</p>"},
+          {"to": "dos@gmail.com", "subject": "Hola dos", "html": "<p>Mensaje 2</p>"}
+      ]
+  }
+
+  response = requests.post(url, json=payload, headers=headers)
+  batch = response.json()`}
+/>
+
+</Fragment>
+<Fragment slot="php">
+
+<Code
+  lang="php"
+  code={`<?php
+
+  $url = "${BASE_API_URL}/api/v1/email/send-blank-batch";
+  $headers = [
+      "Content-Type: application/json",
+      "Authorization: Bearer tu_token_aqui"
+  ];
+  $payload = [
+      "mail_id" => 5,
+      "messages" => [
+          ["to" => "uno@gmail.com", "subject" => "Hola uno", "html" => "<p>Mensaje 1</p>"],
+          ["to" => "dos@gmail.com", "subject" => "Hola dos", "html" => "<p>Mensaje 2</p>"]
+      ]
+  ];
+
+  $ch = curl_init($url);
+  curl_setopt($ch, CURLOPT_POST, true);
+  curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $response = curl_exec($ch);
+  curl_close($ch);
+  $batch = json_decode($response, true);`}
+/>
+
+</Fragment>
+<Fragment slot="java">
+
+<Code
+  lang="java"
+  code={`import java.net.URI;
+  import java.net.http.HttpClient;
+  import java.net.http.HttpRequest;
+  import java.net.http.HttpResponse;
+
+  var payload = """
+      {
+        "mail_id": 5,
+        "messages": [
+          { "to": "uno@gmail.com", "subject": "Hola uno", "html": "<p>Mensaje 1</p>" },
+          { "to": "dos@gmail.com", "subject": "Hola dos", "html": "<p>Mensaje 2</p>" }
+        ]
+      }
+      """;
+
+  var client = HttpClient.newHttpClient();
+  var request = HttpRequest.newBuilder()
+      .uri(URI.create("${BASE_API_URL}/api/v1/email/send-blank-batch"))
+      .header("Content-Type", "application/json")
+      .header("Authorization", "Bearer tu_token_aqui")
+      .POST(HttpRequest.BodyPublishers.ofString(payload))
+      .build();
+
+  var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+  var batch = response.body();`}
+/>
+
+</Fragment>
+</ApiCodeTabs>
+
+### Respuesta Exitosa (200)
+
+```json
+{
+  "total": 2,
+  "sent": 2,
+  "failed": 0,
+  "from": "ventas@midominio.com",
+  "results": [
+    { "to": "uno@gmail.com", "sent": true, "id_msn": 12345, "registroError": null },
+    { "to": "dos@gmail.com", "sent": true, "id_msn": 12346, "registroError": null }
+  ]
+}
+```
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| `total` | int | Mensajes recibidos en el lote |
+| `sent` | int | Enviados correctamente |
+| `failed` | int | Fallidos |
+| `from` | string | Buzón emisor usado — **se omite** si se usó el remitente global |
+| `results` | array | Detalle por mensaje, en el mismo orden que los mandaste |
+
+Todos los elementos de `results` comparten la misma forma. Los fallidos traen `sent: false` e `id_msn: null`.
+
+## Lote de Plantillas
+
+Envío masivo con plantilla y variables por destinatario.
+
+### Endpoint
+
+<Code lang="http" code={`POST ${BASE_API_URL}/api/v1/email/send-template-batch`} />
+
+### Body
+
+| Campo | Tipo | Requerido | Descripción |
+|-------|------|-----------|-------------|
+| `messages` | array | Sí | Entre 1 y 100 mensajes |
+| `messages[].template_id` | int \| string | Sí | `payload_id` de la plantilla, no puede ir vacío |
+| `messages[].to` | string | Sí | Email del destinatario |
+| `messages[].params` | array | Sí | Valores de las variables — puede ir vacío |
+| `messages[].tracking_number` | string | No | Identificador de seguimiento propio |
+| `messages[].url_tracking` | string | No | URL de seguimiento |
+| `mail_id` | int | No | Identidad de remitente para todo el lote |
+| `from` | string | No | Buzón emisor para todo el lote |
+| `from_name` | string | No | Nombre visible, máximo 100 caracteres |
+
+:::note
+Acá `params` **no se valida elemento por elemento**: a diferencia de [`/send-template`](/email-templates/enviar-plantilla/), no se exige que `name`, `type` y `value` vengan completos. Un elemento mal armado no se rechaza en validación — simplemente no reemplaza nada.
+:::
+
+### Ejemplo
+
+<Code
+  lang="bash"
+  code={`curl -X POST ${BASE_API_URL}/api/v1/email/send-template-batch \\
+    -H "Content-Type: application/json" \\
+    -H "Authorization: Bearer tu_token_aqui" \\
+    -d '{
+      "mail_id": 5,
+      "messages": [
+        {
+          "template_id": 72,
+          "to": "uno@gmail.com",
+          "tracking_number": "EMAIL001",
+          "params": [{ "name": "name", "type": "text", "value": "JUAN" }]
+        },
+        {
+          "template_id": 72,
+          "to": "dos@gmail.com",
+          "tracking_number": "EMAIL002",
+          "params": [{ "name": "name", "type": "text", "value": "MARIA" }]
+        }
+      ]
+    }'`}
+/>
+
+### Con Identidad de Dominio
+
+Cuando `mail_id` apunta a una identidad de tipo `DOMAIN`, podés elegir el buzón con `from` — siempre que pertenezca a ese dominio.
+
+```json
+{
+  "mail_id": 6,
+  "from": "notificaciones@midominio.com",
+  "from_name": "Mi Empresa",
+  "messages": [
+    {
+      "template_id": 72,
+      "to": "uno@gmail.com",
+      "tracking_number": "EMAIL003",
+      "params": [{ "name": "name", "type": "text", "value": "JUAN" }]
+    }
+  ]
+}
+```
+
+Si el dominio no coincide, el lote entero se rechaza con `400` y no sale ningún correo.
+
+### Respuesta Exitosa (200)
+
+```json
+{
+  "total": 3,
+  "sent": 1,
+  "failed": 2,
+  "from": "notificaciones@midominio.com",
+  "results": [
+    { "to": "uno@gmail.com", "sent": true, "id_msn": 12345 },
+    { "to": "dos@gmail.com", "sent": false, "error": "Plantilla no encontrada" },
+    { "to": "tres@gmail.com", "sent": false, "error": "Posible petición repetida", "duplicate": true }
+  ]
+}
+```
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| `total` | int | Mensajes recibidos en el lote |
+| `sent` | int | Enviados correctamente |
+| `failed` | int | Fallidos |
+| `from` | string | Buzón emisor usado — **se omite** si se usó el remitente global |
+| `results[].id_msn` | int | ID del mensaje — **solo** en los elementos con `sent: true` |
+| `results[].error` | string | Motivo del fallo — **solo** en los elementos con `sent: false` |
+| `results[].duplicate` | boolean | Presente cuando el fallo fue por envío repetido |
+
+:::caution
+En este lote los elementos de `results` **no comparten forma**: los exitosos traen `id_msn` y los fallidos traen `error`. Ramificá siempre por `sent` antes de leer el resto.
+:::
+
+## Errores de Lote
+
+Ambos endpoints comparten los mismos errores de entrada.
+
+```json
+{
+  "success": false,
+  "messages": "Máximo 100 correos por lote."
+}
+```
+
+| Código | Mensaje | Posible Causa |
+|--------|---------|---------------|
+| 400 | Máximo 100 correos por lote. | El array `messages` supera los 100 elementos |
+| 400 | Error de remitente | Ver [Remitente por empresa](/email-templates/#remitente-por-empresa) |
+| 401 | Error de validación | `messages` vacío, ausente, o con campos requeridos faltantes |
+
+:::caution
+El status HTTP es **200 aunque `failed` sea mayor que cero**. Un lote parcialmente fallido no se distingue por código HTTP: revisá `failed` y `results`.
+:::

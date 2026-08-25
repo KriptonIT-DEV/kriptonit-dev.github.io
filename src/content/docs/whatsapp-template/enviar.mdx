@@ -7,11 +7,9 @@ import { Code } from '@astrojs/starlight/components';
 import ApiCodeTabs from '../../../components/ApiCodeTabs.astro';
 import { BASE_API_URL } from '../../../constants';
 
-### Endpoint 
+### Endpoint
 
-```
-POST /api/v1/whatsapp/send-template
-```
+<Code lang="http" code={`POST ${BASE_API_URL}/api/v1/whatsapp/send-template`} />
 
 ### Headers
 
@@ -228,7 +226,7 @@ POST /api/v1/whatsapp/send-template
 | `data.messages[].id` | string | ID del mensaje enviado |
 | `data.messages[].message_status` | string | Estado del envío (`accepted`) |
 
-### Respuesta de Error (400)
+### Errores
 
 ```json
 {
@@ -242,6 +240,11 @@ POST /api/v1/whatsapp/send-template
   "success": false
 }
 ```
+
+| Código | Mensaje | Posible Causa |
+|--------|---------|---------------|
+| 400 | Error en parametros de plantilla | Cantidad o tipo de parámetros no coincide con la plantilla |
+| 401 | No autorizado | Token expirado o inválido |
 
 :::caution
 La cantidad y tipo de parámetros debe coincidir EXACTAMENTE con lo que devuelve `template-params`. Si no coinciden, Meta rechaza el envío.

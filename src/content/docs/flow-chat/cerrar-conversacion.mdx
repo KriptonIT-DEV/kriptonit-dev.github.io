@@ -1,0 +1,46 @@
+---
+title: Cerrar Conversación
+description: Cancela la corrida viva, cierra el hilo y borra los adjuntos.
+badge:
+  text: Experimental
+  variant: caution
+---
+
+import { Code } from '@astrojs/starlight/components';
+import { BASE_API_IAFLOWS } from '../../../constants';
+
+### Endpoint
+
+<Code lang="http" code={`DELETE ${BASE_API_IAFLOWS}/api/workflows/:id/flow-chat/:cid`} />
+
+Sin body. Hace tres cosas:
+
+1. Cancela la corrida viva
+2. Marca el hilo como `closed`
+3. **Borra los adjuntos** de verdad (son bytes, no filas: no hay soft-delete que los esconda)
+
+Es el botón de "cancelar" de la UI: si una vuelta quedó corriendo y el usuario se cansó, esto la mata.
+
+### Ejemplo
+
+```http
+DELETE /api/workflows/:id/flow-chat/00000000-0000-0000-0000-000000000000 HTTP/1.1
+Authorization: Bearer tu_token_aqui
+```
+
+### Respuesta Exitosa (200)
+
+```json
+{
+  "conversationId": "uuid",
+  "status": "closed"
+}
+```
+
+Después de esto, todo POST a esa conversación devuelve `409 conversation_closed`.
+
+### Errores
+
+| Código | Cuerpo | Posible Causa |
+|--------|--------|---------------|
+| 404 | `conversation_not_found` | Conversación inexistente |

@@ -7,11 +7,9 @@ import { Code } from '@astrojs/starlight/components';
 import ApiCodeTabs from '../../../components/ApiCodeTabs.astro';
 import { BASE_API_URL } from '../../../constants';
 
-### Endpoint 
+### Endpoint
 
-```
-PUT /api/v1/send/whatsapp/messages
-```
+<Code lang="http" code={`PUT ${BASE_API_URL}/api/v1/send/whatsapp/messages`} />
 
 ### Headers
 
@@ -146,7 +144,7 @@ PUT /api/v1/send/whatsapp/messages
 | `data.message_id` | string | ID único del mensaje en WhatsApp |
 | `data.phone` | string | Número de teléfono destino |
 
-### Respuesta de Error (400)
+### Errores
 
 ```json
 {
@@ -157,8 +155,6 @@ PUT /api/v1/send/whatsapp/messages
   "success": false
 }
 ```
-
-## Errores Comunes
 
 | Código | Mensaje | Posible Causa |
 |--------|---------|---------------|

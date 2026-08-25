@@ -3,17 +3,33 @@ title: Introducción
 description: Guía para enviar mensajes de texto e imágenes por WhatsApp.
 ---
 
+import { Card, CardGrid } from '@astrojs/starlight/components';
 import { BASE_API_URL, AUTH_REQUEST_TOKEN } from '../../../constants';
 
 Envía mensajes directos a través del canal de **WhatsApp**. Soporta mensajes de solo texto y texto con archivos multimedia.
 
 **URL Base:** <code>{BASE_API_URL}</code>
 
-{AUTH_REQUEST_TOKEN}
+<p set:html={AUTH_REQUEST_TOKEN} />
+
+## Endpoints
+
+<CardGrid>
+    <Card title="Enviar Mensaje de Texto" icon="comment">
+        Mensaje de solo texto a un número de WhatsApp.
+
+        [Ver endpoint →](/whatsapp-messages/enviar-texto/)
+    </Card>
+    <Card title="Enviar Texto e Imagen" icon="seti:image">
+        Mensaje combinando texto y archivo multimedia.
+
+        [Ver endpoint →](/whatsapp-messages/enviar-multimedia/)
+    </Card>
+</CardGrid>
 
 ## Formato de Número de Teléfono
 
-Incluye el código del país sin el signo `+`:
+Código de país **sin** el signo `+`:
 
 | País | Código | Ejemplo |
 |------|--------|---------|
@@ -23,15 +39,12 @@ Incluye el código del país sin el signo `+`:
 | Argentina | 54 | `5491112345678` |
 
 :::caution
-Los números deben incluir el código de país sin `+`. Ej: `51999888777`, no `+51999888777`.
+`51999888777` sí, `+51999888777` no. El `+` es el error más común de la integración.
 :::
-
-## Rate Limits
-
-La API puede tener límites de velocidad. Si recibes errores de rate limit, espera unos segundos antes de reintentar.
 
 ## Tips
 
-- Valida que el número destino esté registrado en WhatsApp
-- Para imágenes usa JPG o PNG; el tamaño máximo depende de WhatsApp Business
-- Guarda el `message_id` para rastrear el estado del mensaje
+- Validá que el número destino esté registrado en WhatsApp
+- Para imágenes usá JPG o PNG; el tamaño máximo lo define WhatsApp Business
+- Guardá el `message_id`: es lo que te deja rastrear el estado del mensaje
+- Si te encontrás con un rate limit, esperá unos segundos antes de reintentar

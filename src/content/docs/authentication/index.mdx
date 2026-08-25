@@ -9,7 +9,7 @@ import { BASE_API_URL } from '../../../constants';
 
 La API de Konnect-360 utiliza autenticación **OAuth 2.0** con flujo `client_credentials`. Necesitarás tus credenciales (`client_id` y `client_secret`) que puedes obtener en la sección **CANALES** de tu cuenta Konnect-360.
 
-#### Flujo de Autenticación
+## Flujo de Autenticación
 
 ```mermaid
 sequenceDiagram
@@ -26,21 +26,19 @@ sequenceDiagram
 ```
 
 
-#### Obtener Token de Acceso
+## Obtener Token de Acceso
 
-**Endpoint**
+### Endpoint
 
-```
-POST /api/oauth/token
-```
+<Code lang="http" code={`POST ${BASE_API_URL}/api/oauth/token`} />
 
-###### Headers
+### Headers
 
 | Header | Valor |
 |--------|-------|
 | Content-Type | application/json |
 
-**Body**
+### Body
 
 | Campo | Tipo | Requerido | Descripción | Ejemplo |
 |-------|------|-----------|-------------|---------|
@@ -48,7 +46,7 @@ POST /api/oauth/token
 | `client_secret` | string | Sí | Secreto de tu cliente | `{{client_secret}}` |
 | `grant_type` | string | Sí | Tipo de concesión | `client_credentials` |
 
-**Ejemplos**
+### Ejemplos
 
 <ApiCodeTabs>
 <Fragment slot="curl">
@@ -150,7 +148,7 @@ POST /api/oauth/token
 </Fragment>
 </ApiCodeTabs>
 
-##### Respuesta Exitosa (200)
+### Respuesta Exitosa (200)
 
 ```json
 {
@@ -167,7 +165,7 @@ POST /api/oauth/token
 |-------|------|-------------|
 | `data.token` | string | Token JWT de acceso |
 
-##### Respuesta de Error (401)
+### Errores
 
 ```json
 {
@@ -180,21 +178,19 @@ POST /api/oauth/token
 }
 ```
 
-### Verificar Token 
+## Verificar Token
 
-###### Endpoint
+### Endpoint
 
-```
-GET /api/oauth/token-verify
-```
+<Code lang="http" code={`GET ${BASE_API_URL}/api/oauth/token-verify`} />
 
-##### Headers
+### Headers
 
 | Header | Valor |
 |--------|-------|
 | Authorization | Bearer `{{token}}` |
 
-##### Ejemplos
+### Ejemplos
 
 <ApiCodeTabs>
 <Fragment slot="curl">
@@ -272,7 +268,7 @@ GET /api/oauth/token-verify
 </Fragment>
 </ApiCodeTabs>
 
-##### Respuesta Exitosa (200)
+### Respuesta Exitosa (200)
 
 ```json
 {
@@ -295,7 +291,7 @@ GET /api/oauth/token-verify
 | `idWspBussiness` | string | ID del WhatsApp Business asociado |
 | `phoneNumber` | string | Número de teléfono del canal |
 
-##### Respuesta de Error (401)
+### Errores
 
 ```json
 {

@@ -3,17 +3,57 @@ title: Introducción
 description: Guía para gestionar y enviar plantillas de WhatsApp usando la API de Konnect-360.
 ---
 
+import { Card, CardGrid, Steps } from '@astrojs/starlight/components';
 import { BASE_API_URL, AUTH_REQUEST_TOKEN } from '../../../constants';
 
-Las plantillas de WhatsApp son mensajes pre-aprobados por Meta. Esta sección documenta cómo listar, consultar, obtener parámetros y enviar plantillas.
+Las plantillas de WhatsApp son mensajes pre-aprobados por Meta. Acá está cómo listarlas, consultarlas, leer sus parámetros y enviarlas.
 
 **URL Base:** <code>{BASE_API_URL}</code>
 
-{AUTH_REQUEST_TOKEN}
+<p set:html={AUTH_REQUEST_TOKEN} />
+
+## Endpoints
+
+<CardGrid>
+    <Card title="Listar Plantillas" icon="list-format">
+        Todas las plantillas disponibles en tu canal.
+
+        [Ver endpoint →](/whatsapp-template/listar/)
+    </Card>
+    <Card title="Obtener por Nombre" icon="magnifier">
+        Detalles completos de una plantilla específica.
+
+        [Ver endpoint →](/whatsapp-template/obtener/)
+    </Card>
+    <Card title="Parámetros" icon="puzzle">
+        Estructura exacta que espera una plantilla antes de enviarla.
+
+        [Ver endpoint →](/whatsapp-template/parametros/)
+    </Card>
+    <Card title="Enviar Plantilla" icon="rocket">
+        Envío con parámetros personalizados.
+
+        [Ver endpoint →](/whatsapp-template/enviar/)
+    </Card>
+</CardGrid>
+
+## Orden Recomendado
+
+<Steps>
+
+1. `GET /templates` — buscá la plantilla y confirmá que esté `APPROVED`
+
+2. `GET /template-params` — pedí la estructura exacta de parámetros
+
+3. `POST /send-template` — enviá con los valores en el orden que devolvió el paso 2
+
+</Steps>
+
+:::tip
+Saltear el paso 2 es lo que produce los errores de cantidad o tipo de parámetro.
+:::
 
 ## Estructura de una Plantilla
-
-### Tipos de Componentes
 
 | Componente | Descripción |
 |------------|-------------|
@@ -22,36 +62,23 @@ Las plantillas de WhatsApp son mensajes pre-aprobados por Meta. Esta sección do
 | `BUTTONS` | Botones interactivos |
 | `FOOTER` | Pie de mensaje |
 
-### Tipos de Botones
+Tipos de botón: `URL` (enlace web), `QUICK_REPLY` (respuesta rápida), `PHONE_NUMBER` (llamada).
 
-| Tipo | Descripción |
-|------|-------------|
-| `URL` | Botón con enlace web |
-| `QUICK_REPLY` | Respuesta rápida |
-| `PHONE_NUMBER` | Botón de llamada |
-
-### Placeholders
-
-Las plantillas usan `{{variable}}` para valores dinámicos:
+Los valores dinámicos van como `{{variable}}`:
 
 ```
 Hola {{cliente_name}}, tu pedido {{tracking}} está en camino a {{dir_delivery}}.
 ```
 
-## Estados de Plantilla
+## Estados
 
 | Estado | Descripción |
 |--------|-------------|
-| `APPROVED` | Aprobada y lista para usar |
+| `APPROVED` | Aprobada y lista para usar — la única que se puede enviar |
 | `PENDING` | En revisión por Meta |
-| `REJECTED` | Rechazada, revisa el motivo |
-
-:::tip
-Usá `GET /template-params` para obtener la estructura exacta de parámetros antes de enviar — así evitás errores de cantidad o tipo.
-:::
+| `REJECTED` | Rechazada, revisá el motivo |
 
 ## Tips
 
-- Solo las plantillas `APPROVED` pueden enviarse
-- El orden y cantidad de parámetros debe coincidir exactamente con la plantilla
-- `UTILITY` para transacciones, `MARKETING` para promociones, `AUTHENTICATION` para verificación
+- El orden y la cantidad de parámetros deben coincidir exactamente con la plantilla
+- Categorías: `UTILITY` para transacciones, `MARKETING` para promociones, `AUTHENTICATION` para verificación

@@ -1,0 +1,48 @@
+---
+title: Abrir Conversación
+description: Crea la conversación y corre la primera vuelta para que el flujo salude.
+badge:
+  text: Experimental
+  variant: caution
+---
+
+import { Code } from '@astrojs/starlight/components';
+import { BASE_API_IAFLOWS } from '../../../constants';
+
+### Endpoint
+
+<Code lang="http" code={`POST ${BASE_API_IAFLOWS}/api/workflows/:id/flow-chat`} />
+
+Sin body. Crea la conversación y arranca la vuelta 1 para que el flujo **salude** — el saludo no lo manda el cliente, sale del grafo.
+
+### Ejemplo
+
+```http
+POST /api/workflows/00000000-0000-0000-0000-000000000000/flow-chat HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer tu_token_aqui
+```
+
+### Respuesta Exitosa (201)
+
+```json
+{
+  "conversationId": "uuid",
+  "executionId": "uuid"
+}
+```
+
+Guardá el `conversationId`: va en todos los demás endpoints y arma la ruta de los [adjuntos](/flow-chat/adjuntos/). El `executionId` es solo de esta vuelta — cada turno crea uno nuevo.
+
+### Errores
+
+| Código | Cuerpo | Posible Causa |
+|--------|--------|---------------|
+| 404 | `workflow_not_found` | Workflow inexistente |
+| 400 | `published_version_missing` | El flujo no tiene versión publicada |
+| 400 | `invalid_snapshot` | Snapshot inválido |
+| 403 | `verification_required` / `verification_failed` | Solo con Turnstile configurado |
+
+:::tip
+Abrí el [stream](/flow-chat/stream/) apenas recibás el `conversationId`: el saludo ya está corriendo y llega por SSE.
+:::

@@ -7,11 +7,9 @@ import { Code } from '@astrojs/starlight/components';
 import ApiCodeTabs from '../../../components/ApiCodeTabs.astro';
 import { BASE_API_URL } from '../../../constants';
 
-### Endpoint 
+### Endpoint
 
-```
-GET /api/v1/whatsapp/templates
-```
+<Code lang="http" code={`GET ${BASE_API_URL}/api/v1/whatsapp/templates`} />
 
 ### Headers
 
@@ -124,3 +122,9 @@ GET /api/v1/whatsapp/templates
 | `data[].category` | string | Categoría: `UTILITY`, `MARKETING`, `AUTHENTICATION` |
 | `data[].language` | string | Código de idioma (ej: `es`, `en`) |
 | `data[].status` | string | Estado: `APPROVED`, `PENDING`, `REJECTED` |
+
+### Errores
+
+| Código | Mensaje | Posible Causa |
+|--------|---------|---------------|
+| 401 | No autorizado | Token expirado o inválido |
