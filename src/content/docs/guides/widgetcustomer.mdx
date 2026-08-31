@@ -6,7 +6,7 @@ description: Esta guía proporciona una descripción de nuestro widget que se im
 import { Code } from '@astrojs/starlight/components';
 import { BASE_API_WIDGET } from '../../../constants';
 
-Este es un complemento de nuestro widget que requiere una clave publica de autenticación.
+Este es un complemento de nuestro widget que requiere una clave pública de autenticación.
 
 ```html
 <div id="your_widget_chat_name"></div>
@@ -23,7 +23,7 @@ Dado que es un complemento su configuración va por separado.
     // ...
 
     konnectchatdata("your_widget_chat_name", {
-      publicKey: 'xxxx-yyyy-xxxx-yyyy-xxxx-yyyy', // esta clave publica se genera en la plataforma principal
+      publicKey: 'xxxx-yyyy-xxxx-yyyy-xxxx-yyyy', // esta clave pública se genera en la plataforma principal
       apiQuery: {
           channel: 'whatsapp' // 'whatsapp' | 'messenger' | 'instagram' | 'widget'
           identifier: '999888777' // email | id | nro telefono

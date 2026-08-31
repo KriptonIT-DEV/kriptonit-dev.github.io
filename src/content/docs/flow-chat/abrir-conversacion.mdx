@@ -7,6 +7,7 @@ badge:
 ---
 
 import { Code } from '@astrojs/starlight/components';
+import ApiCodeTabs from '../../../components/ApiCodeTabs.astro';
 import { BASE_API_IAFLOWS } from '../../../constants';
 
 ### Endpoint
@@ -15,13 +16,110 @@ import { BASE_API_IAFLOWS } from '../../../constants';
 
 Sin body. Crea la conversación y arranca la vuelta 1 para que el flujo **salude** — el saludo no lo manda el cliente, sale del grafo.
 
-### Ejemplo
+### Parámetros de Ruta
 
-```http
-POST /api/workflows/00000000-0000-0000-0000-000000000000/flow-chat HTTP/1.1
-Content-Type: application/json
-Authorization: Bearer tu_token_aqui
-```
+| Parámetro | Tipo | Requerido | Descripción | Ejemplo |
+|-----------|------|-----------|-------------|---------|
+| `:id` | string | Sí | ID del workflow | `00000000-0000-0000-0000-000000000000` |
+
+### Headers
+
+| Header | Valor |
+|--------|-------|
+| Content-Type | application/json |
+| Authorization | Bearer `{{token}}` |
+
+### Ejemplos
+
+<ApiCodeTabs>
+<Fragment slot="curl">
+
+<Code
+  lang="bash"
+  code={`curl -X POST ${BASE_API_IAFLOWS}/api/workflows/00000000-0000-0000-0000-000000000000/flow-chat \\
+    -H "Content-Type: application/json" \\
+    -H "Authorization: Bearer tu_token_aqui"`}
+/>
+
+</Fragment>
+<Fragment slot="javascript">
+
+<Code
+  lang="javascript"
+  code={`const response = await fetch(
+    \`${BASE_API_IAFLOWS}/api/workflows/\${workflowId}/flow-chat\`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': \`Bearer \${token}\`
+      }
+    }
+  );
+  const { conversationId, executionId } = await response.json();`}
+/>
+
+</Fragment>
+<Fragment slot="python">
+
+<Code
+  lang="python"
+  code={`import requests
+
+  workflow_id = "00000000-0000-0000-0000-000000000000"
+  url = f"${BASE_API_IAFLOWS}/api/workflows/{workflow_id}/flow-chat"
+  headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer tu_token_aqui"
+  }
+
+  response = requests.post(url, headers=headers)
+  data = response.json()`}
+/>
+
+</Fragment>
+<Fragment slot="php">
+
+<Code
+  lang="php"
+  code={`<?php
+
+  $url = "${BASE_API_IAFLOWS}/api/workflows/00000000-0000-0000-0000-000000000000/flow-chat";
+  $headers = ["Content-Type: application/json", "Authorization: Bearer tu_token_aqui"];
+
+  $ch = curl_init($url);
+  curl_setopt($ch, CURLOPT_POST, true);
+  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $response = curl_exec($ch);
+  curl_close($ch);
+  $data = json_decode($response, true);`}
+/>
+
+</Fragment>
+<Fragment slot="java">
+
+<Code
+  lang="java"
+  code={`import java.net.URI;
+  import java.net.http.HttpClient;
+  import java.net.http.HttpRequest;
+  import java.net.http.HttpResponse;
+
+  var client = HttpClient.newHttpClient();
+  var request = HttpRequest.newBuilder()
+      .uri(URI.create("${BASE_API_IAFLOWS}/api/workflows/00000000-0000-0000-0000-000000000000/flow-chat"))
+      .header("Content-Type", "application/json")
+      .header("Authorization", "Bearer tu_token_aqui")
+      .POST(HttpRequest.BodyPublishers.noBody())
+      .build();
+
+  var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+  var data = response.body();`}
+/>
+
+</Fragment>
+</ApiCodeTabs>
 
 ### Respuesta Exitosa (201)
 

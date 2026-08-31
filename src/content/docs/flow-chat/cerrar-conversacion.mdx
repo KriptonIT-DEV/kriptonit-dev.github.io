@@ -7,6 +7,7 @@ badge:
 ---
 
 import { Code } from '@astrojs/starlight/components';
+import ApiCodeTabs from '../../../components/ApiCodeTabs.astro';
 import { BASE_API_IAFLOWS } from '../../../constants';
 
 ### Endpoint
@@ -21,12 +22,103 @@ Sin body. Hace tres cosas:
 
 Es el botón de "cancelar" de la UI: si una vuelta quedó corriendo y el usuario se cansó, esto la mata.
 
-### Ejemplo
+### Parámetros de Ruta
 
-```http
-DELETE /api/workflows/:id/flow-chat/00000000-0000-0000-0000-000000000000 HTTP/1.1
-Authorization: Bearer tu_token_aqui
-```
+| Parámetro | Tipo | Requerido | Descripción | Ejemplo |
+|-----------|------|-----------|-------------|---------|
+| `:id` | string | Sí | ID del workflow | `00000000-0000-0000-0000-000000000000` |
+| `:cid` | string | Sí | `conversationId` del hilo | `00000000-0000-0000-0000-000000000000` |
+
+### Headers
+
+| Header | Valor |
+|--------|-------|
+| Authorization | Bearer `{{token}}` |
+
+### Ejemplos
+
+<ApiCodeTabs>
+<Fragment slot="curl">
+
+<Code
+  lang="bash"
+  code={`curl -X DELETE ${BASE_API_IAFLOWS}/api/workflows/00000000-0000-0000-0000-000000000000/flow-chat/00000000-0000-0000-0000-000000000000 \\
+    -H "Authorization: Bearer tu_token_aqui"`}
+/>
+
+</Fragment>
+<Fragment slot="javascript">
+
+<Code
+  lang="javascript"
+  code={`const response = await fetch(
+    \`${BASE_API_IAFLOWS}/api/workflows/\${workflowId}/flow-chat/\${conversationId}\`,
+    {
+      method: 'DELETE',
+      headers: { 'Authorization': \`Bearer \${token}\` }
+    }
+  );
+  const { status } = await response.json();`}
+/>
+
+</Fragment>
+<Fragment slot="python">
+
+<Code
+  lang="python"
+  code={`import requests
+
+  workflow_id = "00000000-0000-0000-0000-000000000000"
+  conversation_id = "00000000-0000-0000-0000-000000000000"
+  url = f"${BASE_API_IAFLOWS}/api/workflows/{workflow_id}/flow-chat/{conversation_id}"
+  headers = {"Authorization": "Bearer tu_token_aqui"}
+
+  response = requests.delete(url, headers=headers)
+  data = response.json()`}
+/>
+
+</Fragment>
+<Fragment slot="php">
+
+<Code
+  lang="php"
+  code={`<?php
+
+  $url = "${BASE_API_IAFLOWS}/api/workflows/00000000-0000-0000-0000-000000000000/flow-chat/00000000-0000-0000-0000-000000000000";
+  $headers = ["Authorization: Bearer tu_token_aqui"];
+
+  $ch = curl_init($url);
+  curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $response = curl_exec($ch);
+  curl_close($ch);
+  $data = json_decode($response, true);`}
+/>
+
+</Fragment>
+<Fragment slot="java">
+
+<Code
+  lang="java"
+  code={`import java.net.URI;
+  import java.net.http.HttpClient;
+  import java.net.http.HttpRequest;
+  import java.net.http.HttpResponse;
+
+  var client = HttpClient.newHttpClient();
+  var request = HttpRequest.newBuilder()
+      .uri(URI.create("${BASE_API_IAFLOWS}/api/workflows/00000000-0000-0000-0000-000000000000/flow-chat/00000000-0000-0000-0000-000000000000"))
+      .header("Authorization", "Bearer tu_token_aqui")
+      .DELETE()
+      .build();
+
+  var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+  var data = response.body();`}
+/>
+
+</Fragment>
+</ApiCodeTabs>
 
 ### Respuesta Exitosa (200)
 

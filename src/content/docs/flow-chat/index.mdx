@@ -6,13 +6,49 @@ badge:
   variant: caution
 ---
 
+import { Card, CardGrid, Steps } from '@astrojs/starlight/components';
 import { BASE_API_IAFLOWS, AUTH_REQUEST_TOKEN } from '../../../constants';
 
-API para chatear contra el **grafo completo** de un workflow conversacional. A diferencia del chat simple (que habla con un solo nodo `aiAgent`), este ejecuta todo el flujo —`ragNode`, `conditional`, `userInput`, las aristas— vía Inngest, con estado persistido en la base. Recargar la página no pierde el hilo.
+API para chatear contra el **grafo completo** de un workflow conversacional. Ejecuta todo el flujo —`ragNode`, `conditional`, `userInput`, las aristas— vía Inngest, con estado persistido en la base. Recargar la página no pierde el hilo.
 
 **URL Base:** <code>{BASE_API_IAFLOWS}</code>
 
 <p set:html={AUTH_REQUEST_TOKEN} />
+
+## Endpoints
+
+<CardGrid>
+    <Card title="Info del Flujo" icon="magnifier">
+        Reconocimiento del flujo antes de abrir la conversación.
+
+        [Ver endpoint →](/flow-chat/info/)
+    </Card>
+    <Card title="Abrir Conversación" icon="rocket">
+        Crea el hilo y corre la primera vuelta para que el flujo salude.
+
+        [Ver endpoint →](/flow-chat/abrir-conversacion/)
+    </Card>
+    <Card title="Stream de la Conversación" icon="random">
+        Estado completo del hilo en tiempo real vía SSE.
+
+        [Ver endpoint →](/flow-chat/stream/)
+    </Card>
+    <Card title="Enviar Mensajes" icon="comment">
+        Mensajes de texto o con archivos adjuntos.
+
+        [Ver endpoint →](/flow-chat/mensajes/)
+    </Card>
+    <Card title="Adjuntos" icon="seti:image">
+        Bytes de un adjunto del hilo.
+
+        [Ver endpoint →](/flow-chat/adjuntos/)
+    </Card>
+    <Card title="Cerrar Conversación" icon="close">
+        Cancela la corrida, cierra el hilo y borra los adjuntos.
+
+        [Ver endpoint →](/flow-chat/cerrar-conversacion/)
+    </Card>
+</CardGrid>
 
 ## Conceptos Clave
 
@@ -21,7 +57,7 @@ API para chatear contra el **grafo completo** de un workflow conversacional. A d
 3. Un mensaje **contesta o reejecuta**, y el cliente no elige: si hay un `userInput` esperando, lo responde; si no, arranca una vuelta nueva. El campo `mode` dice cuál fue.
 4. Los adjuntos viajan como **IDs, nunca como URLs**. La URL la arma el cliente (ver [Adjuntos](/flow-chat/adjuntos/)).
 
-## Flujo Típico de Integración
+## Flujo de Trabajo
 
 ```mermaid
 flowchart TD
@@ -35,40 +71,43 @@ flowchart TD
     G -- no --> H[DELETE /flow-chat/:cid]
 ```
 
-1. `GET /flow-chat/info` → ¿es conversacional? ¿qué acepta? ¿qué lee el modelo?
-2. `POST /flow-chat` → `{ conversationId, executionId }`
-3. `GET /flow-chat/:cid/stream` → abrir apenas tenés el `conversationId` (el saludo ya está corriendo)
-4. Llega `ask` → mostrar el campo con su `validation`
-5. `POST /flow-chat/:cid/messages` o `/messages-files` → `{ mode: "answered" }`
-6. Llega `ended` → **no cerrar** el EventSource
-7. Escribir de nuevo → `{ mode: "restarted" }`, vuelta nueva, mismo stream
-8. `DELETE /flow-chat/:cid` → cerrar y borrar adjuntos
+<Steps>
+
+1. [Obtener token](/authentication/)
+
+2. [Info del Flujo](/flow-chat/info/) → ¿es conversacional? ¿qué acepta? ¿qué lee el modelo?
+
+3. [Abrir Conversación](/flow-chat/abrir-conversacion/) → te da el `conversationId` y el `executionId`
+
+4. [Stream](/flow-chat/stream/) → abrir apenas tenés el `conversationId` (el saludo ya está corriendo)
+
+5. Llega `ask` por el stream → mostrar el campo con su `validation`
+
+6. [Enviar Mensajes](/flow-chat/mensajes/) → responde el `ask` o arranca una vuelta nueva (`mode`)
+
+7. Llega `ended` → **no cerrar** el EventSource: escribir de nuevo reusa la misma conexión
+
+8. [Cerrar Conversación](/flow-chat/cerrar-conversacion/) → cierra el hilo y borra los adjuntos
+
+</Steps>
 
 :::note
-El rate limit por IP (`429 rate_limited`) no aplica a estos endpoints — solo cubre `/api/workflows/:id/execute` y `/api/visualize/adapt`. Acá el guard es Turnstile, cuando está configurado.
+El rate limit por IP no aplica a estos endpoints. Acá el guard es Turnstile, cuando está configurado, y devuelve `403 verification_required` o `403 verification_failed`.
 :::
 
-## Chat vs Flow Chat vs Execute
-
-|                        | `/chat`             | `/flow-chat`            | `/execute`           |
-|------------------------|---------------------|-------------------------|----------------------|
-| Qué corre              | UN nodo aiAgent     | el grafo COMPLETO       | el grafo COMPLETO    |
-| Cómo                   | streamText directo  | Inngest                 | Inngest              |
-| Durable                | no                  | sí                      | sí                   |
-| userInput/delay        | no existen          | sí                      | sí                   |
-| Forma de la salida     | tokens (SSE)        | estado del hilo (SSE)   | eventos de nodo (SSE)|
-| Conversación           | sí                  | sí                      | no (una corrida)     |
-| Adjuntos               | sí                  | sí                      | no                   |
-| Pensado para           | iterar un prompt    | un chat de producto     | el panel de ejecución|
-
-`/chat` y `/flow-chat` comparten el AI Agent config (modelo, systemPrompt, tools); la diferencia es cuánto del grafo corre. `/flow-chat` y `/execute` corren lo mismo, pero uno devuelve la conversación ya armada y el otro la traza cruda de nodos.
-
-## Errores Globales
+## Errores Comunes
 
 Todos los endpoints pueden devolver estos errores:
 
-| Código | Cuerpo |
-|--------|--------|
-| 401 | `{ "code": "unauthenticated", "message": "Authentication required" }` |
-| 403 | `{ "code": "forbidden", "message": string }` |
-| 500 | `{ "code": "internal_error", "message": "Internal server error" }` |
+| Código | Cuerpo | Posible Causa |
+|--------|--------|---------------|
+| 401 | `{ "code": "unauthenticated", "message": "Authentication required" }` | Falta el header `Authorization` o el token expiró |
+| 403 | `{ "code": "forbidden", "message": string }` | Turnstile rechazó la verificación |
+| 500 | `{ "code": "internal_error", "message": "Internal server error" }` | Falla del servidor |
+
+## Tips
+
+- Abrí el stream apenas tenés el `conversationId`: el saludo del flujo ya está corriendo
+- El `executionId` es de una sola vuelta; el `conversationId` es el que va en todos los endpoints
+- No cierres el EventSource cuando llega `ended`: la misma conexión sirve para la vuelta siguiente
+- Consultá [`modelReads`](/flow-chat/info/) antes de habilitar audio o video en la UI

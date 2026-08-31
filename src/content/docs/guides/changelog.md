@@ -9,13 +9,13 @@ Esta página documenta los cambios realizados en nuestras apis y plugins. Para o
 
 #### Fixes
 
-- Cambios en la recepcion de elementos y renderizado de componentes para el widget.
-- Solucion de errores en la conexion del socket
+- Cambios en la recepción de elementos y renderizado de componentes para el widget.
+- Solución de errores en la conexión del socket
 
 ### [0.0.1](#apis) (11/05/2025)
 
 #### Upgrades
 
-- Se agrego la compatibilidad para soportar agentes ia.
-- Se mejoro el rendimiento del renderizado.
+- Se agregó la compatibilidad para soportar agentes IA.
+- Se mejoró el rendimiento del renderizado.
 - Cambio de proveedor 3rd party para socket.

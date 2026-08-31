@@ -7,11 +7,104 @@ badge:
 ---
 
 import { Code } from '@astrojs/starlight/components';
+import ApiCodeTabs from '../../../components/ApiCodeTabs.astro';
 import { BASE_API_IAFLOWS } from '../../../constants';
 
 ### Endpoint
 
 <Code lang="http" code={`GET ${BASE_API_IAFLOWS}/api/workflows/:id/flow-chat/info`} />
+
+### Parámetros de Ruta
+
+| Parámetro | Tipo | Requerido | Descripción | Ejemplo |
+|-----------|------|-----------|-------------|---------|
+| `:id` | string | Sí | ID del workflow | `00000000-0000-0000-0000-000000000000` |
+
+### Headers
+
+| Header | Valor |
+|--------|-------|
+| Authorization | Bearer `{{token}}` |
+
+### Ejemplos
+
+<ApiCodeTabs>
+<Fragment slot="curl">
+
+<Code
+  lang="bash"
+  code={`curl -X GET ${BASE_API_IAFLOWS}/api/workflows/00000000-0000-0000-0000-000000000000/flow-chat/info \\
+    -H "Authorization: Bearer tu_token_aqui"`}
+/>
+
+</Fragment>
+<Fragment slot="javascript">
+
+<Code
+  lang="javascript"
+  code={`const response = await fetch(
+    \`${BASE_API_IAFLOWS}/api/workflows/\${workflowId}/flow-chat/info\`,
+    { headers: { 'Authorization': \`Bearer \${token}\` } }
+  );
+  const info = await response.json();`}
+/>
+
+</Fragment>
+<Fragment slot="python">
+
+<Code
+  lang="python"
+  code={`import requests
+
+  workflow_id = "00000000-0000-0000-0000-000000000000"
+  url = f"${BASE_API_IAFLOWS}/api/workflows/{workflow_id}/flow-chat/info"
+  headers = {"Authorization": "Bearer tu_token_aqui"}
+
+  response = requests.get(url, headers=headers)
+  info = response.json()`}
+/>
+
+</Fragment>
+<Fragment slot="php">
+
+<Code
+  lang="php"
+  code={`<?php
+
+  $url = "${BASE_API_IAFLOWS}/api/workflows/00000000-0000-0000-0000-000000000000/flow-chat/info";
+  $headers = ["Authorization: Bearer tu_token_aqui"];
+
+  $ch = curl_init($url);
+  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $response = curl_exec($ch);
+  curl_close($ch);
+  $info = json_decode($response, true);`}
+/>
+
+</Fragment>
+<Fragment slot="java">
+
+<Code
+  lang="java"
+  code={`import java.net.URI;
+  import java.net.http.HttpClient;
+  import java.net.http.HttpRequest;
+  import java.net.http.HttpResponse;
+
+  var client = HttpClient.newHttpClient();
+  var request = HttpRequest.newBuilder()
+      .uri(URI.create("${BASE_API_IAFLOWS}/api/workflows/00000000-0000-0000-0000-000000000000/flow-chat/info"))
+      .header("Authorization", "Bearer tu_token_aqui")
+      .GET()
+      .build();
+
+  var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+  var info = response.body();`}
+/>
+
+</Fragment>
+</ApiCodeTabs>
 
 ### Respuesta Exitosa (200)
 

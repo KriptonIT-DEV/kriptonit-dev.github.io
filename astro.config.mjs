@@ -35,15 +35,15 @@ export default defineConfig({
             logo: {
                 alt: 'Konnect-360',
                 replacesTitle: true,
-                light: './src/assets/logo-light.png',
-                dark: './src/assets/logo-dark.png',
+                light: './src/assets/logo-kripton.jpg',
+                dark: './src/assets/logo-kripton.jpg',
 
             },
             title: 'Konnect-360',
             social: [
-              { icon: 'external', label: 'Website', href: 'https://www.konnect-360.pe/', },
+              { icon: 'external', label: 'Website', href: 'https://www.konnect-360.com/', },
               { icon: 'github', label: 'GitHub', href: 'https://github.com/KriptonIT-DEV/kriptonit-dev.github.io', },
-              { icon: 'facebook', label: 'GitHub', href: 'https://github.com/KriptonIT-DEV/kriptonit-dev.github.io', },
+              { icon: 'facebook', label: 'GitHub', href: 'https://www.facebook.com/konnect36', },
             ],
             sidebar: [
 

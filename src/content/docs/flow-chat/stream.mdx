@@ -7,6 +7,7 @@ badge:
 ---
 
 import { Code } from '@astrojs/starlight/components';
+import ApiCodeTabs from '../../../components/ApiCodeTabs.astro';
 import { BASE_API_IAFLOWS } from '../../../constants';
 
 ### Endpoint
@@ -15,11 +16,145 @@ import { BASE_API_IAFLOWS } from '../../../constants';
 
 Abrilo **apenas tenés el conversationId**, antes de mandar el primer mensaje: el saludo del flujo ya está corriendo.
 
-```http
-GET /api/workflows/:id/flow-chat/00000000-0000-0000-0000-000000000000/stream HTTP/1.1
-Accept: text/event-stream
-Authorization: Bearer tu_token_aqui
-```
+### Parámetros de Ruta
+
+| Parámetro | Tipo | Requerido | Descripción | Ejemplo |
+|-----------|------|-----------|-------------|---------|
+| `:id` | string | Sí | ID del workflow | `00000000-0000-0000-0000-000000000000` |
+| `:cid` | string | Sí | `conversationId` devuelto al [abrir la conversación](/flow-chat/abrir-conversacion/) | `00000000-0000-0000-0000-000000000000` |
+
+### Headers
+
+| Header | Valor |
+|--------|-------|
+| Accept | text/event-stream |
+| Authorization | Bearer `{{token}}` |
+
+### Ejemplos
+
+<ApiCodeTabs>
+<Fragment slot="curl">
+
+<Code
+  lang="bash"
+  code={`curl -N -X GET ${BASE_API_IAFLOWS}/api/workflows/00000000-0000-0000-0000-000000000000/flow-chat/00000000-0000-0000-0000-000000000000/stream \\
+    -H "Accept: text/event-stream" \\
+    -H "Authorization: Bearer tu_token_aqui"`}
+/>
+
+</Fragment>
+<Fragment slot="javascript">
+
+<Code
+  lang="javascript"
+  code={`const response = await fetch(
+    \`${BASE_API_IAFLOWS}/api/workflows/\${workflowId}/flow-chat/\${conversationId}/stream\`,
+    {
+      headers: {
+        'Accept': 'text/event-stream',
+        'Authorization': \`Bearer \${token}\`
+      }
+    }
+  );
+
+  const reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
+  let buffer = '';
+
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buffer += value;
+
+    const blocks = buffer.split('\\n\\n');
+    buffer = blocks.pop();
+
+    for (const block of blocks) {
+      // el heartbeat llega como "event: heartbeat" con data vacía
+      if (block.startsWith('event: heartbeat')) continue;
+      const data = block.split('\\n').find((l) => l.startsWith('data: '));
+      if (data) render(JSON.parse(data.slice(6)));
+    }
+  }`}
+/>
+
+</Fragment>
+<Fragment slot="python">
+
+<Code
+  lang="python"
+  code={`import json
+  import requests
+
+  workflow_id = "00000000-0000-0000-0000-000000000000"
+  conversation_id = "00000000-0000-0000-0000-000000000000"
+  url = f"${BASE_API_IAFLOWS}/api/workflows/{workflow_id}/flow-chat/{conversation_id}/stream"
+  headers = {
+      "Accept": "text/event-stream",
+      "Authorization": "Bearer tu_token_aqui"
+  }
+
+  with requests.get(url, headers=headers, stream=True) as response:
+      for line in response.iter_lines(decode_unicode=True):
+          if line and line.startswith("data: "):
+              payload = line[6:]
+              if payload:  # el heartbeat manda data vacía
+                  render(json.loads(payload))`}
+/>
+
+</Fragment>
+<Fragment slot="php">
+
+<Code
+  lang="php"
+  code={`<?php
+
+  $url = "${BASE_API_IAFLOWS}/api/workflows/00000000-0000-0000-0000-000000000000/flow-chat/00000000-0000-0000-0000-000000000000/stream";
+  $headers = ["Accept: text/event-stream", "Authorization: Bearer tu_token_aqui"];
+
+  $ch = curl_init($url);
+  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+  curl_setopt($ch, CURLOPT_WRITEFUNCTION, function ($ch, $chunk) {
+      foreach (explode("\\n", $chunk) as $line) {
+          if (str_starts_with($line, "data: ") && strlen($line) > 6) {
+              render(json_decode(substr($line, 6), true));
+          }
+      }
+      return strlen($chunk);
+  });
+  curl_exec($ch);
+  curl_close($ch);`}
+/>
+
+</Fragment>
+<Fragment slot="java">
+
+<Code
+  lang="java"
+  code={`import java.net.URI;
+  import java.net.http.HttpClient;
+  import java.net.http.HttpRequest;
+  import java.net.http.HttpResponse;
+
+  var client = HttpClient.newHttpClient();
+  var request = HttpRequest.newBuilder()
+      .uri(URI.create("${BASE_API_IAFLOWS}/api/workflows/00000000-0000-0000-0000-000000000000/flow-chat/00000000-0000-0000-0000-000000000000/stream"))
+      .header("Accept", "text/event-stream")
+      .header("Authorization", "Bearer tu_token_aqui")
+      .GET()
+      .build();
+
+  var response = client.send(request, HttpResponse.BodyHandlers.ofLines());
+  response.body()
+      .filter(line -> line.startsWith("data: ") && line.length() > 6)
+      .forEach(line -> render(line.substring(6)));`}
+/>
+
+</Fragment>
+</ApiCodeTabs>
+
+:::caution
+`EventSource` del browser **no permite mandar headers**, así que no sirve para un endpoint con `Authorization`. Los ejemplos usan `fetch` con lectura de stream. Si tu integración necesita `EventSource`, el token tiene que viajar de otra forma — confirmalo con backend.
+:::
 
 ### Formato de cada Emisión
 
