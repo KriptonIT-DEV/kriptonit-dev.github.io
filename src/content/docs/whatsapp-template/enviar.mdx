@@ -244,7 +244,8 @@ import { BASE_API_URL } from '../../../constants';
 | Código | Mensaje | Posible Causa |
 |--------|---------|---------------|
 | 400 | Error en parametros de plantilla | Cantidad o tipo de parámetros no coincide con la plantilla |
-| 401 | No autorizado | Token expirado o inválido |
+
+Los errores de autenticación son comunes a toda la API — ver [Convenciones](/guides/convenciones/).
 
 :::caution
 La cantidad y tipo de parámetros debe coincidir EXACTAMENTE con lo que devuelve `template-params`. Si no coinciden, Meta rechaza el envío.

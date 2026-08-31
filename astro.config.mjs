@@ -26,10 +26,10 @@ export default defineConfig({
                     navLinks: [
                         { label: 'Docs', link: '/guides/example/' },
                         { label: 'API', link: '/authentication/' },
-                        { label: 'Website', link: 'https://www.konnect-360.pe/' },
+                        { label: 'Website', link: 'https://www.konnect-360.com/' },
                     ],
                     footerText:
-                        '© Konnect-360 — Built with [Starlight](https://starlight.astro.build) + [Lucode](https://github.com/lucas-labs/lucode-starlight-theme).',
+                        '© Konnect-360',
                 }),
             ],
             logo: {
@@ -52,6 +52,7 @@ export default defineConfig({
                     items: [
                         // Each item here is one entry in the navigation menu.
                         { label: 'Empezamos', slug: 'guides/example' },
+                        { label: 'Convenciones de la API', slug: 'guides/convenciones' },
                         { label: 'Widget Chat Bot', slug: 'guides/widgetbot' },
                         { label: 'Widget Chat Cliente', slug: 'guides/widgetcustomer' },
                         { label: 'Versiones', slug: 'guides/changelog' }

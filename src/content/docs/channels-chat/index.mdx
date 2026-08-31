@@ -61,7 +61,8 @@ Los endpoints son encadenados: cada uno necesita un ID que devuelve el anterior.
 |--------|---------|---------------|
 | 400 | Error: No hay datos | Cliente o canal no encontrado |
 | 200 | No existe customer para consulta de tickets | `customer_id` inválido |
-| 401 | No autorizado | Token expirado o inválido |
+
+Los errores de autenticación son comunes a toda la API — ver [Convenciones](/guides/convenciones/).
 
 :::caution
 El segundo caso devuelve **200**, no un código de error: un `customer_id` inválido no rompe la llamada. Validá el cuerpo de la respuesta, no solo el status.

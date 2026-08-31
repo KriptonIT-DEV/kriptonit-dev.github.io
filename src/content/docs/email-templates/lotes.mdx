@@ -214,6 +214,13 @@ Envío masivo con plantilla y variables por destinatario.
 
 <Code lang="http" code={`POST ${BASE_API_URL}/api/v1/email/send-template-batch`} />
 
+### Headers
+
+| Header | Valor |
+|--------|-------|
+| Content-Type | application/json |
+| Authorization | Bearer `{{token}}` |
+
 ### Body
 
 | Campo | Tipo | Requerido | Descripción |
@@ -232,7 +239,10 @@ Envío masivo con plantilla y variables por destinatario.
 Acá `params` **no se valida elemento por elemento**: a diferencia de [`/send-template`](/email-templates/enviar-plantilla/), no se exige que `name`, `type` y `value` vengan completos. Un elemento mal armado no se rechaza en validación — simplemente no reemplaza nada.
 :::
 
-### Ejemplo
+### Ejemplos
+
+<ApiCodeTabs>
+<Fragment slot="curl">
 
 <Code
   lang="bash"
@@ -257,6 +267,155 @@ Acá `params` **no se valida elemento por elemento**: a diferencia de [`/send-te
       ]
     }'`}
 />
+
+</Fragment>
+<Fragment slot="javascript">
+
+<Code
+  lang="javascript"
+  code={`const destinatarios = [
+    { to: 'uno@gmail.com', tracking_number: 'EMAIL001', nombre: 'JUAN' },
+    { to: 'dos@gmail.com', tracking_number: 'EMAIL002', nombre: 'MARIA' }
+  ];
+
+  const response = await fetch('${BASE_API_URL}/api/v1/email/send-template-batch', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': \`Bearer \${token}\`
+    },
+    body: JSON.stringify({
+      mail_id: 5,
+      messages: destinatarios.map(d => ({
+        template_id: 72,
+        to: d.to,
+        tracking_number: d.tracking_number,
+        params: [{ name: 'name', type: 'text', value: d.nombre }]
+      }))
+    })
+  });
+
+  const batch = await response.json();
+  const fallidos = batch.results.filter(r => !r.sent);`}
+/>
+
+</Fragment>
+<Fragment slot="python">
+
+<Code
+  lang="python"
+  code={`import requests
+
+  url = "${BASE_API_URL}/api/v1/email/send-template-batch"
+  headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer tu_token_aqui"
+  }
+  destinatarios = [
+      ("uno@gmail.com", "EMAIL001", "JUAN"),
+      ("dos@gmail.com", "EMAIL002", "MARIA"),
+  ]
+  payload = {
+      "mail_id": 5,
+      "messages": [
+          {
+              "template_id": 72,
+              "to": to,
+              "tracking_number": tracking,
+              "params": [{"name": "name", "type": "text", "value": nombre}],
+          }
+          for to, tracking, nombre in destinatarios
+      ],
+  }
+
+  response = requests.post(url, json=payload, headers=headers)
+  batch = response.json()
+  fallidos = [r for r in batch["results"] if not r["sent"]]`}
+/>
+
+</Fragment>
+<Fragment slot="php">
+
+<Code
+  lang="php"
+  code={`<?php
+
+  $url = "${BASE_API_URL}/api/v1/email/send-template-batch";
+  $headers = [
+      "Content-Type: application/json",
+      "Authorization: Bearer tu_token_aqui"
+  ];
+  $destinatarios = [
+      ["uno@gmail.com", "EMAIL001", "JUAN"],
+      ["dos@gmail.com", "EMAIL002", "MARIA"],
+  ];
+  $messages = [];
+  foreach ($destinatarios as [$to, $tracking, $nombre]) {
+      $messages[] = [
+          "template_id" => 72,
+          "to" => $to,
+          "tracking_number" => $tracking,
+          "params" => [["name" => "name", "type" => "text", "value" => $nombre]]
+      ];
+  }
+
+  $ch = curl_init($url);
+  curl_setopt($ch, CURLOPT_POST, true);
+  curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
+      "mail_id" => 5,
+      "messages" => $messages
+  ]));
+  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $response = curl_exec($ch);
+  curl_close($ch);
+  $batch = json_decode($response, true);`}
+/>
+
+</Fragment>
+<Fragment slot="java">
+
+<Code
+  lang="java"
+  code={`import java.net.URI;
+  import java.net.http.HttpClient;
+  import java.net.http.HttpRequest;
+  import java.net.http.HttpResponse;
+
+  var payload = """
+      {
+        "mail_id": 5,
+        "messages": [
+          {
+            "template_id": 72,
+            "to": "uno@gmail.com",
+            "tracking_number": "EMAIL001",
+            "params": [{ "name": "name", "type": "text", "value": "JUAN" }]
+          },
+          {
+            "template_id": 72,
+            "to": "dos@gmail.com",
+            "tracking_number": "EMAIL002",
+            "params": [{ "name": "name", "type": "text", "value": "MARIA" }]
+          }
+        ]
+      }
+      """;
+
+  var client = HttpClient.newHttpClient();
+  var request = HttpRequest.newBuilder()
+      .uri(URI.create("${BASE_API_URL}/api/v1/email/send-template-batch"))
+      .header("Content-Type", "application/json")
+      .header("Authorization", "Bearer tu_token_aqui")
+      .POST(HttpRequest.BodyPublishers.ofString(payload))
+      .build();
+
+  var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+  var batch = response.body();`}
+/>
+
+</Fragment>
+</ApiCodeTabs>
 
 ### Con Identidad de Dominio
 

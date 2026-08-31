@@ -1,0 +1,172 @@
+---
+title: Convenciones de la API
+description: Lo que aplica a todas las APIs de Konnect-360 — forma de las respuestas, códigos de error, vida del token y reintentos.
+---
+
+import { AUTH_REQUEST_TOKEN } from '../../../constants';
+
+Esta página junta todo lo que **no** cambia entre una API y otra. Leela una vez antes de integrar y no tenés que volver a descubrirlo en cada endpoint.
+
+<p set:html={AUTH_REQUEST_TOKEN} />
+
+## Autenticación
+
+Todas las APIs usan el mismo esquema: **OAuth 2.0 `client_credentials`**. Pedís un token una vez y lo mandás en cada llamada:
+
+```
+Authorization: Bearer tu_token_aqui
+```
+
+El detalle del flujo está en [Autenticación](/authentication/).
+
+## Ciclo de Vida del Token
+
+El token es un **JWT**, así que lleva su propio vencimiento adentro: el campo `exp` del payload, en segundos Unix. No hace falta adivinarlo ni esperar el `401` — se lee y listo.
+
+```javascript
+// El payload es la segunda parte del JWT, en base64url
+const payload = JSON.parse(atob(token.split('.')[1]));
+
+const vence = payload.exp * 1000;          // exp viene en segundos
+const faltan = vence - Date.now();
+
+// Renová antes de que venza, no cuando ya falló
+if (faltan < 5 * 60 * 1000) {
+  token = await pedirTokenNuevo();
+}
+```
+
+El payload también trae `cia_id` y `canal_id`: son la empresa y el canal a los que queda atado el token. Por eso un token de una empresa nunca ve datos de otra.
+
+:::tip
+Guardá el token y reusalo. Pedir uno nuevo en cada request funciona, pero es una llamada de red que no necesitás.
+:::
+
+:::caution
+No hay endpoint de *refresh*: cuando el token vence se pide uno nuevo con las mismas credenciales. Y si querés confirmar que un token todavía sirve sin decodificarlo, está [`GET /api/oauth/token-verify`](/authentication/).
+:::
+
+## Formas de Respuesta
+
+Acá está la parte que sorprende a todo el mundo: **la plataforma no tiene un solo formato de respuesta, tiene cuatro familias.** Saber en cuál cae el endpoint que estás llamando te ahorra una tarde.
+
+| Familia | Quién la usa | Cómo reconocerla |
+|---|---|---|
+| **A — `code` espeja el HTTP** | Autenticación, WhatsApp, Email (envíos) | `code: 200` cuando salió bien |
+| **B — `code` es código de base** | Canales de Chat, Email (consultas) | `code: 0` cuando salió bien |
+| **C — error plano** | Flow Chat | Sólo `code` y `message`, y `code` es un **string** |
+| **D — sin envelope** | Email (lotes) | Va directo al resumen, sin `success` ni `data` |
+
+### Familia A — `code` espeja el HTTP
+
+```json
+{
+  "success": true,
+  "data": { "token": "eyJhbGciOi..." },
+  "code": 200,
+  "status": 200,
+  "messages": "Token válido.",
+  "errors": null
+}
+```
+
+El orden de las claves varía entre APIs, el conjunto no. En error, `code` pasa a `401`, `400` o `502`.
+
+### Familia B — `code` es código de base de datos
+
+```json
+{
+  "success": true,
+  "data": { "cus_id": 1, "cus_nombre": "Juan" },
+  "code": 0,
+  "status": 200,
+  "messages": ""
+}
+```
+
+Acá `code: 0` significa **OK**. Un `code` negativo es un error que vino de la función SQL, y el detalle llega en `messages`. Si tratás este `code` como si fuera un status HTTP, un éxito te va a parecer un error.
+
+### Familia C — error plano
+
+```json
+{ "code": "unauthenticated", "message": "Authentication required" }
+```
+
+Flow Chat no usa envelope: en éxito devuelve el objeto pedido, y en error estos dos campos. Ojo con el tipo: acá `code` es un **string** (`"unauthenticated"`, `"forbidden"`, `"internal_error"`), no un número. Y el campo es `message`, en singular, no `messages`.
+
+### Familia D — sin envelope
+
+```json
+{
+  "total": 3,
+  "sent": 1,
+  "failed": 2,
+  "results": []
+}
+```
+
+Los endpoints de lote de email responden así. No hay `success` que mirar: el resultado se lee de `sent` y `failed`.
+
+## Cómo Saber si Salió Bien
+
+**No alcanza con mirar un solo campo.** Estas cuatro trampas son reales y están todas en producción:
+
+| Trampa | Dónde | Qué pasa |
+|---|---|---|
+| `success: true` en un error | `GET /whatsapp/template-params` | Una plantilla inexistente devuelve `status: 400` y `code: 200`, pero con `success: true` |
+| `status` siempre `401` | `POST /email/blank`, `POST /email/send-template` | En error el `status` es `401` aunque el `code` sea `502` |
+| `code` de otro tipo | Flow Chat | Es un string, no un número: `code === 401` nunca da true |
+| HTTP `200` con fallos | `POST /email/send-*-batch` | Un lote con 90 de 100 fallidos igual responde `200` |
+
+La regla que funciona en las cuatro familias:
+
+:::tip[Regla práctica]
+Ramificá por el **status HTTP real del response** (`response.ok`, `response.status`), y después validá que `data` traiga lo que esperabas. Usá `messages` para el log, nunca para decidir. Y en los lotes, contá `failed`.
+:::
+
+```javascript
+const response = await fetch(url, { headers });
+const body = await response.json();
+
+// El status HTTP es el único campo confiable en las cuatro familias
+if (!response.ok) {
+  throw new Error(body.messages ?? body.message ?? 'Error desconocido');
+}
+
+// Y confirmá que llegó lo que esperabas, no que 'success' diga true
+if (!body.data) {
+  throw new Error(body.messages ?? 'Respuesta sin datos');
+}
+```
+
+## Errores de Autenticación
+
+Son los mismos en todas las APIs. Estos son los mensajes que la plataforma devuelve **de verdad**:
+
+| Código | Cuerpo | Causa |
+|---|---|---|
+| 401 | `{ "message": "Token no encontrado" }` | Falta el header `Authorization` |
+| 401 | `{ "message": "Tennant no encontrado" }` | El token no resuelve a una empresa |
+| 401 | `messages: "jwt malformed"` | El token está cortado o mal copiado |
+| 401 | `messages: "Error: Token y/o Client ID incorrectos."` | Las credenciales del `/oauth/token` son inválidas |
+| 401 | `messages: "Error de validación"` + `errors: []` | El body no pasó la validación del endpoint |
+
+Los dos primeros vienen **sin envelope**: sólo `message`, en singular.
+
+En Flow Chat el equivalente es `{ "code": "unauthenticated", "message": "Authentication required" }`.
+
+## Límites y Reintentos
+
+El backoff es responsabilidad del cliente. Si te encontrás con un rechazo por volumen, esperá unos segundos antes de reintentar y subí el intervalo en cada intento en lugar de reintentar en loop.
+
+Flow Chat es la excepción: no usa límite por IP, usa **Turnstile**, y rechaza con `403 verification_required` o `403 verification_failed`. Reintentar no sirve — hay que resolver la verificación.
+
+:::note
+Los valores concretos de límite por API todavía no están publicados. Si tu integración maneja volumen alto, consultalo antes de salir a producción.
+:::
+
+## Envíos Duplicados
+
+Algunos endpoints de envío traen protección propia contra el doble click. `POST /email/send-template` rechaza el mismo envío —misma combinación de `tracking_number`, `template_id`, destinatario y parámetros— si llega **dentro de 5 segundos**, y responde `Posible petición repetida`.
+
+Eso cubre el reintento accidental, no la idempotencia de verdad: pasados los 5 segundos el mismo request envía un segundo correo. Si necesitás garantía real, llevá tu propio registro de qué mandaste con tu `tracking_number`.
